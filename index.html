@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BEYBLADES X 1：聖獸陀螺對決 v6.0</title>
+<title>BEYBLADES X 1：聖獸陀螺對決 v7.0</title>
 <style>
   :root {
     --bg-dark: #060913;
@@ -22,70 +22,72 @@
     min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
   }
 
-  /* ==================== 復古掌機進場封面 (Title Screen) ==================== */
+  /* ==================== 1. 復古掌機歡迎畫面 (Title Screen) ==================== */
   #titleScreen {
     position: fixed; inset: 0; z-index: 100;
     background: #000000;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 16px;
-    transition: opacity 0.65s ease-out;
+    transition: opacity 0.55s ease-out;
   }
   #titleScreen.fade-out { opacity: 0; pointer-events: none; }
   .title-canvas-box {
     width: 100%; max-width: 440px;
-    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
   canvas#titleLogoCanvas {
     width: 100%; max-width: 420px; height: auto;
-    image-rendering: pixelated;
+    image-rendering: pixelated; cursor: pointer;
   }
   .start-row {
-    display: flex; align-items: center; justify-content: center; gap: 18px;
-    cursor: pointer; padding: 12px 24px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    cursor: pointer; padding: 10px 22px; border-radius: 12px;
   }
   .start-row:active { transform: scale(0.96); }
-  canvas#titleSpinBey {
-    width: 68px; height: 68px; image-rendering: pixelated;
-  }
+  canvas#titleSpinBey { width: 64px; height: 64px; image-rendering: pixelated; }
   .retro-start-text {
     font-family: "Courier New", Courier, monospace;
-    font-size: 1.65rem; font-weight: 900; letter-spacing: 3px;
+    font-size: 1.55rem; font-weight: 900; letter-spacing: 3px;
     background: linear-gradient(180deg, #fff7ed 0%, #facc15 45%, #ea580c 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     filter: drop-shadow(2px 2px 0px #7c2d12);
     animation: idlePulse 1.2s infinite alternate;
   }
-  .retro-start-text.fast-blink {
-    animation: fastStartBlink 0.09s infinite alternate !important;
-  }
+  .retro-start-text.fast-blink { animation: fastStartBlink 0.08s infinite alternate !important; }
   @keyframes idlePulse { from { opacity: 0.78; } to { opacity: 1; } }
   @keyframes fastStartBlink { from { opacity: 0.1; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
-  .title-hint {
-    font-size: 0.75rem; color: #64748b; letter-spacing: 1.5px; margin-top: 8px;
+  .load-game-btn {
+    font-family: "Courier New", Courier, monospace;
+    background: #111827; border: 2px solid #38bdf8; color: #38bdf8;
+    font-size: 1.05rem; font-weight: 900; letter-spacing: 2px;
+    padding: 9px 24px; border-radius: 8px; cursor: pointer;
   }
+  .load-game-btn:active { transform: scale(0.96); }
+  .title-hint { font-size: 0.72rem; color: #64748b; letter-spacing: 1px; }
 
-  /* ==================== 主容器與頂部導覽 ==================== */
-  .container { width: 100%; max-width: 520px; padding: 8px 12px 24px; display: flex; flex-direction: column; gap: 8px; }
+  /* ==================== 2. 主容器與頂部導覽 ==================== */
+  .container { width: 100%; max-width: 680px; padding: 8px 10px 24px; display: flex; flex-direction: column; gap: 8px; }
   .top-nav {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
     background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 12px; padding: 7px 10px;
+    border-radius: 12px; padding: 6px 10px;
   }
-  .brand-mini {
-    font-weight: 900; font-size: 0.95rem;
-    background: linear-gradient(90deg, #38bdf8, #facc15, #f43f5e);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  .nav-left { display: flex; align-items: center; gap: 6px; }
+  .exit-title-btn {
+    background: #334155; border: 1px solid #64748b; color: #f8fafc;
+    font-size: 0.72rem; font-weight: 800; padding: 4px 8px; border-radius: 7px; cursor: pointer;
+  }
+  .slot-badge {
+    font-size: 0.72rem; font-weight: 800; color: #38bdf8;
+    background: rgba(56,189,248,0.14); padding: 3px 7px; border-radius: 6px; cursor: pointer;
   }
   .exp-pill {
     background: rgba(250, 204, 21, 0.16); border: 1px solid #facc15;
-    color: #facc15; font-size: 0.78rem; font-weight: 900;
-    padding: 3px 10px; border-radius: 99px;
+    color: #facc15; font-size: 0.76rem; font-weight: 900;
+    padding: 3px 9px; border-radius: 99px;
   }
 
-  /* 大廳分頁籤 */
-  .hub-tabs {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-  }
+  .hub-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .hub-tab {
     background: #1e293b; border: 2px solid #334155; color: #94a3b8;
     border-radius: 10px; padding: 8px 4px; font-weight: 800; font-size: 0.82rem;
@@ -96,7 +98,7 @@
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
   }
 
-  .screen { display: none; flex-direction: column; gap: 9px; }
+  .screen { display: none; flex-direction: column; gap: 8px; }
   .screen.active { display: flex; }
 
   .card {
@@ -132,213 +134,266 @@
 
   /* 玩家主力陀螺預覽橫幅 */
   .my-bey-banner {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
     background: linear-gradient(135deg, rgba(56,189,248,0.16), rgba(15,23,42,0.9));
-    border: 1.5px solid #38bdf8; border-radius: 12px; padding: 9px 12px;
+    border: 1.5px solid #38bdf8; border-radius: 12px; padding: 8px 10px;
   }
-  .my-bey-meta { flex: 1; }
-  .my-bey-title { font-size: 1rem; font-weight: 900; color: #facc15; }
-  .my-bey-parts { font-size: 0.72rem; color: #cbd5e1; margin-top: 3px; line-height: 1.4; }
+  .my-bey-meta { flex: 1; min-width: 0; }
+  .my-bey-title { font-size: 0.95rem; font-weight: 900; color: #facc15; }
+  .my-bey-parts { font-size: 0.7rem; color: #cbd5e1; margin-top: 2px; line-height: 1.35; }
 
-  .stadium-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* 6款戰鬥盤選擇網格 */
+  .stadium-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
   .stadium-btn {
     background: #1e293b; border: 2px solid #334155; color: #e2e8f0;
-    border-radius: 10px; padding: 8px; text-align: left; cursor: pointer;
+    border-radius: 10px; padding: 7px 8px; text-align: left; cursor: pointer;
   }
   .stadium-btn.active { border-color: #facc15; background: rgba(250, 204, 21, 0.14); }
-  .stadium-btn .st-name { font-weight: 800; font-size: 0.82rem; color: #facc15; }
-  .stadium-btn .st-desc { font-size: 0.68rem; color: #94a3b8; margin-top: 2px; }
+  .stadium-btn.locked { opacity: 0.48; cursor: not-allowed; }
+  .stadium-btn .st-name { font-weight: 800; font-size: 0.78rem; color: #facc15; }
+  .stadium-btn .st-desc { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; }
+
+  .terrain-pills {
+    display: flex; gap: 6px; margin-top: 7px;
+  }
+  .terrain-pill {
+    flex: 1; padding: 5px; border-radius: 7px; border: 1.5px solid #475569;
+    background: #0f172a; color: #cbd5e1; font-size: 0.72rem; font-weight: 800;
+    text-align: center; cursor: pointer;
+  }
+  .terrain-pill.active { border-color: #22c55e; background: rgba(34,197,94,0.2); color: #fff; }
 
   .primary-btn {
-    width: 100%; padding: 13px; border: none; border-radius: 12px;
+    width: 100%; padding: 12px; border: none; border-radius: 12px;
     background: linear-gradient(90deg, #0284c7, #38bdf8); color: #04111d;
-    font-size: 1rem; font-weight: 900; letter-spacing: 1px; cursor: pointer;
+    font-size: 0.98rem; font-weight: 900; letter-spacing: 1px; cursor: pointer;
     box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
   }
   .primary-btn:active { transform: scale(0.98); }
 
-  /* ==================== 工具箱 (自組 + 命名) ==================== */
-  .toolbox-top {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  /* ==================== 3. 工作坊（像素圖場景 + 3顆陀螺盒 + 改裝） ==================== */
+  .pixel-banner-canvas {
+    width: 100%; height: 112px; border-radius: 10px;
+    border: 2px solid #78350f; background: #291509;
+    image-rendering: pixelated; display: block; margin-bottom: 8px;
   }
-  .name-input-row {
-    display: flex; gap: 6px; margin-bottom: 8px;
+  .bey-box-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+  .bey-box-slot {
+    background: #0f172a; border: 2px solid #334155; border-radius: 10px;
+    padding: 6px 4px; text-align: center; cursor: pointer;
   }
+  .bey-box-slot.active { border-color: #facc15; background: rgba(250, 204, 21, 0.15); }
+  .bey-box-slot .slot-tag { font-size: 0.64rem; color: #38bdf8; font-weight: 800; }
+  .bey-box-slot .slot-name { font-size: 0.72rem; font-weight: 800; color: #f8fafc; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .toolbox-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .name-input-row { display: flex; gap: 6px; margin-bottom: 8px; }
   .name-input {
     flex: 1; background: #0f172a; border: 2px solid #38bdf8; color: #facc15;
-    border-radius: 9px; padding: 8px 10px; font-size: 0.92rem; font-weight: 800;
-    outline: none;
+    border-radius: 9px; padding: 7px 10px; font-size: 0.88rem; font-weight: 800; outline: none;
   }
   .save-name-btn {
     background: #22c55e; color: #04111d; border: none; border-radius: 9px;
-    padding: 0 14px; font-weight: 900; font-size: 0.84rem; cursor: pointer;
+    padding: 0 12px; font-weight: 900; font-size: 0.8rem; cursor: pointer;
   }
   .part-selector-group { margin-top: 6px; }
-  .part-label { font-size: 0.74rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px; }
-  .part-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .part-label { font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px; }
+  .part-chips { display: flex; flex-wrap: wrap; gap: 5px; }
   .part-chip {
     background: #1e293b; border: 1.5px solid #334155; color: #e2e8f0;
-    border-radius: 8px; padding: 6px 9px; font-size: 0.74rem; font-weight: 700; cursor: pointer;
+    border-radius: 8px; padding: 5px 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer;
   }
-  .part-chip.equipped {
-    border-color: #facc15; background: rgba(250, 204, 21, 0.18); color: #facc15;
-  }
+  .part-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.18); color: #facc15; }
   .color-dots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .color-dot {
-    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #475569; cursor: pointer;
-    position: relative;
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid #475569; cursor: pointer;
   }
   .color-dot.equipped { border: 3px solid #ffffff; box-shadow: 0 0 10px #facc15; transform: scale(1.1); }
 
-  /* ==================== 零件商店 ==================== */
-  .shop-list { display: flex; flex-direction: column; gap: 8px; }
+  /* ==================== 4. 零件商店（像素老闆櫥窗 + 分類頁籤） ==================== */
+  .shop-cat-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+  .shop-cat-btn {
+    background: #1e293b; border: 1.5px solid #334155; color: #94a3b8;
+    border-radius: 8px; padding: 6px 2px; font-size: 0.72rem; font-weight: 800; cursor: pointer;
+  }
+  .shop-cat-btn.active { border-color: #facc15; color: #facc15; background: rgba(250,204,21,0.14); }
+  .shop-list { display: flex; flex-direction: column; gap: 7px; max-height: 360px; overflow-y: auto; }
   .shop-item {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 9px 11px;
+    background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 8px 10px;
   }
   .shop-info { flex: 1; }
-  .shop-name { font-size: 0.84rem; font-weight: 800; color: #f8fafc; }
-  .shop-stat { font-size: 0.7rem; color: #38bdf8; margin-top: 2px; }
+  .shop-name { font-size: 0.82rem; font-weight: 800; color: #f8fafc; }
+  .shop-stat { font-size: 0.68rem; color: #38bdf8; margin-top: 2px; }
   .buy-btn {
     background: linear-gradient(135deg, #f59e0b, #facc15); color: #090d16;
-    border: none; border-radius: 8px; padding: 7px 11px; font-size: 0.76rem; font-weight: 900;
+    border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.74rem; font-weight: 900;
     cursor: pointer; white-space: nowrap;
   }
   .buy-btn.owned { background: #334155; color: #22c55e; cursor: default; }
   .buy-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  /* ==================== 8人錦標賽樹狀圖 ==================== */
-  .bracket-wrap {
-    overflow-x: auto; padding: 4px 0;
+  /* ==================== 5. 分級錦標賽系統 ==================== */
+  .tier-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+  .tier-card {
+    background: #1e293b; border: 2px solid #334155; border-radius: 10px; padding: 8px;
+    cursor: pointer; text-align: left;
   }
+  .tier-card.active { border-color: #facc15; background: rgba(250, 204, 21, 0.14); }
+  .tier-card .t-title { font-size: 0.84rem; font-weight: 900; color: #facc15; }
+  .tier-card .t-desc { font-size: 0.68rem; color: #cbd5e1; margin-top: 2px; }
+
+  .bracket-wrap { overflow-x: auto; padding: 4px 0; }
   .bracket-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center;
-    min-width: 340px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center; min-width: 330px;
   }
-  .bracket-col { display: flex; flex-direction: column; gap: 10px; }
-  .bracket-col-title { text-align: center; font-size: 0.72rem; font-weight: 800; color: #facc15; margin-bottom: 2px; }
+  .bracket-col { display: flex; flex-direction: column; gap: 8px; }
+  .bracket-col-title { text-align: center; font-size: 0.72rem; font-weight: 800; color: #facc15; }
   .match-box {
-    background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; padding: 5px 6px;
-    font-size: 0.68rem;
+    background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; padding: 5px 6px; font-size: 0.68rem;
   }
   .match-box.player-match { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.28); }
-  .m-slot {
-    padding: 3px 4px; border-radius: 4px; display: flex; justify-content: space-between;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .m-slot { padding: 2px 4px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .m-slot.is-me { color: #38bdf8; font-weight: 900; }
   .m-slot.winner { background: rgba(34, 197, 94, 0.18); color: #4ade80; font-weight: 800; }
   .m-slot.loser { color: #64748b; text-decoration: line-through; }
   .m-divider { height: 1px; background: #1e293b; margin: 2px 0; }
 
-  /* ==================== 對戰畫面 ==================== */
+  /* ==================== 6. 戰鬥主畫面（雙人側邊資訊欄） ==================== */
   .rotated-180 { transform: rotate(180deg); }
   .scoreboard {
     display: flex; align-items: center; justify-content: space-between;
-    background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 6px 10px;
+    background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 5px 8px;
   }
-  .score-side { display: flex; align-items: center; gap: 6px; }
-  .score-num { font-size: 1.45rem; font-weight: 900; padding: 0 5px; }
+  .score-side { display: flex; align-items: center; gap: 5px; }
+  .score-num { font-size: 1.35rem; font-weight: 900; padding: 0 4px; }
   .p1-color { color: #38bdf8; }
   .p2-color { color: #f43f5e; }
   .center-hud { text-align: center; }
   .timer-badge {
-    font-size: 0.82rem; font-weight: 800; color: #facc15;
-    background: rgba(250,204,21,0.12); padding: 2px 8px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 800; color: #facc15;
+    background: rgba(250,204,21,0.12); padding: 2px 7px; border-radius: 99px;
     border: 1px solid rgba(250,204,21,0.35);
   }
   .timer-badge.urgent { color: #fff; background: #dc2626; border-color: #f87171; animation: urgentBlink 0.6s infinite alternate; }
   @keyframes urgentBlink { from { transform: scale(1); } to { transform: scale(1.08); } }
   .reselect-btn {
-    margin-top: 3px; background: #334155; color: #f8fafc;
-    border: 1px solid #64748b; border-radius: 6px; padding: 2px 8px;
-    font-size: 0.7rem; font-weight: 700; cursor: pointer;
+    margin-top: 2px; background: #334155; color: #f8fafc;
+    border: 1px solid #64748b; border-radius: 6px; padding: 2px 7px;
+    font-size: 0.68rem; font-weight: 700; cursor: pointer;
   }
-  .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .bar-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 6px 8px; }
-  .bar-row { margin-top: 3px; }
-  .bar-label { display: flex; justify-content: space-between; color: #cbd5e1; font-size: 0.67rem; margin-bottom: 2px; font-weight: 700; }
-  .progress-bg { width: 100%; height: 7px; background: #1e293b; border-radius: 99px; overflow: hidden; }
+
+  /* 戰鬥盤與左右側邊資訊欄佈局 */
+  .battle-stage-layout {
+    display: flex; align-items: stretch; justify-content: center; gap: 6px;
+  }
+  .side-hud-col {
+    width: 82px; flex-shrink: 0;
+    background: #0f172a; border: 1px solid #1e293b; border-radius: 10px;
+    padding: 6px 5px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .side-hud-col.p1-side { border-color: rgba(56,189,248,0.45); }
+  .side-hud-col.p2-side { border-color: rgba(244,63,94,0.45); }
+  .side-tag { font-size: 0.72rem; font-weight: 900; text-align: center; }
+  .side-stat-block { margin: 4px 0; }
+  .side-stat-lbl { font-size: 0.6rem; color: #94a3b8; font-weight: 700; display: flex; justify-content: space-between; }
+  .side-stat-val { font-size: 0.72rem; font-weight: 900; color: #f8fafc; }
+  .progress-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 2px; }
   .progress-fill { height: 100%; border-radius: 99px; transition: width 0.08s linear; }
+  .team-dots { display: flex; justify-content: center; gap: 4px; margin-top: 4px; }
+  .t-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+  .t-dot.dead { background: #334155; }
+
   .arena-wrap {
-    position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 420px; margin: 0 auto;
-    border-radius: 18px; overflow: hidden; border: 2px solid #334155; background: #060a12;
+    position: relative; flex: 1; aspect-ratio: 1 / 1; max-width: 380px;
+    border-radius: 16px; overflow: hidden; border: 2px solid #334155; background: #060a12;
   }
   canvas#arenaCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
+
   .launch-panel {
     background: rgba(15, 23, 42, 0.96); border: 1px solid #38bdf8;
-    border-radius: 12px; padding: 8px 10px; text-align: center;
+    border-radius: 12px; padding: 7px 10px; text-align: center;
   }
   .launch-panel.p2-panel { border-color: #f43f5e; }
   .meter-track {
     position: relative; width: 100%; height: 18px; background: #1e293b;
-    border-radius: 99px; overflow: hidden; margin: 6px 0; border: 1px solid #475569;
+    border-radius: 99px; overflow: hidden; margin: 5px 0; border: 1px solid #475569;
   }
   .meter-sweet { position: absolute; left: 72%; width: 18%; height: 100%; background: linear-gradient(90deg, #22c55e, #facc15); }
   .meter-over { position: absolute; left: 90%; width: 10%; height: 100%; background: #ef4444; }
   .meter-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: rgba(255, 255, 255, 0.9); }
   .hold-launch-btn {
-    width: 100%; padding: 11px; border-radius: 10px; border: 2px solid #facc15;
+    width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #facc15;
     background: linear-gradient(135deg, #0284c7, #38bdf8); color: #04111d;
-    font-size: 0.92rem; font-weight: 900; cursor: pointer; touch-action: none;
+    font-size: 0.9rem; font-weight: 900; cursor: pointer; touch-action: none;
   }
   .hold-launch-btn.p2-btn { background: linear-gradient(135deg, #be123c, #f43f5e); color: #fff; }
   .hold-launch-btn.charging { background: linear-gradient(135deg, #d97706, #facc15); color: #04111d; transform: scale(0.98); }
   .hold-launch-btn.locked { background: #1e293b; border-color: #22c55e; color: #22c55e; cursor: default; }
   .combat-tip-bar {
     background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(250, 204, 21, 0.35);
-    border-radius: 10px; padding: 7px 10px; text-align: center;
-    font-size: 0.74rem; font-weight: 700; color: #facc15;
+    border-radius: 10px; padding: 6px 10px; text-align: center;
+    font-size: 0.72rem; font-weight: 700; color: #facc15;
   }
 
-  /* 精簡結算彈窗（只保留原因徽章與比數） */
+  /* ==================== 7. 彈窗系統（精簡結算 / 存檔 / 獎盃 / 開發者） ==================== */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85);
-    display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+    position: fixed; inset: 0; background: rgba(3, 7, 18, 0.88);
+    display: none; align-items: center; justify-content: center; z-index: 120; padding: 16px;
   }
   .modal-overlay.active { display: flex; }
   .modal-box {
     background: #111827; border: 2px solid #38bdf8; border-radius: 18px;
-    padding: 22px 18px; max-width: 360px; width: 100%; text-align: center;
+    padding: 18px 16px; max-width: 380px; width: 100%; text-align: center;
   }
   .reason-badge {
     display: inline-block; padding: 7px 16px; border-radius: 99px;
-    font-size: 0.95rem; font-weight: 900; margin-bottom: 12px;
+    font-size: 0.92rem; font-weight: 900; margin-bottom: 10px;
   }
-  .modal-score-line { font-size: 0.96rem; font-weight: 900; color: #f8fafc; margin-bottom: 16px; }
+  .modal-score-line { font-size: 0.94rem; font-weight: 900; color: #f8fafc; margin-bottom: 14px; }
   .modal-btns { display: flex; gap: 8px; }
-  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 900; font-size: 0.92rem; cursor: pointer; }
+  .modal-btns button { flex: 1; padding: 11px; border-radius: 10px; border: none; font-weight: 900; font-size: 0.9rem; cursor: pointer; }
+
+  .save-slot-card {
+    background: #1e293b; border: 1.5px solid #475569; border-radius: 10px;
+    padding: 9px 10px; margin-bottom: 8px; text-align: left;
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  }
+  .save-slot-card.active-slot { border-color: #facc15; }
 </style>
 </head>
 <body>
 
-<!-- ==================== 復古掌機進場封面 ==================== -->
+<!-- ==================== 1. 復古掌機歡迎封面 ==================== -->
 <div id="titleScreen">
   <div class="title-canvas-box">
-    <canvas id="titleLogoCanvas" width="420" height="220"></canvas>
+    <canvas id="titleLogoCanvas" width="420" height="210" onclick="handleLogoSecretTap()"></canvas>
     <div class="start-row" onclick="handlePressStart()">
       <canvas id="titleSpinBey" width="64" height="64"></canvas>
       <div id="startBtnText" class="retro-start-text">GAME START</div>
     </div>
-    <div class="title-hint">CLICK GAME START TO ENTER ARENA</div>
+    <button class="load-game-btn" onclick="openSaveModal()">💾 LOAD GAME (3 SLOTS)</button>
+    <div class="title-hint">TAP LOGO 5X FOR DEV MODE ・ 3 SAVE SLOTS READY</div>
   </div>
 </div>
 
-<!-- ==================== 主遊戲容器 ==================== -->
+<!-- ==================== 2. 主遊戲容器 ==================== -->
 <div class="container">
   <div class="top-nav">
-    <div class="brand-mini">BEYBLADES X 1・聖獸對決</div>
+    <div class="nav-left">
+      <button class="exit-title-btn" onclick="returnToTitleScreen()">🏠 歡迎畫面</button>
+      <span class="slot-badge" onclick="openSaveModal()">💾 存檔 <span id="currentSlotNum">1</span></span>
+    </div>
     <div class="exp-pill">⭐ EXP：<span id="expDisplay">0</span></div>
   </div>
 
-  <!-- 大廳分頁選單（非對戰時顯示） -->
   <div id="hubTabs" class="hub-tabs">
     <button id="tabArena" class="hub-tab active" onclick="switchHubTab('arena')">⚔️ 對戰大廳</button>
-    <button id="tabToolbox" class="hub-tab" onclick="switchHubTab('toolbox')">🧰 工具箱</button>
+    <button id="tabToolbox" class="hub-tab" onclick="switchHubTab('toolbox')">🧰 工作坊</button>
     <button id="tabShop" class="hub-tab" onclick="switchHubTab('shop')">🏪 零件商店</button>
   </div>
 
-  <!-- ==================== 1. 對戰大廳（三大模式） ==================== -->
+  <!-- ==================== 3. 對戰大廳 ==================== -->
   <div id="setupScreen" class="screen active">
     <div class="card">
       <div class="section-title">
@@ -348,8 +403,8 @@
       <div class="mode-cards">
         <div id="cardModeTourney" class="mode-card" onclick="setGameMode('tourney')">
           <div class="mc-icon">🏆</div>
-          <div class="mc-name">錦標賽</div>
-          <div class="mc-sub">8人單敗淘汰</div>
+          <div class="mc-name">分級錦標賽</div>
+          <div class="mc-sub">社區/城市/總統/國際</div>
         </div>
         <div id="cardModePractice" class="mode-card active" onclick="setGameMode('practice')">
           <div class="mc-icon">🤖</div>
@@ -368,73 +423,99 @@
       </label>
     </div>
 
-    <!-- 目前出戰主力陀螺摘要 -->
+    <!-- 目前陀螺盒主力預覽 -->
     <div class="my-bey-banner">
-      <canvas id="lobbyMyBeyCanvas" width="60" height="60"></canvas>
+      <canvas id="lobbyMyBeyCanvas" width="58" height="58"></canvas>
       <div class="my-bey-meta">
-        <div class="my-bey-title" id="lobbyMyBeyName">蒼龍爆刃・初號機</div>
-        <div class="my-bey-parts" id="lobbyMyBeyParts">上蓋：蒼龍戰輪 ｜ 輪盤：標準平衡盤 ｜ 中軸：標準軸</div>
+        <div class="my-bey-title" id="lobbyMyBeyName">蒼龍爆刃・改</div>
+        <div class="my-bey-parts" id="lobbyMyBeyParts">陀螺盒位置 1 ｜ 蒼龍戰輪・標準平衡盤</div>
       </div>
-      <button class="reselect-btn" style="padding:6px 10px;" onclick="switchHubTab('toolbox')">🧰 改裝</button>
+      <button class="reselect-btn" style="padding:6px 10px;" onclick="switchHubTab('toolbox')">🧰 工作坊</button>
     </div>
 
     <!-- 雙人對戰 2P 聖獸快速選擇 -->
     <div id="p2QuickPickCard" class="card" style="display:none;">
       <div class="section-title">
         <span>選擇 2P 對戰聖獸陀螺</span>
-        <span id="p2SelectedName" style="color:#f43f5e;">惡魔鎖鏈</span>
+        <span id="p2SelectedName" style="color:#f43f5e;">惡魔戰輪</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;" id="p2QuickGrid"></div>
     </div>
 
+    <!-- 6款戰鬥盤選擇（練習、雙人、錦標賽皆可自選） -->
     <div class="card">
-      <div class="section-title"><span>選擇決鬥城市戰鬥盤</span></div>
-      <div class="stadium-grid">
-        <button class="stadium-btn active" data-stadium="standard" onclick="selectStadium('standard')">
-          <div class="st-name">🏟️ 初階・標準競技盤</div>
-          <div class="st-desc">高彈性金屬防護環，適合走位與正面爆裂對決。</div>
-        </button>
-        <button class="stadium-btn" data-stadium="volcano" onclick="selectStadium('volcano')">
-          <div class="st-name">🌋 決鬥城市・火山 X 軌道盤</div>
-          <div class="st-desc">外圈高速 X 加速齒輪，中央熔岩區消耗耐力！</div>
-        </button>
+      <div class="section-title">
+        <span>選擇戰鬥盤（共 6 款）</span>
+        <span style="color:#94a3b8;font-size:0.7rem;">商店可解鎖更多盤型</span>
+      </div>
+      <div class="stadium-grid" id="lobbyStadiumGrid"></div>
+      <div id="lobbyTerrainPills" class="terrain-pills" style="display:none;">
+        <div class="terrain-pill active" data-t="grass" onclick="selectTerrain('grass')">🌿 疾風草地</div>
+        <div class="terrain-pill" data-t="water" onclick="selectTerrain('water')">💧 深水阻力</div>
+        <div class="terrain-pill" data-t="lava" onclick="selectTerrain('lava')">🌋 灼熱岩漿</div>
       </div>
     </div>
 
     <button id="btnStartAction" class="primary-btn" onclick="handleMainStart()">⚔️ 開始練習賽（累積 EXP）</button>
   </div>
 
-  <!-- ==================== 2. 8人錦標賽樹狀圖畫面 ==================== -->
+  <!-- ==================== 4. 分級錦標賽畫面 ==================== -->
   <div id="tourneyScreen" class="screen">
     <div class="card">
       <div class="section-title">
-        <span>🏆 決鬥城市・8 人單敗淘汰賽</span>
-        <span id="tourneyRoundBadge" style="color:#facc15;">8 強賽</span>
+        <span>🏆 分級錦標賽（失敗保留層級進度）</span>
+        <span id="tourneyTierBadge" style="color:#facc15;">社區賽 (1顆出戰)</span>
+      </div>
+      <div class="tier-grid" id="tierGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <span id="tourneyBracketTitle">8 人單敗淘汰賽程表</span>
+        <span id="tourneyRoundBadge" style="color:#38bdf8;">8 強賽</span>
       </div>
       <div class="bracket-wrap">
         <div class="bracket-grid" id="bracketGrid"></div>
       </div>
     </div>
-    <button id="btnTourneyNext" class="primary-btn" onclick="startTourneyMatch()">⚔️ 進行本輪 1v1 對決</button>
-    <button class="reselect-btn" style="padding:8px;width:100%;" onclick="switchHubTab('arena')">⬅️ 放棄錦標賽返回大廳</button>
+
+    <!-- 錦標賽每場可自選戰鬥盤 -->
+    <div class="card">
+      <div class="section-title"><span>本場指定戰鬥盤</span></div>
+      <div class="stadium-grid" id="tourneyStadiumGrid"></div>
+      <div id="tourneyTerrainPills" class="terrain-pills" style="display:none;">
+        <div class="terrain-pill active" data-t="grass" onclick="selectTerrain('grass')">🌿 疾風草地</div>
+        <div class="terrain-pill" data-t="water" onclick="selectTerrain('water')">💧 深水阻力</div>
+        <div class="terrain-pill" data-t="lava" onclick="selectTerrain('lava')">🌋 灼熱岩漿</div>
+      </div>
+    </div>
+
+    <button id="btnTourneyNext" class="primary-btn" onclick="startTourneyMatch()">⚔️ 進行本輪對決</button>
+    <div style="display:flex;gap:8px;">
+      <button class="reselect-btn" style="flex:1;padding:9px;" onclick="switchHubTab('toolbox')">🧰 去工作坊改裝</button>
+      <button class="reselect-btn" style="flex:1;padding:9px;" onclick="switchHubTab('arena')">⬅️ 返回大廳</button>
+    </div>
   </div>
 
-  <!-- ==================== 3. 工具箱（自組零件 + 自訂命名） ==================== -->
+  <!-- ==================== 5. 工作坊（像素圖場景 + 3顆陀螺盒 + 改裝命名） ==================== -->
   <div id="toolboxScreen" class="screen">
     <div class="card">
+      <canvas id="workshopSceneCanvas" class="pixel-banner-canvas" width="420" height="112"></canvas>
       <div class="section-title">
-        <span>🧰 專屬陀螺改裝工坊</span>
-        <span id="tbUltBadge" style="color:#f472b6;">滿星奧義：蒼龍破空斬</span>
+        <span>🧰 隨身陀螺盒（最多 3 顆出戰配置）</span>
+        <span id="tbUltBadge" style="color:#f472b6;">奧義：蒼龍破空斬</span>
       </div>
 
+      <div class="bey-box-grid" id="beyBoxGrid"></div>
+
       <div class="name-input-row">
-        <input id="customNameInput" class="name-input" type="text" maxlength="12" placeholder="輸入你的專屬陀螺名稱...">
+        <input id="customNameInput" class="name-input" type="text" maxlength="12" placeholder="輸入這顆陀螺的專屬名字...">
         <button class="save-name-btn" onclick="saveCustomName()">💾 命名</button>
       </div>
 
       <div class="toolbox-top">
         <canvas id="toolboxBeyCanvas" width="76" height="76"></canvas>
-        <canvas id="radarCanvas" width="230" height="175"></canvas>
+        <canvas id="radarCanvas" width="230" height="170"></canvas>
       </div>
 
       <div class="part-selector-group">
@@ -453,32 +534,40 @@
       </div>
 
       <div class="part-selector-group">
-        <div class="part-label">④ 專屬塗裝配色</div>
+        <div class="part-label">④ 塗裝配色（共 8 色）</div>
         <div class="color-dots" id="colorDots"></div>
+      </div>
+
+      <div class="part-selector-group">
+        <div class="part-label">⑤ 特效皮膚 Skin</div>
+        <div class="part-chips" id="skinChips"></div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 4. 零件商店（EXP 解鎖） ==================== -->
+  <!-- ==================== 6. 零件商店（像素老闆櫥窗 + 四大分類） ==================== -->
   <div id="shopScreen" class="screen">
     <div class="card">
-      <div class="section-title">
-        <span>🏪 聖獸零件改裝商店</span>
-        <span style="color:#facc15;">練習賽與錦標賽可賺取 EXP</span>
+      <canvas id="shopSceneCanvas" class="pixel-banner-canvas" width="420" height="112"></canvas>
+      <div class="shop-cat-tabs">
+        <button id="scat_parts" class="shop-cat-btn active" onclick="switchShopCat('parts')">⚙️ 零件</button>
+        <button id="scat_stadiums" class="shop-cat-btn" onclick="switchShopCat('stadiums')">🏟️ 戰鬥盤</button>
+        <button id="scat_skins" class="shop-cat-btn" onclick="switchShopCat('skins')">✨ 皮膚</button>
+        <button id="scat_colors" class="shop-cat-btn" onclick="switchShopCat('colors')">🎨 顏色</button>
       </div>
       <div class="shop-list" id="shopList"></div>
     </div>
   </div>
 
-  <!-- ==================== 5. 戰鬥主畫面 ==================== -->
+  <!-- ==================== 7. 戰鬥主畫面（雙人側邊資訊欄 + 錦標賽人群貼圖） ==================== -->
   <div id="battleScreen" class="screen">
     <div id="p2LaunchPanel" class="launch-panel p2-panel" style="display:none;">
-      <div style="font-size:0.78rem;font-weight:800;color:#f43f5e;">
+      <div style="font-size:0.76rem;font-weight:800;color:#f43f5e;">
         📍 2P 點擊上半盤面選位（<span id="p2DropLabel" style="color:#facc15;">中央</span>）
       </div>
       <div class="meter-track">
-        <div class="meter-sweet"></div>
-        <div class="meter-over"></div>
+        <div id="p2MeterSweet" class="meter-sweet"></div>
+        <div id="p2MeterOver" class="meter-over"></div>
         <div id="p2MeterFill" class="meter-fill"></div>
       </div>
       <button id="p2HoldLaunchBtn" class="hold-launch-btn p2-btn">
@@ -488,72 +577,83 @@
 
     <div class="scoreboard">
       <div class="score-side">
-        <canvas id="hudEmblemP1" width="38" height="38"></canvas>
+        <canvas id="hudEmblemP1" width="34" height="34"></canvas>
         <div>
-          <div id="hudNameP1" style="font-size:0.76rem;font-weight:800;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">蒼龍爆刃</div>
-          <div style="font-size:0.65rem;color:#38bdf8;">PLAYER 1</div>
+          <div id="hudNameP1" style="font-size:0.74rem;font-weight:800;max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">蒼龍爆刃</div>
+          <div class="team-dots" id="p1TeamDots"></div>
         </div>
         <div id="scoreP1" class="score-num p1-color">0</div>
       </div>
 
       <div class="center-hud">
         <div id="battleTimer" class="timer-badge">限時 60.0s</div>
-        <button id="btnReselect" class="reselect-btn" onclick="abortBattleToHub()">🚪 離開對戰</button>
+        <div style="display:flex;gap:4px;justify-content:center;margin-top:2px;">
+          <button class="reselect-btn" onclick="abortBattleToHub()">🚪 離開</button>
+          <button class="reselect-btn" onclick="returnToTitleScreen()">🏠 封面</button>
+        </div>
       </div>
 
       <div class="score-side">
         <div id="scoreP2" class="score-num p2-color">0</div>
         <div style="text-align:right;">
-          <div id="hudNameP2" style="font-size:0.76rem;font-weight:800;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">惡魔鎖鏈</div>
-          <div id="hudRoleP2" style="font-size:0.65rem;color:#f43f5e;">RIVAL COM</div>
+          <div id="hudNameP2" style="font-size:0.74rem;font-weight:800;max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">惡魔鎖鏈</div>
+          <div class="team-dots" id="p2TeamDots"></div>
         </div>
-        <canvas id="hudEmblemP2" width="38" height="38"></canvas>
+        <canvas id="hudEmblemP2" width="34" height="34"></canvas>
       </div>
     </div>
 
-    <div class="bars-grid">
-      <div class="bar-box" style="border-color: rgba(56,189,248,0.45);">
-        <div class="bar-row">
-          <div class="bar-label"><span>1P 轉速 RPM</span><span id="p1RpmText">3600</span></div>
+    <!-- 左右側邊資訊欄 + 中央戰鬥盤 -->
+    <div class="battle-stage-layout">
+      <!-- 1P 側邊狀態欄 -->
+      <div class="side-hud-col p1-side">
+        <div class="side-tag p1-color">1P 狀態</div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span>轉速</span></div>
+          <div class="side-stat-val" id="p1RpmText">3600</div>
           <div class="progress-bg"><div id="p1RpmBar" class="progress-fill" style="width:100%;background:#38bdf8;"></div></div>
         </div>
-        <div class="bar-row">
-          <div class="bar-label"><span>爆裂耐久</span><span id="p1BurstText">100%</span></div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span>耐久</span><span id="p1BurstText">100%</span></div>
           <div class="progress-bg"><div id="p1BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
         </div>
-        <div class="bar-row">
-          <div class="bar-label"><span style="color:#facc15;">✨ 滿星自動大絕</span><span id="p1MpText" style="color:#facc15;">0%</span></div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span style="color:#facc15;">魔力</span><span id="p1MpText" style="color:#facc15;">0%</span></div>
           <div class="progress-bg"><div id="p1MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#a855f7,#facc15);"></div></div>
         </div>
       </div>
 
-      <div class="bar-box" style="border-color: rgba(244,63,94,0.45);">
-        <div class="bar-row">
-          <div class="bar-label"><span id="p2RpmLabel">COM 轉速 RPM</span><span id="p2RpmText">3600</span></div>
+      <!-- 中央戰鬥盤 -->
+      <div class="arena-wrap">
+        <canvas id="arenaCanvas" width="440" height="440"></canvas>
+      </div>
+
+      <!-- 2P / COM 側邊狀態欄 -->
+      <div id="p2SideHud" class="side-hud-col p2-side">
+        <div class="side-tag p2-color" id="p2SideTag">COM</div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span>轉速</span></div>
+          <div class="side-stat-val" id="p2RpmText">3600</div>
           <div class="progress-bg"><div id="p2RpmBar" class="progress-fill" style="width:100%;background:#f43f5e;"></div></div>
         </div>
-        <div class="bar-row">
-          <div class="bar-label"><span>爆裂耐久</span><span id="p2BurstText">100%</span></div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span>耐久</span><span id="p2BurstText">100%</span></div>
           <div class="progress-bg"><div id="p2BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
         </div>
-        <div class="bar-row">
-          <div class="bar-label"><span style="color:#f472b6;">✨ 對手魔力</span><span id="p2MpText" style="color:#f472b6;">0%</span></div>
+        <div class="side-stat-block">
+          <div class="side-stat-lbl"><span style="color:#f472b6;">魔力</span><span id="p2MpText" style="color:#f472b6;">0%</span></div>
           <div class="progress-bg"><div id="p2MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#ec4899,#f43f5e);"></div></div>
         </div>
       </div>
     </div>
 
-    <div class="arena-wrap">
-      <canvas id="arenaCanvas" width="440" height="440"></canvas>
-    </div>
-
     <div id="p1LaunchPanel" class="launch-panel">
-      <div style="font-size:0.78rem;font-weight:800;color:#38bdf8;">
+      <div style="font-size:0.76rem;font-weight:800;color:#38bdf8;">
         📍 1P 點擊下半盤面選位（<span id="p1DropLabel" style="color:#facc15;">中央搶攻區</span>）
       </div>
       <div class="meter-track">
-        <div class="meter-sweet"></div>
-        <div class="meter-over"></div>
+        <div id="p1MeterSweet" class="meter-sweet"></div>
+        <div id="p1MeterOver" class="meter-over"></div>
         <div id="p1MeterFill" class="meter-fill"></div>
       </div>
       <button id="p1HoldLaunchBtn" class="hold-launch-btn">
@@ -567,7 +667,7 @@
   </div>
 </div>
 
-<!-- 精簡結算彈窗（只保留勝敗原因徽章與比數） -->
+<!-- ==================== 8. 精簡回合結算彈窗 ==================== -->
 <div id="resultModal" class="modal-overlay">
   <div class="modal-box">
     <div id="modalReasonBadge" class="reason-badge">💥 爆裂獲勝 BURST FINISH</div>
@@ -579,13 +679,51 @@
   </div>
 </div>
 
+<!-- ==================== 9. 錦標賽大獎盃慶祝彈窗 ==================== -->
+<div id="trophyModal" class="modal-overlay">
+  <div class="modal-box" style="border-color:#facc15;">
+    <canvas id="trophyCanvas" width="220" height="170" style="margin:0 auto;display:block;image-rendering:pixelated;"></canvas>
+    <div id="trophyTitle" style="font-size:1.25rem;font-weight:900;color:#facc15;margin:6px 0;">🏆 社區賽 總冠軍！</div>
+    <div id="trophySub" style="font-size:0.84rem;color:#cbd5e1;margin-bottom:14px;">獲得冠軍獎勵 +150 EXP！</div>
+    <button class="primary-btn" onclick="closeTrophyModal()">✨ 收下獎盃並繼續</button>
+  </div>
+</div>
+
+<!-- ==================== 10. 3 格存檔管理彈窗 (LOAD / SAVE) ==================== -->
+<div id="saveModal" class="modal-overlay">
+  <div class="modal-box">
+    <div style="font-size:1.05rem;font-weight:900;color:#38bdf8;margin-bottom:10px;">💾 選擇存檔槽位（共 3 格獨立存檔）</div>
+    <div id="saveSlotsList"></div>
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      <button class="reselect-btn" style="flex:1;padding:7px;" onclick="exportSaveCode()">📋 複製存檔碼</button>
+      <button class="reselect-btn" style="flex:1;padding:7px;" onclick="importSaveCode()">📥 匯入存檔碼</button>
+    </div>
+    <button class="primary-btn" style="margin-top:10px;padding:9px;" onclick="closeSaveModal()">確認關閉</button>
+  </div>
+</div>
+
+<!-- ==================== 11. 隱藏開發者模式彈窗 ==================== -->
+<div id="devModal" class="modal-overlay">
+  <div class="modal-box" style="border-color:#f43f5e;">
+    <div style="font-size:1.05rem;font-weight:900;color:#f43f5e;margin-bottom:10px;">🛠️ 開發者模式 (DEV CONSOLE)</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+      <button class="primary-btn" style="background:#facc15;" onclick="devAddExp()">⭐ 增加 +2000 EXP</button>
+      <button class="primary-btn" style="background:#22c55e;" onclick="devUnlockAll()">🔓 一鍵解鎖全部零件/盤型/皮膚/配色</button>
+      <button class="primary-btn" style="background:#a855f7;color:#fff;" onclick="devUnlockAllTiers()">🏆 解鎖全部錦標賽層級（直達國際賽）</button>
+    </div>
+    <button class="reselect-btn" style="width:100%;padding:9px;" onclick="document.getElementById('devModal').classList.remove('active')">關閉控制台</button>
+  </div>
+</div>
+
 <script>
-// ==================== 1. 零件庫、配色庫與 12 款 COM 隨機對手庫 ====================
+// ==================== 1. 遊戲資料庫（零件、8色、皮膚、6款戰鬥盤、分級賽制） ====================
 const LAYERS = {
-  dragon: { id: 'dragon', name: '蒼龍戰輪', ultName: '蒼龍破空斬', stats: { atk: 90, def: 46, agi: 80, ctl: 60, sta: 62, bst: 90 }, cost: 0 },
-  demon:  { id: 'demon',  name: '惡魔戰輪', ultName: '冥界鎖鏈陣', stats: { atk: 60, def: 92, agi: 48, ctl: 74, sta: 84, bst: 66 }, cost: 0 },
-  mage:   { id: 'mage',   name: '魔導戰輪', ultName: '星辰魔力虹吸', stats: { atk: 54, def: 72, agi: 66, ctl: 80, sta: 94, bst: 58 }, cost: 120 },
-  knight: { id: 'knight', name: '騎士戰輪', ultName: '聖光突刺連擊', stats: { atk: 76, def: 62, agi: 92, ctl: 92, sta: 72, bst: 80 }, cost: 150 }
+  dragon:   { id: 'dragon',   name: '蒼龍戰輪', ultName: '蒼龍破空斬', stats: { atk: 90, def: 46, agi: 80, ctl: 60, sta: 62, bst: 90 }, cost: 0 },
+  demon:    { id: 'demon',    name: '惡魔戰輪', ultName: '冥界鎖鏈陣', stats: { atk: 60, def: 92, agi: 48, ctl: 74, sta: 84, bst: 66 }, cost: 0 },
+  mage:     { id: 'mage',     name: '魔導戰輪', ultName: '星辰魔力虹吸', stats: { atk: 54, def: 72, agi: 66, ctl: 80, sta: 94, bst: 58 }, cost: 120 },
+  knight:   { id: 'knight',   name: '騎士戰輪', ultName: '聖光突刺連擊', stats: { atk: 76, def: 62, agi: 92, ctl: 92, sta: 72, bst: 80 }, cost: 150 },
+  phoenix:  { id: 'phoenix',  name: '烈焰鳳凰輪', ultName: '不死鳥焚天翼', stats: { atk: 86, def: 58, agi: 88, ctl: 75, sta: 78, bst: 88 }, cost: 220 },
+  valkyrie: { id: 'valkyrie', name: '女武神戰輪', ultName: '英靈殿聖劍裁決', stats: { atk: 94, def: 65, agi: 86, ctl: 84, sta: 70, bst: 95 }, cost: 300 }
 };
 
 const DISCS = {
@@ -602,54 +740,205 @@ const DRIVERS = {
   ctl_drv:   { id: 'ctl_drv',   name: '磁浮精密軸', mod: { atk: 4, def: 4, agi: 8, ctl: 14, sta: 6, bst: 4 }, cost: 180 }
 };
 
+// 8 種專屬塗裝配色（至少 6 種以上，部分需商店購買）
 const PALETTES = {
-  azure:   { id: 'azure',   name: '蒼穹烈焰', primary: '#0284c7', secondary: '#fde047', accent: '#7dd3fc', glow: 'rgba(56, 189, 248, 0.65)', cost: 0 },
-  crimson: { id: 'crimson', name: '深紅冥王', primary: '#be123c', secondary: '#facc15', accent: '#fda4af', glow: 'rgba(244, 63, 94, 0.65)', cost: 0 },
-  emerald: { id: 'emerald', name: '翡翠星辰', primary: '#059669', secondary: '#38bdf8', accent: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.65)', cost: 80 },
-  royal:   { id: 'royal',   name: '暗影紫金', primary: '#6d28d9', secondary: '#f43f5e', accent: '#c4b5fd', glow: 'rgba(139, 92, 246, 0.65)', cost: 100 },
-  gold:    { id: 'gold',    name: '黃金戰神', primary: '#d97706', secondary: '#ffffff', accent: '#fde047', glow: 'rgba(250, 204, 21, 0.7)', cost: 200 }
+  azure:    { id: 'azure',    name: '蒼穹烈焰', primary: '#0284c7', secondary: '#fde047', accent: '#7dd3fc', glow: 'rgba(56, 189, 248, 0.65)', cost: 0 },
+  crimson:  { id: 'crimson',  name: '深紅冥王', primary: '#be123c', secondary: '#facc15', accent: '#fda4af', glow: 'rgba(244, 63, 94, 0.65)', cost: 0 },
+  emerald:  { id: 'emerald',  name: '翡翠星辰', primary: '#059669', secondary: '#38bdf8', accent: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.65)', cost: 70 },
+  royal:    { id: 'royal',    name: '暗影紫金', primary: '#6d28d9', secondary: '#f43f5e', accent: '#c4b5fd', glow: 'rgba(139, 92, 246, 0.65)', cost: 90 },
+  gold:     { id: 'gold',     name: '黃金戰神', primary: '#d97706', secondary: '#ffffff', accent: '#fde047', glow: 'rgba(250, 204, 21, 0.7)', cost: 150 },
+  obsidian: { id: 'obsidian', name: '黑曜熔岩', primary: '#1e293b', secondary: '#f97316', accent: '#94a3b8', glow: 'rgba(249, 115, 22, 0.65)', cost: 120 },
+  sakura:   { id: 'sakura',   name: '櫻吹雪粉', primary: '#db2777', secondary: '#fef08a', accent: '#fbcfe8', glow: 'rgba(236, 72, 153, 0.65)', cost: 110 },
+  cyber:    { id: 'cyber',    name: '賽博霓虹', primary: '#0891b2', secondary: '#a3e635', accent: '#67e8f9', glow: 'rgba(163, 230, 53, 0.65)', cost: 180 }
 };
 
-// 12 款 COM 預設聖獸對手庫（搭配不同個性與零件組合）
-const COM_PRESETS = [
-  { name: '烈焰蒼龍', layer: 'dragon', disc: 'heavy_disc', driver: 'atk_drv', color: 'crimson' },
-  { name: '深海蒼龍', layer: 'dragon', disc: 'wing_disc',  driver: 'ctl_drv', color: 'azure' },
-  { name: '黃金蒼龍', layer: 'dragon', disc: 'crown_disc', driver: 'atk_drv', color: 'gold' },
-  { name: '暗影鎖鏈', layer: 'demon',  disc: 'heavy_disc', driver: 'std_drv', color: 'royal' },
-  { name: '赤紅惡魔', layer: 'demon',  disc: 'heavy_disc', driver: 'sta_drv', color: 'crimson' },
-  { name: '冥王巨盾', layer: 'demon',  disc: 'crown_disc', driver: 'sta_drv', color: 'gold' },
-  { name: '星辰魔導', layer: 'mage',   disc: 'std_disc',   driver: 'sta_drv', color: 'emerald' },
-  { name: '極光魔導', layer: 'mage',   disc: 'wing_disc',  driver: 'ctl_drv', color: 'azure' },
-  { name: '秘法賢者', layer: 'mage',   disc: 'crown_disc', driver: 'sta_drv', color: 'royal' },
-  { name: '聖殿騎士', layer: 'knight', disc: 'wing_disc',  driver: 'ctl_drv', color: 'gold' },
-  { name: '疾風槍兵', layer: 'knight', disc: 'wing_disc',  driver: 'atk_drv', color: 'emerald' },
-  { name: '黑曜騎士', layer: 'knight', disc: 'heavy_disc', driver: 'ctl_drv', color: 'royal' }
-];
+// 商店可購陀螺特效皮膚 (Skins)
+const SKINS = {
+  classic: { id: 'classic', name: '經典金屬塗裝', desc: '標準競技光澤外觀', cost: 0 },
+  flame:   { id: 'flame',   name: '烈焰燃燒外環', desc: '旋轉時附帶赤紅火焰氣場', cost: 140 },
+  lightning:{ id: 'lightning',name: '雷電電弧外環', desc: '旋轉時迸發高壓閃電光環', cost: 180 },
+  galaxy:  { id: 'galaxy',  name: '星河幻彩核心', desc: '核心散發星塵光暈特效', cost: 250 }
+};
+
+// 6 款特色戰鬥盤
+const STADIUMS = {
+  standard: { id: 'standard', name: '🏟️ 標準競技盤', desc: '高彈性金屬防護環，經典平衡對決', cost: 0 },
+  obstacle: { id: 'obstacle', name: '🚧 雙柱障礙盤', desc: '盤面設有兩根鋼鐵阻礙柱，撞擊反彈變線', cost: 120 },
+  hex_ufc:  { id: 'hex_ufc',  name: '🛑 六角 UFC 鐵籠盤', desc: '六邊形銳角邊界，角隅高動能反彈激戰', cost: 150 },
+  quad_ring:{ id: 'quad_ring',name: '🥊 四邊摔角擂台盤', desc: '四方形擂台與彈性邊繩，角落壓迫感十足', cost: 160 },
+  open_rim: { id: 'open_rim', name: '⚠️ 雙缺口開放盤', desc: '左右兩側無防護牆，極易將對手轟出場外', cost: 190 },
+  elemental:{ id: 'elemental',name: '🌍 元素特性戰鬥盤', desc: '可自由切換「草地 / 深水 / 岩漿」三種環境', cost: 220 }
+};
+
+// 錦標賽四大分級（社區1顆 / 城市2顆 / 總統3顆 / 國際3顆英文對手）
+const TOURNEY_TIERS = {
+  community: { id: 'community', name: '社區賽', beyCount: 1, missRate: 0.28, sweetLeft: 70, sweetWidth: 20, rewardExp: 140, isIntl: false },
+  city:      { id: 'city',      name: '城市盃', beyCount: 2, missRate: 0.16, sweetLeft: 73, sweetWidth: 15, rewardExp: 240, isIntl: false },
+  president: { id: 'president', name: '總統盃', beyCount: 3, missRate: 0.06, sweetLeft: 76, sweetWidth: 11, rewardExp: 380, isIntl: false },
+  intl:      { id: 'intl',      name: '國際賽', beyCount: 3, missRate: 0.00, sweetLeft: 78, sweetWidth: 8,  rewardExp: 600, isIntl: true }
+};
+
+const LOCAL_COM_NAMES = ['烈焰阿龍', '鐵壁小虎', '星辰小光', '疾風阿哲', '暗影小凱', '雷霆阿傑', '霸王小宇', '蒼穹阿豪', '赤紅小翔', '極光小軒', '黑曜阿誠', '黃金小翰'];
+const INTL_COM_NAMES  = ['BLAZE KAI', 'VIPER MAX', 'TITAN LEO', 'STORM REX', 'SHADOW ZED', 'NOVA ACE', 'DRAKE WOLF', 'APEX RYU', 'CYBER JAX', 'OMEGA ASH'];
 
 const ROUND_TIME_LIMIT = 60.0;
 
-// 玩家存檔進度（EXP、解鎖零件、自組配置與自訂命名）
-let playerData = {
-  exp: 0,
-  customName: '蒼龍爆刃・改',
-  layer: 'dragon',
-  disc: 'std_disc',
-  driver: 'std_drv',
-  color: 'azure',
-  unlockedLayers: ['dragon', 'demon'],
-  unlockedDiscs: ['std_disc'],
-  unlockedDrivers: ['std_drv'],
-  unlockedColors: ['azure', 'crimson']
-};
+// ==================== 2. 3 格存檔管理系統 (LocalStorage + 匯出/匯入存檔碼) ====================
+function createDefaultPlayerData(slotIdx = 1) {
+  return {
+    slotName: `玩家存檔 ${slotIdx}`,
+    exp: 150,
+    activeBoxIdx: 0,
+    beyBox: [
+      { name: '蒼龍爆刃・改', layer: 'dragon', disc: 'std_disc', driver: 'std_drv', color: 'azure', skin: 'classic' },
+      { name: '惡魔鎖鏈・守', layer: 'demon',  disc: 'std_disc', driver: 'std_drv', color: 'crimson', skin: 'classic' },
+      { name: '蒼龍二號機',   layer: 'dragon', disc: 'std_disc', driver: 'std_drv', color: 'emerald', skin: 'classic' }
+    ],
+    unlockedLayers: ['dragon', 'demon'],
+    unlockedDiscs: ['std_disc'],
+    unlockedDrivers: ['std_drv'],
+    unlockedColors: ['azure', 'crimson'],
+    unlockedSkins: ['classic'],
+    unlockedStadiums: ['standard'],
+    unlockedTiers: ['community'],
+    savedTourney: null // 失敗保留該層級賽程進度
+  };
+}
 
+let currentSlot = 1;
+let playerData = createDefaultPlayerData(1);
+
+function loadSlotData(slotIdx) {
+  currentSlot = slotIdx;
+  const raw = localStorage.getItem(`beyblades_x1_v7_slot_${slotIdx}`);
+  if (raw) {
+    try {
+      playerData = Object.assign(createDefaultPlayerData(slotIdx), JSON.parse(raw));
+    } catch (e) {
+      playerData = createDefaultPlayerData(slotIdx);
+    }
+  } else {
+    playerData = createDefaultPlayerData(slotIdx);
+  }
+  document.getElementById('currentSlotNum').textContent = slotIdx;
+  refreshLobbySummary();
+}
+
+function saveSlotData() {
+  localStorage.setItem(`beyblades_x1_v7_slot_${currentSlot}`, JSON.stringify(playerData));
+}
+
+function openSaveModal() {
+  const list = document.getElementById('saveSlotsList');
+  let html = '';
+  for (let i = 1; i <= 3; i++) {
+    const raw = localStorage.getItem(`beyblades_x1_v7_slot_${i}`);
+    let summary = '空白存檔（初始 150 EXP）';
+    if (raw) {
+      try {
+        const d = JSON.parse(raw);
+        summary = `${d.beyBox[d.activeBoxIdx]?.name || '自組陀螺'} ｜ EXP: ${d.exp} ｜ 解鎖層級: ${d.unlockedTiers?.length || 1}階`;
+      } catch (e) {}
+    }
+    html += `
+      <div class="save-slot-card ${currentSlot === i ? 'active-slot' : ''}">
+        <div>
+          <div style="font-size:0.84rem;font-weight:900;color:#facc15;">存檔槽 ${i} ${currentSlot === i ? '(目前使用中)' : ''}</div>
+          <div style="font-size:0.7rem;color:#cbd5e1;margin-top:2px;">${summary}</div>
+        </div>
+        <button class="buy-btn" onclick="selectAndLoadSlot(${i})">📂 讀取</button>
+      </div>
+    `;
+  }
+  list.innerHTML = html;
+  document.getElementById('saveModal').classList.add('active');
+}
+
+function selectAndLoadSlot(slotIdx) {
+  loadSlotData(slotIdx);
+  playTone(720, 'triangle', 0.14);
+  openSaveModal();
+}
+
+function closeSaveModal() {
+  document.getElementById('saveModal').classList.remove('active');
+}
+
+function exportSaveCode() {
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(playerData))));
+  if (navigator.clipboard) navigator.clipboard.writeText(code);
+  alert('已複製本存檔槽的專屬存檔碼！可貼到備忘錄或另一台裝置匯入。');
+}
+
+function importSaveCode() {
+  const code = prompt('請貼上先前複製的存檔碼：');
+  if (!code) return;
+  try {
+    const decoded = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+    playerData = Object.assign(createDefaultPlayerData(currentSlot), decoded);
+    saveSlotData();
+    loadSlotData(currentSlot);
+    openSaveModal();
+    playTone(880, 'triangle', 0.18);
+  } catch (e) {
+    alert('存檔碼格式不正確！');
+  }
+}
+
+// 隱藏開發者模式（連點歡迎封面 LOGO 5 下開啟）
+let logoTapCount = 0;
+let logoTapTimer = null;
+function handleLogoSecretTap() {
+  logoTapCount++;
+  clearTimeout(logoTapTimer);
+  logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 2000);
+  if (logoTapCount >= 5) {
+    logoTapCount = 0;
+    playTone(980, 'square', 0.15);
+    document.getElementById('devModal').classList.add('active');
+  }
+}
+function devAddExp() {
+  playerData.exp += 2000;
+  saveSlotData();
+  refreshLobbySummary();
+  playTone(880, 'triangle', 0.15);
+}
+function devUnlockAll() {
+  playerData.unlockedLayers = Object.keys(LAYERS);
+  playerData.unlockedDiscs = Object.keys(DISCS);
+  playerData.unlockedDrivers = Object.keys(DRIVERS);
+  playerData.unlockedColors = Object.keys(PALETTES);
+  playerData.unlockedSkins = Object.keys(SKINS);
+  playerData.unlockedStadiums = Object.keys(STADIUMS);
+  saveSlotData();
+  refreshLobbySummary();
+  playTone(980, 'triangle', 0.2);
+}
+function devUnlockAllTiers() {
+  playerData.unlockedTiers = ['community', 'city', 'president', 'intl'];
+  saveSlotData();
+  playTone(980, 'triangle', 0.2);
+}
+
+// ==================== 3. 全局遊戲狀態 ====================
 let state = {
-  gameMode: 'practice', // 'tourney' | 'practice' | '2p'
+  gameMode: 'practice',
   flip2P: true,
   p2PresetLayer: 'demon',
   stadium: 'standard',
+  terrain: 'grass',
+  shopCat: 'parts',
+  selectedTier: 'community',
+  p1Team: [],
+  p2Team: [],
+  p1TeamIdx: 0,
+  p2TeamIdx: 0,
   p1Spec: null,
   p2Spec: null,
-  comMissRate: 0.28, // COM 發射失誤率（練習場 28%，錦標賽隨輪次遞減至 0%）
+  comMissRate: 0.28,
+  sweetLeft: 72,
+  sweetWidth: 18,
   p1Score: 0, p2Score: 0,
   phase: 'setup',
   p1Drop: 'center', p2Drop: 'center',
@@ -657,60 +946,48 @@ let state = {
   p2Charging: false, p2ChargeVal: 0, p2ChargeDir: 1, p2Launched: false, p2Power: 1,
   timeLeft: ROUND_TIME_LIMIT, elapsed: 0, clashCooldown: 0, shake: 0, slowMo: 1,
   magicOrbs: [], particles: [], popups: [], p1: null, p2: null,
-  aiState: { mode: 'roam', timer: 0, goalX: 220, goalY: 220 },
-  tourney: null
+  aiState: { mode: 'roam', timer: 0, goalX: 220, goalY: 220 }
 };
 
-// ==================== 2. 復古掌機封面繪製與 START 閃爍 Fade Out ====================
+// ==================== 4. 復古像素美術繪製（封面 / 工作坊 / 商店 / 獎盃） ====================
 let titleSpinAngle = 0;
 function renderTitleArtwork() {
   const c = document.getElementById('titleLogoCanvas');
   if (!c) return;
   const ctx = c.getContext('2d');
-  ctx.clearRect(0, 0, 420, 220);
+  ctx.clearRect(0, 0, 420, 210);
 
-  // 背後紅色幾何三角翼
   ctx.fillStyle = '#991b1b';
   ctx.beginPath();
-  ctx.moveTo(24, 92); ctx.lineTo(270, 56); ctx.lineTo(230, 146); ctx.lineTo(68, 134);
+  ctx.moveTo(24, 88); ctx.lineTo(270, 52); ctx.lineTo(230, 142); ctx.lineTo(68, 130);
   ctx.closePath(); ctx.fill();
 
-  // 金色巨型 X
-  ctx.save();
-  const xGrad = ctx.createLinearGradient(230, 20, 340, 180);
+  const xGrad = ctx.createLinearGradient(230, 18, 340, 175);
   xGrad.addColorStop(0, '#fef08a'); xGrad.addColorStop(0.5, '#eab308'); xGrad.addColorStop(1, '#a16207');
-  ctx.fillStyle = xGrad;
-  ctx.strokeStyle = '#422006'; ctx.lineWidth = 4;
+  ctx.fillStyle = xGrad; ctx.strokeStyle = '#422006'; ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(235, 22); ctx.lineTo(272, 22); ctx.lineTo(295, 76); ctx.lineTo(324, 22);
-  ctx.lineTo(358, 22); ctx.lineTo(312, 102); ctx.lineTo(356, 186); ctx.lineTo(320, 186);
-  ctx.lineTo(293, 126); ctx.lineTo(262, 186); ctx.lineTo(226, 186); ctx.lineTo(274, 102);
+  ctx.moveTo(235, 20); ctx.lineTo(272, 20); ctx.lineTo(295, 74); ctx.lineTo(324, 20);
+  ctx.lineTo(358, 20); ctx.lineTo(312, 98); ctx.lineTo(356, 180); ctx.lineTo(320, 180);
+  ctx.lineTo(293, 122); ctx.lineTo(262, 180); ctx.lineTo(226, 180); ctx.lineTo(274, 98);
   ctx.closePath(); ctx.fill(); ctx.stroke();
-  ctx.restore();
 
-  // 藍銀金屬立體字 BEYBLADES
-  ctx.save();
   ctx.font = 'italic 900 38px Impact, "Arial Black", sans-serif';
   ctx.textAlign = 'left';
-  const bGrad = ctx.createLinearGradient(0, 62, 0, 118);
+  const bGrad = ctx.createLinearGradient(0, 60, 0, 114);
   bGrad.addColorStop(0, '#ffffff'); bGrad.addColorStop(0.45, '#cbd5e1');
   bGrad.addColorStop(0.52, '#1d4ed8'); bGrad.addColorStop(1, '#60a5fa');
   ctx.lineWidth = 6; ctx.strokeStyle = '#0f172a';
-  ctx.strokeText('BEYBLADES', 24, 112);
+  ctx.strokeText('BEYBLADES', 24, 108);
   ctx.fillStyle = bGrad;
-  ctx.fillText('BEYBLADES', 24, 112);
-  ctx.restore();
+  ctx.fillText('BEYBLADES', 24, 108);
 
-  // 右側赤金數字 1
-  ctx.save();
-  const oneGrad = ctx.createLinearGradient(355, 42, 395, 168);
+  const oneGrad = ctx.createLinearGradient(355, 40, 395, 162);
   oneGrad.addColorStop(0, '#ef4444'); oneGrad.addColorStop(0.5, '#f97316'); oneGrad.addColorStop(1, '#facc15');
   ctx.fillStyle = oneGrad; ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(354, 62); ctx.lineTo(382, 42); ctx.lineTo(402, 42);
-  ctx.lineTo(392, 166); ctx.lineTo(364, 166); ctx.lineTo(372, 74); ctx.lineTo(352, 82);
+  ctx.moveTo(354, 60); ctx.lineTo(382, 40); ctx.lineTo(402, 40);
+  ctx.lineTo(392, 162); ctx.lineTo(364, 162); ctx.lineTo(372, 72); ctx.lineTo(352, 80);
   ctx.closePath(); ctx.fill(); ctx.stroke();
-  ctx.restore();
 }
 
 function renderTitleSpinBey() {
@@ -718,22 +995,138 @@ function renderTitleSpinBey() {
   if (!c) return;
   const ctx = c.getContext('2d');
   ctx.clearRect(0, 0, 64, 64);
-  ctx.save();
-  ctx.translate(32, 32);
-  ctx.rotate(titleSpinAngle);
+  ctx.save(); ctx.translate(32, 32); ctx.rotate(titleSpinAngle);
   for (let i = 0; i < 4; i++) {
     ctx.rotate(Math.PI / 2);
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(-5, -28, 10, 10);
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(6, -22, 8, 8);
+    ctx.fillStyle = '#ef4444'; ctx.fillRect(-5, -28, 10, 10);
+    ctx.fillStyle = '#facc15'; ctx.fillRect(6, -22, 8, 8);
   }
   ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2);
-  ctx.fillStyle = '#1d4ed8'; ctx.fill();
-  ctx.lineWidth = 3; ctx.strokeStyle = '#93c5fd'; ctx.stroke();
-  ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI * 2);
-  ctx.fillStyle = '#facc15'; ctx.fill();
+  ctx.fillStyle = '#1d4ed8'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#93c5fd'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI * 2); ctx.fillStyle = '#facc15'; ctx.fill();
   ctx.restore();
+}
+
+// 輕量繪製工作坊復古像素工作台（參考圖一）
+function drawWorkshopPixelBanner() {
+  const c = document.getElementById('workshopSceneCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#451a03'; ctx.fillRect(0, 0, 420, 112);
+  // 木紋牆板
+  ctx.fillStyle = '#78350f';
+  for (let x = 0; x < 420; x += 28) ctx.fillRect(x, 0, 24, 68);
+  // 牆上工具架與螺絲起子/鉗子
+  ctx.fillStyle = '#1e293b'; ctx.fillRect(16, 10, 74, 48);
+  ctx.strokeStyle = '#d97706'; ctx.lineWidth = 2; ctx.strokeRect(16, 10, 74, 48);
+  ['#ef4444', '#38bdf8', '#facc15', '#94a3b8'].forEach((col, i) => {
+    ctx.strokeStyle = col; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(34 + i * 14, 24, 5, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(34 + i * 14, 44, 5, 0, Math.PI * 2); ctx.stroke();
+  });
+  // 中央螺絲起子與藍圖
+  ctx.fillStyle = '#22c55e'; ctx.fillRect(115, 16, 10, 22);
+  ctx.fillStyle = '#cbd5e1'; ctx.fillRect(118, 38, 4, 16);
+  ctx.fillStyle = '#ef4444'; ctx.fillRect(142, 16, 10, 22);
+  ctx.fillStyle = '#cbd5e1'; ctx.fillRect(145, 38, 4, 16);
+  // 木頭工作桌面
+  ctx.fillStyle = '#92400e'; ctx.fillRect(0, 66, 420, 46);
+  ctx.fillStyle = '#b45309'; ctx.fillRect(0, 66, 420, 6);
+  // 桌上設計藍圖與組裝中陀螺
+  ctx.fillStyle = '#e0f2fe'; ctx.fillRect(150, 76, 120, 28);
+  ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1; ctx.strokeRect(154, 79, 112, 22);
+  ctx.beginPath(); ctx.arc(195, 90, 11, 0, Math.PI * 2); ctx.fillStyle = '#38bdf8'; ctx.fill();
+  ctx.beginPath(); ctx.arc(235, 90, 11, 0, Math.PI * 2); ctx.fillStyle = '#facc15'; ctx.fill();
+  // 右側零件置物架
+  ctx.fillStyle = '#78350f'; ctx.fillRect(310, 34, 92, 66);
+  ctx.strokeStyle = '#f59e0b'; ctx.strokeRect(310, 34, 92, 66);
+  for (let row = 0; row < 3; row++) {
+    ctx.fillStyle = '#451a03'; ctx.fillRect(316, 42 + row * 18, 80, 12);
+    for (let col = 0; col < 4; col++) {
+      ctx.fillStyle = ['#ef4444', '#38bdf8', '#facc15', '#a855f7'][col];
+      ctx.fillRect(322 + col * 19, 44 + row * 18, 12, 8);
+    }
+  }
+}
+
+// 輕量繪製商店老闆與玻璃展示櫃（參考圖二）
+function drawShopPixelBanner() {
+  const c = document.getElementById('shopSceneCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#451a03'; ctx.fillRect(0, 0, 420, 112);
+  ctx.fillStyle = '#78350f';
+  for (let x = 0; x < 420; x += 30) ctx.fillRect(x, 0, 26, 112);
+
+  // 左右木頭貨架
+  [12, 328].forEach(sx => {
+    ctx.fillStyle = '#291509'; ctx.fillRect(sx, 12, 80, 90);
+    ctx.strokeStyle = '#92400e'; ctx.strokeRect(sx, 12, 80, 90);
+    for (let r = 0; r < 3; r++) {
+      ctx.fillStyle = '#b45309'; ctx.fillRect(sx + 4, 34 + r * 26, 72, 4);
+      ctx.fillStyle = ['#38bdf8', '#ef4444', '#facc15'][r];
+      ctx.beginPath(); ctx.arc(sx + 24, 24 + r * 26, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#22c55e'; ctx.fillRect(sx + 46, 17 + r * 26, 20, 14);
+    }
+  });
+
+  // 商店老闆（橘帽白髮藍吊帶褲）
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(184, 46, 52, 30); // 上衣
+  ctx.fillStyle = '#1e3a8a'; ctx.fillRect(190, 50, 40, 26); // 藍吊帶褲
+  ctx.fillStyle = '#fed7aa'; ctx.fillRect(194, 22, 32, 26); // 臉
+  ctx.fillStyle = '#94a3b8'; ctx.fillRect(184, 22, 12, 24); ctx.fillRect(224, 22, 12, 24); // 銀灰髮
+  ctx.fillStyle = '#ea580c'; ctx.fillRect(192, 10, 36, 14); // 橘帽
+  ctx.fillStyle = '#0f172a'; ctx.fillRect(200, 30, 4, 5); ctx.fillRect(216, 30, 4, 5); // 眼睛
+
+  // 玻璃發光展示櫃
+  ctx.fillStyle = 'rgba(186, 230, 253, 0.28)'; ctx.fillRect(110, 68, 200, 40);
+  ctx.strokeStyle = '#bae6fd'; ctx.lineWidth = 2; ctx.strokeRect(110, 68, 200, 40);
+  const showcaseColors = ['#ef4444', '#38bdf8', '#facc15', '#a855f7', '#22c55e', '#f97316'];
+  showcaseColors.forEach((col, idx) => {
+    ctx.beginPath(); ctx.arc(130 + idx * 32, 86, 9, 0, Math.PI * 2);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+  });
+}
+
+// 錦標賽大獎盃畫面繪製
+function drawGrandTrophy(tierName) {
+  const c = document.getElementById('trophyCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 220, 170);
+
+  // 放射光芒
+  ctx.save(); ctx.translate(110, 80);
+  for (let i = 0; i < 12; i++) {
+    ctx.rotate(Math.PI / 6);
+    ctx.fillStyle = 'rgba(250, 204, 21, 0.15)';
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-10, -85); ctx.lineTo(10, -85); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+
+  // 獎盃底座
+  ctx.fillStyle = '#78350f'; ctx.fillRect(70, 134, 80, 24);
+  ctx.fillStyle = '#facc15'; ctx.fillRect(78, 139, 64, 14);
+  ctx.fillStyle = '#090d16'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(tierName, 110, 149);
+
+  // 獎盃柱與杯身
+  ctx.fillStyle = '#eab308'; ctx.fillRect(102, 102, 16, 32);
+  const cupGrad = ctx.createLinearGradient(68, 24, 152, 104);
+  cupGrad.addColorStop(0, '#fef08a'); cupGrad.addColorStop(0.5, '#facc15'); cupGrad.addColorStop(1, '#ca8a04');
+  ctx.fillStyle = cupGrad;
+  ctx.beginPath();
+  ctx.moveTo(68, 28); ctx.lineTo(152, 28);
+  ctx.quadraticCurveTo(148, 96, 110, 104);
+  ctx.quadraticCurveTo(72, 96, 68, 28);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+
+  // 雙耳把手
+  ctx.strokeStyle = '#facc15'; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.arc(66, 56, 16, Math.PI * 0.5, Math.PI * 1.5); ctx.stroke();
+  ctx.beginPath(); ctx.arc(154, 56, 16, Math.PI * 1.5, Math.PI * 0.5); ctx.stroke();
 }
 
 let startTriggered = false;
@@ -751,11 +1144,25 @@ function handlePressStart() {
     document.getElementById('titleScreen').classList.add('fade-out');
     setTimeout(() => {
       document.getElementById('titleScreen').style.display = 'none';
-    }, 650);
-  }, 550);
+      startTriggered = false;
+      document.getElementById('startBtnText').classList.remove('fast-blink');
+    }, 550);
+  }, 450);
 }
 
-// ==================== 3. Web Audio 擬真發射拉繩 + 動態旋轉嗡鳴 + 金屬碰撞 ====================
+function returnToTitleScreen() {
+  stopSpinHum();
+  state.phase = 'setup';
+  state.p1 = null; state.p2 = null;
+  document.getElementById('resultModal').classList.remove('active');
+  document.getElementById('trophyModal').classList.remove('active');
+  const ts = document.getElementById('titleScreen');
+  ts.style.display = 'flex';
+  ts.classList.remove('fade-out');
+  playTone(440, 'sine', 0.1);
+}
+
+// ==================== 5. Web Audio API（滿魔力大絕瞬間音效 + 更清脆鋼鐵碰撞） ====================
 let audioCtx = null;
 let spinHumOsc1 = null, spinHumOsc2 = null, spinHumGain = null;
 
@@ -806,6 +1213,27 @@ function playLaunchRipcordSound() {
   } catch (e) {}
 }
 
+// 滿魔力大絕招「瞬間覺醒爆發音效」
+function playUltimateBurstSound() {
+  try {
+    ensureAudio();
+    const now = audioCtx.currentTime;
+    const notes = [587.33, 880, 1174.66, 1760];
+    notes.forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = idx % 2 === 0 ? 'sawtooth' : 'square';
+      const t = now + idx * 0.045;
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.25, t + 0.22);
+      gain.gain.setValueAtTime(0.16, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(t); osc.stop(t + 0.28);
+    });
+  } catch (e) {}
+}
+
 function startSpinHum() {
   try {
     stopSpinHum(); ensureAudio();
@@ -816,7 +1244,7 @@ function startSpinHum() {
     spinHumOsc1.type = 'sawtooth'; spinHumOsc2.type = 'triangle';
     spinHumOsc1.frequency.value = 165; spinHumOsc2.frequency.value = 332;
     filter.type = 'bandpass'; filter.frequency.value = 420; filter.Q.value = 2.4;
-    spinHumGain.gain.value = 0.06;
+    spinHumGain.gain.value = 0.055;
     spinHumOsc1.connect(filter); spinHumOsc2.connect(filter);
     filter.connect(spinHumGain); spinHumGain.connect(audioCtx.destination);
     spinHumOsc1.start(); spinHumOsc2.start();
@@ -830,7 +1258,7 @@ function updateSpinHum(maxRpm, maxCapRpm) {
     const targetFreq = 75 + ratio * 145;
     spinHumOsc1.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.08);
     spinHumOsc2.frequency.setTargetAtTime(targetFreq * 2.02, audioCtx.currentTime, 0.08);
-    spinHumGain.gain.setTargetAtTime(ratio > 0.02 ? (0.015 + ratio * 0.055) : 0, audioCtx.currentTime, 0.08);
+    spinHumGain.gain.setTargetAtTime(ratio > 0.02 ? (0.015 + ratio * 0.05) : 0, audioCtx.currentTime, 0.08);
   } catch (e) {}
 }
 
@@ -842,27 +1270,30 @@ function stopSpinHum() {
   } catch (e) {}
 }
 
+// 更清脆的高頻鋼鐵敲擊與金屬共鳴聲
 function playMetalClash(intensity = 1) {
   try {
     ensureAudio();
     const now = audioCtx.currentTime;
-    const vol = Math.min(0.28, 0.11 + intensity * 0.08);
-    [1180, 1745, 2630, 3490].forEach((f, idx) => {
+    const vol = Math.min(0.32, 0.14 + intensity * 0.09);
+    // 提高金屬泛音頻率，塑造更清脆的「鏘！」聲
+    const metalFreqs = [1860, 2790, 3920, 5240];
+    metalFreqs.forEach((f, idx) => {
       const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-      osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
-      const pitchShift = 0.94 + Math.random() * 0.12;
+      osc.type = idx === 0 ? 'triangle' : 'sine';
+      const pitchShift = 0.96 + Math.random() * 0.08;
       osc.frequency.setValueAtTime(f * pitchShift, now);
-      osc.frequency.exponentialRampToValueAtTime(f * pitchShift * 0.82, now + 0.18 + idx * 0.03);
-      gain.gain.setValueAtTime(vol / (idx + 1.1), now);
-      gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.19 + idx * 0.035);
+      osc.frequency.exponentialRampToValueAtTime(f * pitchShift * 0.92, now + 0.14 + idx * 0.025);
+      gain.gain.setValueAtTime(vol / (idx + 1.05), now);
+      gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.15 + idx * 0.03);
       osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(now); osc.stop(now + 0.25 + idx * 0.035);
+      osc.start(now); osc.stop(now + 0.22 + idx * 0.03);
     });
   } catch (e) {}
 }
 
-// ==================== 4. 動態組合陀螺規格與聖獸徽章繪製 ====================
-function buildBeySpec(name, layerId, discId, driverId, colorId) {
+// ==================== 6. 陀螺規格與聖獸徽章繪製 ====================
+function buildBeySpec(name, layerId, discId, driverId, colorId, skinId = 'classic') {
   const L = LAYERS[layerId] || LAYERS.dragon;
   const D = DISCS[discId] || DISCS.std_disc;
   const R = DRIVERS[driverId] || DRIVERS.std_drv;
@@ -871,7 +1302,7 @@ function buildBeySpec(name, layerId, discId, driverId, colorId) {
 
   return {
     name,
-    layerId, discId, driverId, colorId,
+    layerId, discId, driverId, colorId, skinId,
     layerName: L.name, discName: D.name, driverName: R.name,
     ultName: L.ultName,
     primary: C.primary, secondary: C.secondary, accent: C.accent, glow: C.glow,
@@ -886,39 +1317,35 @@ function buildBeySpec(name, layerId, discId, driverId, colorId) {
   };
 }
 
-function getPlayerSpec() {
-  return buildBeySpec(playerData.customName, playerData.layer, playerData.disc, playerData.driver, playerData.color);
+function getBoxBeySpec(boxIdx) {
+  const item = playerData.beyBox[boxIdx] || playerData.beyBox[0];
+  return buildBeySpec(item.name, item.layer, item.disc, item.driver, item.color, item.skin || 'classic');
 }
 
-function generateRandomComSpec(tier = 1) {
-  // 50% 抽主題聖獸角色，50% 動態零件隨機拼裝
-  if (Math.random() < 0.55) {
-    const p = COM_PRESETS[Math.floor(Math.random() * COM_PRESETS.length)];
-    return buildBeySpec(p.name, p.layer, p.disc, p.driver, p.color);
-  }
+function generateRandomComSpec(tierLevel = 1, isIntl = false) {
   const lKeys = Object.keys(LAYERS);
-  const dKeys = tier === 1 ? ['std_disc', 'heavy_disc'] : Object.keys(DISCS);
-  const rKeys = tier === 1 ? ['std_drv', 'atk_drv', 'sta_drv'] : Object.keys(DRIVERS);
+  const dKeys = tierLevel === 1 ? ['std_disc', 'heavy_disc'] : Object.keys(DISCS);
+  const rKeys = tierLevel === 1 ? ['std_drv', 'atk_drv', 'sta_drv'] : Object.keys(DRIVERS);
   const cKeys = Object.keys(PALETTES);
+  const sKeys = tierLevel >= 3 ? Object.keys(SKINS) : ['classic'];
 
   const lId = lKeys[Math.floor(Math.random() * lKeys.length)];
   const dId = dKeys[Math.floor(Math.random() * dKeys.length)];
   const rId = rKeys[Math.floor(Math.random() * rKeys.length)];
   const cId = cKeys[Math.floor(Math.random() * cKeys.length)];
-  const prefixes = ['疾風', '鋼鐵', '烈焰', '暗夜', '極光', '雷霆', '霸王', '蒼穹'];
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const shortName = LAYERS[lId].name.replace('戰輪', '');
-  return buildBeySpec(`${prefix}${shortName}`, lId, dId, rId, cId);
+  const sId = sKeys[Math.floor(Math.random() * sKeys.length)];
+
+  const namePool = isIntl ? INTL_COM_NAMES : LOCAL_COM_NAMES;
+  const baseName = namePool[Math.floor(Math.random() * namePool.length)];
+  return buildBeySpec(baseName, lId, dId, rId, cId, sId);
 }
 
-function drawSaintEmblem(canvas, specOrLayerId, overrideColorId = null) {
+function drawSaintEmblem(canvas, specOrLayerId) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2, r = w * 0.45;
   let layerId = typeof specOrLayerId === 'string' ? specOrLayerId : specOrLayerId.layerId;
-  let pal = typeof specOrLayerId === 'object'
-    ? specOrLayerId
-    : (PALETTES[overrideColorId] || (layerId === 'demon' ? PALETTES.royal : layerId === 'mage' ? PALETTES.emerald : layerId === 'knight' ? PALETTES.gold : PALETTES.azure));
+  let pal = typeof specOrLayerId === 'object' ? specOrLayerId : PALETTES.azure;
 
   ctx.clearRect(0, 0, w, h);
   ctx.save();
@@ -933,60 +1360,24 @@ function drawSaintEmblem(canvas, specOrLayerId, overrideColorId = null) {
   bgGrad.addColorStop(0, pal.primary); bgGrad.addColorStop(0.65, '#0f172a'); bgGrad.addColorStop(1, '#050811');
   ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.fillStyle = bgGrad; ctx.fill();
 
-  ctx.strokeStyle = pal.accent || '#fff'; ctx.lineWidth = Math.max(1, w * 0.025);
-  ctx.setLineDash([w * 0.06, w * 0.04]);
-  ctx.beginPath(); ctx.arc(cx, cy, innerR * 0.86, 0, Math.PI * 2); ctx.stroke();
-  ctx.setLineDash([]);
-
-  ctx.shadowColor = pal.secondary; ctx.shadowBlur = w * 0.14;
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-
-  if (layerId === 'dragon') {
-    const dGrad = ctx.createLinearGradient(cx - r * 0.5, cy - r * 0.5, cx + r * 0.5, cy + r * 0.5);
-    dGrad.addColorStop(0, '#ffffff'); dGrad.addColorStop(0.5, pal.accent || '#38bdf8'); dGrad.addColorStop(1, pal.secondary);
-    ctx.fillStyle = dGrad;
-    ctx.beginPath();
-    ctx.moveTo(cx - r * 0.55, cy - r * 0.52); ctx.lineTo(cx - r * 0.1, cy - r * 0.22);
-    ctx.lineTo(cx + r * 0.42, cy - r * 0.52); ctx.lineTo(cx + r * 0.25, cy + r * 0.05);
-    ctx.lineTo(cx + r * 0.52, cy + r * 0.35); ctx.lineTo(cx, cy + r * 0.55);
-    ctx.lineTo(cx - r * 0.52, cy + r * 0.35); ctx.lineTo(cx - r * 0.25, cy + r * 0.05);
-    ctx.closePath(); ctx.fill();
+  ctx.shadowColor = pal.secondary; ctx.shadowBlur = w * 0.12;
+  ctx.fillStyle = pal.secondary;
+  ctx.beginPath();
+  if (layerId === 'dragon' || layerId === 'phoenix') {
+    ctx.moveTo(cx - r * 0.52, cy - r * 0.5); ctx.lineTo(cx, cy - r * 0.18);
+    ctx.lineTo(cx + r * 0.52, cy - r * 0.5); ctx.lineTo(cx + r * 0.26, cy + r * 0.12);
+    ctx.lineTo(cx, cy + r * 0.55); ctx.lineTo(cx - r * 0.26, cy + r * 0.12);
   } else if (layerId === 'demon') {
-    ctx.strokeStyle = pal.secondary; ctx.lineWidth = Math.max(2, w * 0.06);
-    ctx.beginPath();
-    ctx.moveTo(cx - r * 0.52, cy - r * 0.52); ctx.lineTo(cx + r * 0.52, cy + r * 0.52);
-    ctx.moveTo(cx + r * 0.52, cy - r * 0.52); ctx.lineTo(cx - r * 0.52, cy + r * 0.52);
-    ctx.stroke();
-    ctx.fillStyle = pal.primary; ctx.strokeStyle = '#fde047'; ctx.lineWidth = Math.max(1.5, w * 0.035);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r * 0.52); ctx.lineTo(cx + r * 0.44, cy - r * 0.22);
-    ctx.lineTo(cx + r * 0.3, cy + r * 0.36); ctx.lineTo(cx, cy + r * 0.56);
-    ctx.lineTo(cx - r * 0.3, cy + r * 0.36); ctx.lineTo(cx - r * 0.44, cy - r * 0.22);
-    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.moveTo(cx, cy - r * 0.52); ctx.lineTo(cx + r * 0.45, cy - r * 0.15);
+    ctx.lineTo(cx + r * 0.28, cy + r * 0.45); ctx.lineTo(cx - r * 0.28, cy + r * 0.45);
+    ctx.lineTo(cx - r * 0.45, cy - r * 0.15);
   } else if (layerId === 'mage') {
-    ctx.strokeStyle = pal.accent || '#34d399'; ctx.lineWidth = Math.max(1.5, w * 0.04);
-    for (let t = 0; t < 2; t++) {
-      ctx.beginPath();
-      for (let i = 0; i < 3; i++) {
-        const a = (Math.PI * 2 / 3) * i + (t === 0 ? -Math.PI / 2 : Math.PI / 2);
-        const px = cx + Math.cos(a) * r * 0.62, py = cy + Math.sin(a) * r * 0.62;
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.closePath(); ctx.stroke();
-    }
-    ctx.fillStyle = pal.secondary; ctx.beginPath(); ctx.arc(cx, cy, r * 0.22, 0, Math.PI * 2); ctx.fill();
-  } else if (layerId === 'knight') {
-    const kGrad = ctx.createLinearGradient(cx, cy - r * 0.68, cx, cy + r * 0.65);
-    kGrad.addColorStop(0, '#ffffff'); kGrad.addColorStop(0.5, pal.secondary); kGrad.addColorStop(1, pal.primary);
-    ctx.fillStyle = kGrad;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r * 0.68); ctx.lineTo(cx + r * 0.16, cy - r * 0.12);
-    ctx.lineTo(cx + r * 0.56, cy - r * 0.28); ctx.lineTo(cx + r * 0.22, cy + r * 0.12);
-    ctx.lineTo(cx + r * 0.1, cy + r * 0.62); ctx.lineTo(cx - r * 0.1, cy + r * 0.62);
-    ctx.lineTo(cx - r * 0.22, cy + r * 0.12); ctx.lineTo(cx - r * 0.56, cy - r * 0.28);
-    ctx.lineTo(cx - r * 0.16, cy - r * 0.12);
-    ctx.closePath(); ctx.fill();
+    ctx.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
+  } else {
+    ctx.moveTo(cx, cy - r * 0.62); ctx.lineTo(cx + r * 0.22, cy);
+    ctx.lineTo(cx, cy + r * 0.62); ctx.lineTo(cx - r * 0.22, cy);
   }
+  ctx.closePath(); ctx.fill();
   ctx.restore();
 }
 
@@ -994,7 +1385,7 @@ function drawHexRadar(spec) {
   const canvas = document.getElementById('radarCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2, maxR = 52;
+  const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2, maxR = 48;
   const keys = ['atk', 'def', 'agi', 'ctl', 'sta', 'bst'];
   const labels = ['攻擊', '守備', '敏捷', '控制', '持久', '爆發'];
   ctx.clearRect(0, 0, w, h);
@@ -1024,20 +1415,19 @@ function drawHexRadar(spec) {
     const ratio = val / 100;
     const angle = (Math.PI / 3) * i - Math.PI / 2;
     const vx = cx + Math.cos(angle) * maxR * ratio, vy = cy + Math.sin(angle) * maxR * ratio;
+    ctx.beginPath(); ctx.arc(vx, vy, 3, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
 
-    ctx.beginPath(); ctx.arc(vx, vy, 3.2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-
-    const lx = cx + Math.cos(angle) * (maxR + 22);
-    const ly = cy + Math.sin(angle) * (maxR + 17);
+    const lx = cx + Math.cos(angle) * (maxR + 21);
+    const ly = cy + Math.sin(angle) * (maxR + 16);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = 'bold 10px sans-serif'; ctx.fillStyle = '#e2e8f0';
     ctx.fillText(labels[i], lx - 10, ly);
-    ctx.font = '900 11px sans-serif'; ctx.fillStyle = '#facc15';
+    ctx.font = '900 10px sans-serif'; ctx.fillStyle = '#facc15';
     ctx.fillText(val, lx + 13, ly);
   });
 }
 
-// ==================== 5. 大廳、工具箱、商店與 8 人錦標賽 UI 邏輯 ====================
+// ==================== 7. 大廳、工作坊（3顆陀螺盒）、商店與分級錦標賽 ====================
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1053,10 +1443,12 @@ function switchHubTab(tab) {
   } else if (tab === 'toolbox') {
     document.getElementById('tabToolbox').classList.add('active');
     showScreen('toolboxScreen');
+    drawWorkshopPixelBanner();
     renderToolbox();
   } else if (tab === 'shop') {
     document.getElementById('tabShop').classList.add('active');
     showScreen('shopScreen');
+    drawShopPixelBanner();
     renderShop();
   }
   playTone(540, 'sine', 0.07);
@@ -1064,10 +1456,11 @@ function switchHubTab(tab) {
 
 function refreshLobbySummary() {
   document.getElementById('expDisplay').textContent = playerData.exp;
-  const spec = getPlayerSpec();
+  const spec = getBoxBeySpec(playerData.activeBoxIdx);
   document.getElementById('lobbyMyBeyName').textContent = spec.name;
-  document.getElementById('lobbyMyBeyParts').textContent = `上蓋：${spec.layerName} ｜ 輪盤：${spec.discName} ｜ 中軸：${spec.driverName}`;
+  document.getElementById('lobbyMyBeyParts').textContent = `陀螺盒 #${playerData.activeBoxIdx + 1} ｜ ${spec.layerName}・${spec.discName}`;
   drawSaintEmblem(document.getElementById('lobbyMyBeyCanvas'), spec);
+  renderStadiumGrid('lobbyStadiumGrid', 'lobbyTerrainPills');
 }
 
 function setGameMode(mode) {
@@ -1082,8 +1475,8 @@ function setGameMode(mode) {
   const badge = document.getElementById('modeBadge');
   const btn = document.getElementById('btnStartAction');
   if (mode === 'tourney') {
-    badge.textContent = '8人單敗淘汰錦標賽';
-    btn.textContent = '🏆 進入 8 人錦標賽（生成對戰表）';
+    badge.textContent = '分級單敗淘汰錦標賽';
+    btn.textContent = '🏆 進入分級錦標賽大廳';
   } else if (mode === 'practice') {
     badge.textContent = '練習場 (1P vs COM)';
     btn.textContent = '⚔️ 開始練習賽（累積 EXP）';
@@ -1095,17 +1488,15 @@ function setGameMode(mode) {
   playTone(580, 'sine', 0.07);
 }
 
-function toggleFlip2P() {
-  state.flip2P = document.getElementById('chkFlip2P').checked;
-}
+function toggleFlip2P() { state.flip2P = document.getElementById('chkFlip2P').checked; }
 
 function renderP2QuickGrid() {
   const grid = document.getElementById('p2QuickGrid');
   grid.innerHTML = '';
-  Object.values(LAYERS).forEach(L => {
+  Object.values(LAYERS).slice(0, 4).forEach(L => {
     const div = document.createElement('div');
     div.style.cssText = `background:#1e293b;border:2px solid ${state.p2PresetLayer === L.id ? '#f43f5e' : '#334155'};border-radius:10px;padding:6px;text-align:center;cursor:pointer;`;
-    div.innerHTML = `<canvas id="p2q_${L.id}" width="42" height="42"></canvas><div style="font-size:0.7rem;font-weight:800;margin-top:2px;">${L.name.replace('戰輪','')}</div>`;
+    div.innerHTML = `<canvas id="p2q_${L.id}" width="38" height="38"></canvas><div style="font-size:0.68rem;font-weight:800;margin-top:2px;">${L.name.replace('戰輪','')}</div>`;
     div.onclick = () => {
       state.p2PresetLayer = L.id;
       document.getElementById('p2SelectedName').textContent = L.name;
@@ -1117,44 +1508,90 @@ function renderP2QuickGrid() {
   });
 }
 
-function selectStadium(type) {
-  state.stadium = type;
-  document.querySelectorAll('.stadium-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.stadium === type));
+function renderStadiumGrid(gridId, terrainWrapId) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = Object.values(STADIUMS).map(st => {
+    const unlocked = playerData.unlockedStadiums.includes(st.id);
+    const active = state.stadium === st.id;
+    return `
+      <button class="stadium-btn ${active ? 'active' : ''} ${unlocked ? '' : 'locked'}" onclick="selectStadium('${st.id}')">
+        <div class="st-name">${st.name} ${unlocked ? '' : '🔒'}</div>
+        <div class="st-desc">${st.desc}</div>
+      </button>
+    `;
+  }).join('');
+
+  const tWrap = document.getElementById(terrainWrapId);
+  if (tWrap) tWrap.style.display = state.stadium === 'elemental' ? 'flex' : 'none';
+}
+
+function selectStadium(id) {
+  if (!playerData.unlockedStadiums.includes(id)) {
+    alert('此戰鬥盤尚未解鎖！請先前往「🏪 零件商店」使用 EXP 購買。');
+    return;
+  }
+  state.stadium = id;
+  renderStadiumGrid('lobbyStadiumGrid', 'lobbyTerrainPills');
+  renderStadiumGrid('tourneyStadiumGrid', 'tourneyTerrainPills');
   playTone(600, 'sine', 0.07);
 }
 
-// ==================== 工具箱渲染與自訂命名 ====================
+function selectTerrain(t) {
+  state.terrain = t;
+  document.querySelectorAll('.terrain-pill').forEach(el => el.classList.toggle('active', el.dataset.t === t));
+  playTone(650, 'sine', 0.07);
+}
+
+// ==================== 工作坊（3顆陀螺盒 + 改裝 + 命名） ====================
 function renderToolbox() {
-  const spec = getPlayerSpec();
-  document.getElementById('customNameInput').value = playerData.customName;
-  document.getElementById('tbUltBadge').textContent = `滿星奧義：${spec.ultName}`;
+  const boxGrid = document.getElementById('beyBoxGrid');
+  boxGrid.innerHTML = playerData.beyBox.map((b, idx) => `
+    <div class="bey-box-slot ${playerData.activeBoxIdx === idx ? 'active' : ''}" onclick="selectBeyBoxSlot(${idx})">
+      <div class="slot-tag">陀螺盒 #${idx + 1} ${idx === 0 ? '(主將)' : ''}</div>
+      <div class="slot-name">${b.name}</div>
+    </div>
+  `).join('');
+
+  const cur = playerData.beyBox[playerData.activeBoxIdx];
+  const spec = getBoxBeySpec(playerData.activeBoxIdx);
+  document.getElementById('customNameInput').value = cur.name;
+  document.getElementById('tbUltBadge').textContent = `奧義：${spec.ultName}`;
   drawSaintEmblem(document.getElementById('toolboxBeyCanvas'), spec);
   drawHexRadar(spec);
 
-  const lWrap = document.getElementById('layerChips');
-  lWrap.innerHTML = playerData.unlockedLayers.map(id => `
-    <div class="part-chip ${playerData.layer === id ? 'equipped' : ''}" onclick="equipPart('layer','${id}')">${LAYERS[id].name}</div>
+  document.getElementById('layerChips').innerHTML = playerData.unlockedLayers.map(id => `
+    <div class="part-chip ${cur.layer === id ? 'equipped' : ''}" onclick="equipBoxPart('layer','${id}')">${LAYERS[id].name}</div>
   `).join('');
 
-  const dWrap = document.getElementById('discChips');
-  dWrap.innerHTML = playerData.unlockedDiscs.map(id => `
-    <div class="part-chip ${playerData.disc === id ? 'equipped' : ''}" onclick="equipPart('disc','${id}')">${DISCS[id].name}</div>
+  document.getElementById('discChips').innerHTML = playerData.unlockedDiscs.map(id => `
+    <div class="part-chip ${cur.disc === id ? 'equipped' : ''}" onclick="equipBoxPart('disc','${id}')">${DISCS[id].name}</div>
   `).join('');
 
-  const rWrap = document.getElementById('driverChips');
-  rWrap.innerHTML = playerData.unlockedDrivers.map(id => `
-    <div class="part-chip ${playerData.driver === id ? 'equipped' : ''}" onclick="equipPart('driver','${id}')">${DRIVERS[id].name}</div>
+  document.getElementById('driverChips').innerHTML = playerData.unlockedDrivers.map(id => `
+    <div class="part-chip ${cur.driver === id ? 'equipped' : ''}" onclick="equipBoxPart('driver','${id}')">${DRIVERS[id].name}</div>
   `).join('');
 
-  const cWrap = document.getElementById('colorDots');
-  cWrap.innerHTML = playerData.unlockedColors.map(id => {
+  document.getElementById('colorDots').innerHTML = playerData.unlockedColors.map(id => {
     const pal = PALETTES[id];
-    return `<div class="color-dot ${playerData.color === id ? 'equipped' : ''}" style="background:linear-gradient(135deg,${pal.primary},${pal.secondary});" title="${pal.name}" onclick="equipPart('color','${id}')"></div>`;
+    return `<div class="color-dot ${cur.color === id ? 'equipped' : ''}" style="background:linear-gradient(135deg,${pal.primary},${pal.secondary});" title="${pal.name}" onclick="equipBoxPart('color','${id}')"></div>`;
   }).join('');
+
+  document.getElementById('skinChips').innerHTML = playerData.unlockedSkins.map(id => `
+    <div class="part-chip ${(cur.skin || 'classic') === id ? 'equipped' : ''}" onclick="equipBoxPart('skin','${id}')">${SKINS[id].name}</div>
+  `).join('');
 }
 
-function equipPart(type, id) {
-  playerData[type] = id;
+function selectBeyBoxSlot(idx) {
+  playerData.activeBoxIdx = idx;
+  saveSlotData();
+  playTone(580, 'sine', 0.07);
+  renderToolbox();
+}
+
+function equipBoxPart(key, val) {
+  playerData.beyBox[playerData.activeBoxIdx][key] = val;
+  saveSlotData();
   playTone(640, 'triangle', 0.08);
   renderToolbox();
 }
@@ -1162,29 +1599,46 @@ function equipPart(type, id) {
 function saveCustomName() {
   const val = document.getElementById('customNameInput').value.trim();
   if (val) {
-    playerData.customName = val;
+    playerData.beyBox[playerData.activeBoxIdx].name = val;
+    saveSlotData();
     playTone(780, 'sine', 0.12);
     renderToolbox();
   }
 }
 
-// ==================== 零件商店渲染與解鎖 ====================
+// ==================== 零件商店 ====================
+function switchShopCat(cat) {
+  state.shopCat = cat;
+  document.querySelectorAll('.shop-cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`scat_${cat}`).classList.add('active');
+  renderShop();
+}
+
 function renderShop() {
   document.getElementById('expDisplay').textContent = playerData.exp;
   const list = document.getElementById('shopList');
-  const catalog = [];
+  let items = [];
 
-  Object.values(LAYERS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'layer', label: '上蓋', ...x, desc: `滿星奧義【${x.ultName}】` }); });
-  Object.values(DISCS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'disc', label: '固鎖輪盤', ...x, desc: `攻${x.mod.atk>=0?'+':''}${x.mod.atk} 守${x.mod.def>=0?'+':''}${x.mod.def} 爆${x.mod.bst>=0?'+':''}${x.mod.bst}` }); });
-  Object.values(DRIVERS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'driver', label: '中軸', ...x, desc: `敏${x.mod.agi>=0?'+':''}${x.mod.agi} 控${x.mod.ctl>=0?'+':''}${x.mod.ctl} 持${x.mod.sta>=0?'+':''}${x.mod.sta}` }); });
-  Object.values(PALETTES).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'color', label: '涂裝配色', ...x, desc: '解鎖專屬雙色金屬塗裝' }); });
+  if (state.shopCat === 'parts') {
+    Object.values(LAYERS).forEach(x => { if (x.cost > 0) items.push({ cat: 'layer', label: '上蓋', ...x, desc: `滿星奧義【${x.ultName}】` }); });
+    Object.values(DISCS).forEach(x => { if (x.cost > 0) items.push({ cat: 'disc', label: '輪盤', ...x, desc: `攻${x.mod.atk>=0?'+':''}${x.mod.atk} 守${x.mod.def>=0?'+':''}${x.mod.def}` }); });
+    Object.values(DRIVERS).forEach(x => { if (x.cost > 0) items.push({ cat: 'driver', label: '中軸', ...x, desc: `敏${x.mod.agi>=0?'+':''}${x.mod.agi} 持${x.mod.sta>=0?'+':''}${x.mod.sta}` }); });
+  } else if (state.shopCat === 'stadiums') {
+    Object.values(STADIUMS).forEach(x => { if (x.cost > 0) items.push({ cat: 'stadium', label: '戰鬥盤', ...x }); });
+  } else if (state.shopCat === 'skins') {
+    Object.values(SKINS).forEach(x => { if (x.cost > 0) items.push({ cat: 'skin', label: '皮膚', ...x }); });
+  } else if (state.shopCat === 'colors') {
+    Object.values(PALETTES).forEach(x => { if (x.cost > 0) items.push({ cat: 'color', label: '配色', ...x, desc: '解鎖專屬雙色金屬塗裝' }); });
+  }
 
-  list.innerHTML = catalog.map(item => {
-    const ownedList = item.cat === 'layer' ? playerData.unlockedLayers
+  list.innerHTML = items.map(item => {
+    const ownedArr = item.cat === 'layer' ? playerData.unlockedLayers
       : item.cat === 'disc' ? playerData.unlockedDiscs
       : item.cat === 'driver' ? playerData.unlockedDrivers
+      : item.cat === 'stadium' ? playerData.unlockedStadiums
+      : item.cat === 'skin' ? playerData.unlockedSkins
       : playerData.unlockedColors;
-    const isOwned = ownedList.includes(item.id);
+    const isOwned = ownedArr.includes(item.id);
     const canAfford = playerData.exp >= item.cost;
 
     return `
@@ -1208,87 +1662,132 @@ function buyShopItem(cat, id, cost) {
   if (cat === 'layer') playerData.unlockedLayers.push(id);
   else if (cat === 'disc') playerData.unlockedDiscs.push(id);
   else if (cat === 'driver') playerData.unlockedDrivers.push(id);
+  else if (cat === 'stadium') playerData.unlockedStadiums.push(id);
+  else if (cat === 'skin') playerData.unlockedSkins.push(id);
   else if (cat === 'color') playerData.unlockedColors.push(id);
 
+  saveSlotData();
   playTone(880, 'triangle', 0.18);
   renderShop();
 }
 
-// ==================== 8 人單敗淘汰錦標賽系統 ====================
-function initTournament() {
-  const playerSpec = getPlayerSpec();
-  const participants = [{ isPlayer: true, spec: playerSpec }];
-  const usedNames = new Set([playerSpec.name]);
+// ==================== 8. 分級錦標賽（失敗保留層級進度 + 獎盃慶祝） ====================
+function openTourneyHub() {
+  document.getElementById('hubTabs').style.display = 'none';
+  showScreen('tourneyScreen');
+  renderTierCards();
+  renderStadiumGrid('tourneyStadiumGrid', 'tourneyTerrainPills');
+
+  if (!playerData.savedTourney || playerData.savedTourney.tierId !== state.selectedTier) {
+    generateBracketForTier(state.selectedTier);
+  }
+  renderBracket();
+}
+
+function renderTierCards() {
+  const grid = document.getElementById('tierGrid');
+  grid.innerHTML = Object.values(TOURNEY_TIERS).map(t => {
+    const unlocked = playerData.unlockedTiers.includes(t.id);
+    const active = state.selectedTier === t.id;
+    return `
+      <div class="tier-card ${active ? 'active' : ''}" style="${unlocked ? '' : 'opacity:0.45;'}" onclick="selectTourneyTier('${t.id}')">
+        <div class="t-title">${t.name} ${unlocked ? '' : '🔒'}</div>
+        <div class="t-desc">${t.beyCount} 顆陀螺接力 ｜ 獎勵 ${t.rewardExp} EXP</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectTourneyTier(tierId) {
+  if (!playerData.unlockedTiers.includes(tierId)) {
+    alert('請先贏得前一級錦標賽總冠軍以解鎖此層級！');
+    return;
+  }
+  state.selectedTier = tierId;
+  if (!playerData.savedTourney || playerData.savedTourney.tierId !== tierId) {
+    generateBracketForTier(tierId);
+  }
+  renderTierCards();
+  renderBracket();
+  playTone(620, 'sine', 0.08);
+}
+
+function generateBracketForTier(tierId) {
+  const tier = TOURNEY_TIERS[tierId];
+  const tierIdx = Object.keys(TOURNEY_TIERS).indexOf(tierId) + 1;
+  const myTeam = [];
+  for (let i = 0; i < tier.beyCount; i++) {
+    myTeam.push(getBoxBeySpec((playerData.activeBoxIdx + i) % 3));
+  }
+
+  const participants = [{ isPlayer: true, name: myTeam[0].name, team: myTeam }];
+  const usedNames = new Set([myTeam[0].name]);
 
   while (participants.length < 8) {
-    const tier = participants.length >= 6 ? 2 : 1;
-    const cSpec = generateRandomComSpec(tier);
-    if (!usedNames.has(cSpec.name)) {
-      usedNames.add(cSpec.name);
-      participants.push({ isPlayer: false, spec: cSpec });
+    const oppTeam = [];
+    for (let k = 0; k < tier.beyCount; k++) {
+      oppTeam.push(generateRandomComSpec(tierIdx, tier.isIntl));
+    }
+    const leadName = oppTeam[0].name;
+    if (!usedNames.has(leadName)) {
+      usedNames.add(leadName);
+      participants.push({ isPlayer: false, name: leadName, team: oppTeam });
     }
   }
 
-  // 打亂順序，將玩家放在第 0 號籤位
   const others = participants.slice(1).sort(() => Math.random() - 0.5);
   const seeded = [participants[0], ...others];
 
-  state.tourney = {
-    round: 1, // 1=8強, 2=4強, 3=決賽, 4=結束
+  playerData.savedTourney = {
+    tierId,
+    round: 1,
     qf: [
       { a: seeded[0], b: seeded[1], winner: null },
       { a: seeded[2], b: seeded[3], winner: null },
       { a: seeded[4], b: seeded[5], winner: null },
       { a: seeded[6], b: seeded[7], winner: null }
     ],
-    sf: [
-      { a: null, b: null, winner: null },
-      { a: null, b: null, winner: null }
-    ],
+    sf: [{ a: null, b: null, winner: null }, { a: null, b: null, winner: null }],
     final: { a: null, b: null, winner: null }
   };
-
-  document.getElementById('hubTabs').style.display = 'none';
-  showScreen('tourneyScreen');
-  renderBracket();
+  saveSlotData();
 }
 
 function renderBracket() {
-  const t = state.tourney;
+  const t = playerData.savedTourney;
+  const tier = TOURNEY_TIERS[t.tierId];
+  document.getElementById('tourneyTierBadge').textContent = `${tier.name} (${tier.beyCount}顆出戰)`;
+
+  // 即時更新玩家陀螺盒最新配置
+  const updatedMyTeam = [];
+  for (let i = 0; i < tier.beyCount; i++) updatedMyTeam.push(getBoxBeySpec((playerData.activeBoxIdx + i) % 3));
+  t.qf[0].a.team = updatedMyTeam;
+  t.qf[0].a.name = updatedMyTeam[0].name;
+
   const grid = document.getElementById('bracketGrid');
   const renderSlot = (p, winner) => {
     if (!p) return `<div class="m-slot" style="color:#475569;">待定</div>`;
-    const isW = winner && winner.spec.name === p.spec.name;
-    const isL = winner && winner.spec.name !== p.spec.name;
+    const isW = winner && winner.name === p.name;
+    const isL = winner && winner.name !== p.name;
     return `<div class="m-slot ${p.isPlayer ? 'is-me' : ''} ${isW ? 'winner' : ''} ${isL ? 'loser' : ''}">
-      <span>${p.isPlayer ? '★' : ''}${p.spec.name}</span>
+      <span>${p.isPlayer ? '★' : ''}${p.name}</span>
     </div>`;
   };
 
   const qfHtml = t.qf.map((m, idx) => `
     <div class="match-box ${idx === 0 && t.round === 1 ? 'player-match' : ''}">
-      ${renderSlot(m.a, m.winner)}
-      <div class="m-divider"></div>
-      ${renderSlot(m.b, m.winner)}
-    </div>
-  `).join('');
+      ${renderSlot(m.a, m.winner)}<div class="m-divider"></div>${renderSlot(m.b, m.winner)}
+    </div>`).join('');
 
   const sfHtml = t.sf.map((m, idx) => `
     <div class="match-box ${idx === 0 && t.round === 2 ? 'player-match' : ''}" style="margin:18px 0;">
-      ${renderSlot(m.a, m.winner)}
-      <div class="m-divider"></div>
-      ${renderSlot(m.b, m.winner)}
-    </div>
-  `).join('');
+      ${renderSlot(m.a, m.winner)}<div class="m-divider"></div>${renderSlot(m.b, m.winner)}
+    </div>`).join('');
 
   const fHtml = `
-    <div class="match-box ${t.round === 3 ? 'player-match' : ''}" style="margin-top:52px;">
-      ${renderSlot(t.final.a, t.final.winner)}
-      <div class="m-divider"></div>
-      ${renderSlot(t.final.b, t.final.winner)}
-    </div>
-    ${t.final.winner ? `<div style="text-align:center;margin-top:10px;color:#facc15;font-weight:900;font-size:0.82rem;">👑 總冠軍<br>${t.final.winner.spec.name}</div>` : ''}
-  `;
+    <div class="match-box ${t.round === 3 ? 'player-match' : ''}" style="margin-top:50px;">
+      ${renderSlot(t.final.a, t.final.winner)}<div class="m-divider"></div>${renderSlot(t.final.b, t.final.winner)}
+    </div>`;
 
   grid.innerHTML = `
     <div class="bracket-col"><div class="bracket-col-title">8 強賽</div>${qfHtml}</div>
@@ -1299,114 +1798,166 @@ function renderBracket() {
   const badge = document.getElementById('tourneyRoundBadge');
   const nextBtn = document.getElementById('btnTourneyNext');
   if (t.round === 1) {
-    badge.textContent = '第 1 輪・8 強賽';
+    badge.textContent = '8 強賽';
     nextBtn.style.display = 'block';
-    nextBtn.textContent = `⚔️ 迎戰 8 強對手【${t.qf[0].b.spec.name}】`;
+    nextBtn.textContent = `⚔️ 迎戰 8 強對手【${t.qf[0].b.name}】`;
   } else if (t.round === 2) {
-    badge.textContent = '第 2 輪・4 強準決賽';
+    badge.textContent = '4 強準決賽';
     nextBtn.style.display = 'block';
-    nextBtn.textContent = `⚔️ 迎戰 4 強對手【${t.sf[0].b.spec.name}】`;
+    nextBtn.textContent = `⚔️ 迎戰 4 強對手【${t.sf[0].b.name}】`;
   } else if (t.round === 3) {
-    badge.textContent = '最終戰・總冠軍決賽';
+    badge.textContent = '總冠軍決賽';
     nextBtn.style.display = 'block';
-    nextBtn.textContent = `🔥 決戰總冠軍魔王【${t.final.b.spec.name}】`;
+    nextBtn.textContent = `🔥 決戰總冠軍【${t.final.b.name}】`;
   } else {
-    badge.textContent = '錦標賽結束';
-    nextBtn.style.display = 'none';
+    badge.textContent = '已奪冠';
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = '🔄 重新挑戰本層級賽程';
   }
 }
 
 function startTourneyMatch() {
-  const t = state.tourney;
-  let opp = null;
-  if (t.round === 1) {
-    opp = t.qf[0].b.spec;
-    state.comMissRate = 0.25; // 8強失誤率 25%
-  } else if (t.round === 2) {
-    opp = t.sf[0].b.spec;
-    state.comMissRate = 0.12; // 4強失誤率降至 12%
-  } else if (t.round === 3) {
-    opp = t.final.b.spec;
-    state.comMissRate = 0.0;  // 總決賽魔王 0% 失誤！
+  const t = playerData.savedTourney;
+  if (t.round >= 4) {
+    generateBracketForTier(t.tierId);
+    renderBracket();
+    return;
   }
-  launchBattleSession(getPlayerSpec(), opp);
+  const tier = TOURNEY_TIERS[t.tierId];
+  let oppParticipant = t.round === 1 ? t.qf[0].b : (t.round === 2 ? t.sf[0].b : t.final.b);
+
+  // 層級越高，發射甜蜜區越窄（增加緊張感），且越後面輪次甜蜜區略微偏移
+  state.comMissRate = Math.max(0, tier.missRate - (t.round - 1) * 0.04);
+  state.sweetWidth = Math.max(7, tier.sweetWidth - (t.round - 1) * 1.5);
+  state.sweetLeft = tier.sweetLeft + (t.round === 3 ? 3 : 0);
+
+  launchTeamBattleSession(t.qf[0].a.team, oppParticipant.team);
 }
 
-function advanceTourneyAfterMatch(playerWon) {
-  const t = state.tourney;
+function handleTourneyMatchFinished(playerWon) {
+  const t = playerData.savedTourney;
+  const tier = TOURNEY_TIERS[t.tierId];
+
   if (!playerWon) {
-    playerData.exp += 40;
-    alert(`止步於第 ${t.round} 輪！獲得參與獎 +40 EXP`);
-    switchHubTab('arena');
+    // 失敗保留該層級進度，重新生成該層級賽程並可去工作坊改裝再挑戰
+    playerData.exp += 35;
+    generateBracketForTier(t.tierId);
+    saveSlotData();
+    openTourneyHub();
     return;
   }
 
   if (t.round === 1) {
     t.qf[0].winner = t.qf[0].a;
-    for (let i = 1; i < 4; i++) {
-      t.qf[i].winner = Math.random() < 0.5 ? t.qf[i].a : t.qf[i].b;
-    }
+    for (let i = 1; i < 4; i++) t.qf[i].winner = Math.random() < 0.5 ? t.qf[i].a : t.qf[i].b;
     t.sf[0].a = t.qf[0].winner; t.sf[0].b = t.qf[1].winner;
     t.sf[1].a = t.qf[2].winner; t.sf[1].b = t.qf[3].winner;
     t.round = 2;
-    playerData.exp += 60;
+    playerData.exp += 50;
+    saveSlotData();
+    openTourneyHub();
   } else if (t.round === 2) {
     t.sf[0].winner = t.sf[0].a;
     t.sf[1].winner = Math.random() < 0.5 ? t.sf[1].a : t.sf[1].b;
-    t.final.a = t.sf[0].winner;
-    t.final.b = t.sf[1].winner;
+    t.final.a = t.sf[0].winner; t.final.b = t.sf[1].winner;
     t.round = 3;
-    playerData.exp += 90;
+    playerData.exp += 80;
+    saveSlotData();
+    openTourneyHub();
   } else if (t.round === 3) {
     t.final.winner = t.final.a;
     t.round = 4;
-    playerData.exp += 220;
-    playTone(1046, 'triangle', 0.4, 0.25);
-  }
+    playerData.exp += tier.rewardExp;
 
-  document.getElementById('expDisplay').textContent = playerData.exp;
-  document.getElementById('hubTabs').style.display = 'none';
-  showScreen('tourneyScreen');
-  renderBracket();
+    // 解鎖下一級錦標賽
+    const tierOrder = ['community', 'city', 'president', 'intl'];
+    const curIdx = tierOrder.indexOf(t.tierId);
+    if (curIdx >= 0 && curIdx < tierOrder.length - 1) {
+      const nextTierId = tierOrder[curIdx + 1];
+      if (!playerData.unlockedTiers.includes(nextTierId)) {
+        playerData.unlockedTiers.push(nextTierId);
+      }
+    }
+    saveSlotData();
+    openTourneyHub();
+
+    // 跳出大獎盃慶祝視窗
+    drawGrandTrophy(tier.name);
+    document.getElementById('trophyTitle').textContent = `🏆 ${tier.name} 總冠軍！`;
+    document.getElementById('trophySub').textContent = `獲得冠軍獎金 +${tier.rewardExp} EXP！`;
+    document.getElementById('trophyModal').classList.add('active');
+    playTone(1046, 'triangle', 0.45, 0.25);
+  }
 }
 
-// ==================== 6. 啟動對戰與戰鬥物理核心 ====================
+function closeTrophyModal() {
+  document.getElementById('trophyModal').classList.remove('active');
+}
+
+// ==================== 9. 啟動對戰與多陀螺接力賽制 ====================
 function handleMainStart() {
   if (state.gameMode === 'tourney') {
-    initTournament();
+    openTourneyHub();
   } else if (state.gameMode === 'practice') {
-    state.comMissRate = 0.30; // 練習場 COM 有 30% 發射失誤機率
-    launchBattleSession(getPlayerSpec(), generateRandomComSpec(1));
+    state.comMissRate = 0.30;
+    state.sweetLeft = 72; state.sweetWidth = 18;
+    launchTeamBattleSession([getBoxBeySpec(playerData.activeBoxIdx)], [generateRandomComSpec(1, false)]);
   } else {
+    state.sweetLeft = 72; state.sweetWidth = 18;
     const p2L = LAYERS[state.p2PresetLayer];
     const p2Color = p2L.id === 'demon' ? 'royal' : p2L.id === 'mage' ? 'emerald' : p2L.id === 'knight' ? 'gold' : 'crimson';
-    const p2Spec = buildBeySpec(p2L.name, p2L.id, 'std_disc', 'std_drv', p2Color);
-    launchBattleSession(getPlayerSpec(), p2Spec);
+    const p2Spec = buildBeySpec(p2L.name, p2L.id, 'std_disc', 'std_drv', p2Color, 'classic');
+    launchTeamBattleSession([getBoxBeySpec(playerData.activeBoxIdx)], [p2Spec]);
   }
 }
 
-function launchBattleSession(p1Spec, p2Spec) {
-  state.p1Spec = p1Spec;
-  state.p2Spec = p2Spec;
-  state.p1Score = 0; state.p2Score = 0;
+function launchTeamBattleSession(p1Team, p2Team) {
+  state.p1Team = p1Team;
+  state.p2Team = p2Team;
+  state.p1TeamIdx = 0;
+  state.p2TeamIdx = 0;
+  state.p1Score = 0;
+  state.p2Score = 0;
 
-  document.getElementById('scoreP1').textContent = '0';
-  document.getElementById('scoreP2').textContent = '0';
-  document.getElementById('hudNameP1').textContent = p1Spec.name;
-  document.getElementById('hudNameP2').textContent = p2Spec.name;
-  document.getElementById('hudRoleP2').textContent = state.gameMode === '2p' ? 'PLAYER 2' : 'RIVAL COM';
-  document.getElementById('p2RpmLabel').textContent = state.gameMode === '2p' ? '2P 轉速 RPM' : 'COM 轉速 RPM';
-
-  drawSaintEmblem(document.getElementById('hudEmblemP1'), p1Spec);
-  drawSaintEmblem(document.getElementById('hudEmblemP2'), p2Spec);
+  // 套用當前層級拉條甜蜜區寬度與位置
+  ['p1', 'p2'].forEach(p => {
+    const sw = document.getElementById(`${p}MeterSweet`);
+    const ov = document.getElementById(`${p}MeterOver`);
+    if (sw && ov) {
+      sw.style.left = `${state.sweetLeft}%`;
+      sw.style.width = `${state.sweetWidth}%`;
+      const overStart = Math.min(96, state.sweetLeft + state.sweetWidth);
+      ov.style.left = `${overStart}%`;
+      ov.style.width = `${100 - overStart}%`;
+    }
+  });
 
   const shouldFlip = state.gameMode === '2p' && state.flip2P;
   document.getElementById('p2LaunchPanel').classList.toggle('rotated-180', shouldFlip);
+  document.getElementById('p2SideTag').textContent = state.gameMode === '2p' ? '2P 狀態' : 'COM 狀態';
 
   document.getElementById('hubTabs').style.display = 'none';
   showScreen('battleScreen');
+  syncActiveTeamMembers();
   prepareLaunchPhase();
   playTone(660, 'triangle', 0.16);
+}
+
+function syncActiveTeamMembers() {
+  state.p1Spec = state.p1Team[state.p1TeamIdx];
+  state.p2Spec = state.p2Team[state.p2TeamIdx];
+
+  document.getElementById('scoreP1').textContent = state.p1Score;
+  document.getElementById('scoreP2').textContent = state.p2Score;
+  document.getElementById('hudNameP1').textContent = state.p1Spec.name;
+  document.getElementById('hudNameP2').textContent = state.p2Spec.name;
+
+  drawSaintEmblem(document.getElementById('hudEmblemP1'), state.p1Spec);
+  drawSaintEmblem(document.getElementById('hudEmblemP2'), state.p2Spec);
+
+  // 更新多陀螺出戰存活圓點
+  document.getElementById('p1TeamDots').innerHTML = state.p1Team.map((_, i) => `<span class="t-dot ${i < state.p1TeamIdx ? 'dead' : ''}"></span>`).join('');
+  document.getElementById('p2TeamDots').innerHTML = state.p2Team.map((_, i) => `<span class="t-dot ${i < state.p2TeamIdx ? 'dead' : ''}"></span>`).join('');
 }
 
 function abortBattleToHub() {
@@ -1414,7 +1965,8 @@ function abortBattleToHub() {
   state.phase = 'setup';
   state.p1 = null; state.p2 = null;
   document.getElementById('resultModal').classList.remove('active');
-  switchHubTab('arena');
+  if (state.gameMode === 'tourney') openTourneyHub();
+  else switchHubTab('arena');
 }
 
 function prepareLaunchPhase() {
@@ -1451,9 +2003,8 @@ function prepareLaunchPhase() {
     const zones = ['left', 'center', 'right'];
     state.p2Drop = zones[Math.floor(Math.random() * 3)];
 
-    // COM 依照當前模式失誤率產生發射力道（會出現過早軟弱發射或過載失誤）
     if (Math.random() < state.comMissRate) {
-      state.p2Power = 0.72 + Math.random() * 0.12; // 發射失誤（力道偏弱）
+      state.p2Power = 0.72 + Math.random() * 0.12;
       state.comLaunchStatus = '⚠️ COM 發射失誤！';
     } else {
       state.p2Power = state.comMissRate === 0 ? 1.15 : (0.92 + Math.random() * 0.16);
@@ -1464,9 +2015,10 @@ function prepareLaunchPhase() {
 }
 
 function evaluateChargePower(val) {
-  if (val >= 72 && val <= 90) return { power: 1.18, label: '🌟 PERFECT 完美爆發！' };
-  if (val > 90) return { power: 0.85, label: '⚠️ OVER 過載失穩！' };
-  return { power: 0.84 + (val / 72) * 0.25, label: '⚡ 順利發射！' };
+  const sEnd = state.sweetLeft + state.sweetWidth;
+  if (val >= state.sweetLeft && val <= sEnd) return { power: 1.18, label: '🌟 PERFECT 完美爆發！' };
+  if (val > sEnd) return { power: 0.85, label: '⚠️ OVER 過載失穩！' };
+  return { power: 0.84 + (val / state.sweetLeft) * 0.25, label: '⚡ 順利發射！' };
 }
 
 function finalizePlayerLaunch(isP1) {
@@ -1489,9 +2041,7 @@ function finalizePlayerLaunch(isP1) {
     playLaunchRipcordSound();
   }
 
-  if (state.p1Launched && state.p2Launched) {
-    beginBattleRound();
-  }
+  if (state.p1Launched && state.p2Launched) beginBattleRound();
 }
 
 function createBeyEntity(spec, isP1, dropZone, launchPower) {
@@ -1499,13 +2049,13 @@ function createBeyEntity(spec, isP1, dropZone, launchPower) {
   let x = cx, y = isP1 ? cy + 75 : cy - 75;
 
   if (isP1) {
-    if (dropZone === 'left') { x = cx - 88; y = cy + 56; }
-    else if (dropZone === 'right') { x = cx + 88; y = cy + 56; }
-    else { x = cx; y = cy + 76; }
+    if (dropZone === 'left') { x = cx - 82; y = cy + 54; }
+    else if (dropZone === 'right') { x = cx + 82; y = cy + 54; }
+    else { x = cx; y = cy + 74; }
   } else {
-    if (dropZone === 'left') { x = cx - 88; y = cy - 56; }
-    else if (dropZone === 'right') { x = cx + 88; y = cy - 56; }
-    else { x = cx; y = cy - 76; }
+    if (dropZone === 'left') { x = cx - 82; y = cy - 54; }
+    else if (dropZone === 'right') { x = cx + 82; y = cy - 54; }
+    else { x = cx; y = cy - 74; }
   }
 
   const angleToCenter = Math.atan2(cy - y, cx - x);
@@ -1517,12 +2067,12 @@ function createBeyEntity(spec, isP1, dropZone, launchPower) {
     bey: spec, isP1, x, y,
     vx: Math.cos(tangentAngle) * initSpeed,
     vy: Math.sin(tangentAngle) * initSpeed,
-    radius: 22, angle: 0,
+    radius: 21, angle: 0,
     rpm: startRpm,
     maxRpm: Math.round((3200 + spec.stats.sta * 7.0) * 1.18),
     burstHp: 240 + spec.stats.def * 0.85,
     maxBurstHp: 240 + spec.stats.def * 0.85,
-    mp: 0, ultTimer: 0, xDashTimer: 0
+    mp: 0, ultTimer: 0
   };
 }
 
@@ -1541,9 +2091,7 @@ function beginBattleRound() {
   updateHudBars();
   if (state.gameMode !== '2p') {
     playLaunchRipcordSound();
-    if (state.comLaunchStatus) {
-      addPopup(220, 145, state.comLaunchStatus, state.comLaunchStatus.includes('失誤') ? '#38bdf8' : '#f43f5e');
-    }
+    if (state.comLaunchStatus) addPopup(220, 145, state.comLaunchStatus, state.comLaunchStatus.includes('失誤') ? '#38bdf8' : '#f43f5e');
   }
   startSpinHum();
   addPopup(220, 220, '🔥 3、2、1、GO SHOOT！', '#facc15');
@@ -1638,21 +2186,21 @@ arenaCanvas.addEventListener('pointercancel', removePointer);
 function spawnMagicOrb() {
   if (state.magicOrbs.length >= 3) return;
   const angle = Math.random() * Math.PI * 2;
-  const dist = 42 + Math.random() * 118;
+  const dist = 42 + Math.random() * 112;
   state.magicOrbs.push({ x: 220 + Math.cos(angle) * dist, y: 220 + Math.sin(angle) * dist, r: 11, pulse: Math.random() * Math.PI * 2, age: 0 });
 }
 
 function executeUltimate(caster, target) {
-  caster.mp = 0; state.shake = 14;
-  playMetalClash(1.8);
-  spawnParticles(caster.x, caster.y, caster.bey.secondary, 26);
+  caster.mp = 0; state.shake = 15;
+  playUltimateBurstSound(); // 播放滿魔力大絕招專屬爆發音效！
+  spawnParticles(caster.x, caster.y, caster.bey.secondary, 28);
   const tag = caster.isP1 ? '1P' : (state.gameMode === '2p' ? '2P' : 'COM');
-  addPopup(caster.x, caster.y - 30, `🔥 ${tag} 滿星覺醒【${caster.bey.ultName}】！`, '#facc15');
+  addPopup(caster.x, caster.y - 30, `🔥 ${tag} 覺醒【${caster.bey.ultName}】！`, '#facc15');
 
   const id = caster.bey.layerId;
-  if (id === 'dragon') {
+  if (id === 'dragon' || id === 'phoenix' || id === 'valkyrie') {
     const dx = target.x - caster.x, dy = target.y - caster.y, d = Math.hypot(dx, dy) || 1;
-    caster.vx = (dx / d) * 10.5; caster.vy = (dy / d) * 10.5; caster.ultTimer = 1.6;
+    caster.vx = (dx / d) * 10.6; caster.vy = (dy / d) * 10.6; caster.ultTimer = 1.7;
   } else if (id === 'demon') {
     caster.ultTimer = 3.0;
     target.rpm = Math.max(0, target.rpm - 260);
@@ -1665,7 +2213,7 @@ function executeUltimate(caster, target) {
     target.burstHp = Math.max(0, target.burstHp - 36);
     caster.burstHp = Math.min(caster.maxBurstHp, caster.burstHp + 42);
     addPopup(caster.x, caster.y - 15, '🪄 魔力虹吸 +380 RPM', '#34d399');
-  } else if (id === 'knight') {
+  } else {
     caster.ultTimer = 2.8;
     const dx = target.x - caster.x, dy = target.y - caster.y, d = Math.hypot(dx, dy) || 1;
     caster.vx = (dx / d) * 9.5; caster.vy = (dy / d) * 9.5;
@@ -1704,8 +2252,7 @@ function updateComBrain(ent, other, stepDt) {
   }
 
   if (state.aiState.mode === 'attack') {
-    state.aiState.goalX = other.x;
-    state.aiState.goalY = other.y;
+    state.aiState.goalX = other.x; state.aiState.goalY = other.y;
   }
 
   const dx = state.aiState.goalX - ent.x, dy = state.aiState.goalY - ent.y, dist = Math.hypot(dx, dy) || 1;
@@ -1726,11 +2273,10 @@ function addPopup(x, y, text, color = '#fff') {
   state.popups.push({ x, y, text, color, life: 1.1 });
 }
 
+// ==================== 10. 物理引擎（支援 6 款戰鬥盤特性與障礙物） ====================
 function updatePhysics(dt) {
   titleSpinAngle += dt * 7.5;
-  if (document.getElementById('titleScreen').style.display !== 'none') {
-    renderTitleSpinBey();
-  }
+  if (document.getElementById('titleScreen').style.display !== 'none') renderTitleSpinBey();
 
   if (state.phase === 'launch') {
     if (state.p1Charging) {
@@ -1765,19 +2311,15 @@ function updatePhysics(dt) {
   if (state.timeLeft <= 0) {
     const p1Ratio = (state.p1.burstHp / state.p1.maxBurstHp) + (state.p1.rpm / state.p1.maxRpm);
     const p2Ratio = (state.p2.burstHp / state.p2.maxBurstHp) + (state.p2.rpm / state.p2.maxRpm);
-    if (Math.abs(p1Ratio - p2Ratio) < 0.03) {
-      finishRound(null, '⚖️ 60秒時間到・平手 DRAW', 0, '#94a3b8');
-    } else if (p1Ratio > p2Ratio) {
-      finishRound(true, '⏳ 60秒時間到・判定獲勝', 1, '#22c55e');
-    } else {
-      finishRound(false, '⏳ 60秒時間到・判定落敗', 1, '#f43f5e');
-    }
+    if (Math.abs(p1Ratio - p2Ratio) < 0.03) finishRound(null, '⚖️ 60秒時間到・平手 DRAW', 0, '#94a3b8');
+    else if (p1Ratio > p2Ratio) finishRound(true, '⏳ 60秒時間到・判定獲勝', 1, '#22c55e');
+    else finishRound(false, '⏳ 60秒時間到・判定落敗', 1, '#f43f5e');
     return;
   }
 
   if (Math.random() < stepDt * 0.55) spawnMagicOrb();
 
-  const cx = 220, cy = 220, arenaRadius = 188;
+  const cx = 220, cy = 220, arenaRadius = 176;
   const entities = [state.p1, state.p2];
 
   let p1Target = null, p2Target = null;
@@ -1786,14 +2328,18 @@ function updatePhysics(dt) {
     if (v.owner === 'p2') p2Target = v;
   });
 
+  // 障礙物戰鬥盤的兩根鋼鐵阻礙柱
+  const pillars = state.stadium === 'obstacle'
+    ? [{ x: cx - 64, y: cy, r: 16 }, { x: cx + 64, y: cy, r: 16 }]
+    : [];
+
   entities.forEach(ent => {
     const other = ent.isP1 ? state.p2 : state.p1;
     if (ent.ultTimer > 0) ent.ultTimer -= stepDt;
-    if (ent.xDashTimer > 0) ent.xDashTimer -= stepDt;
 
     const dxCenter = cx - ent.x, dyCenter = cy - ent.y;
     const distCenter = Math.hypot(dxCenter, dyCenter) || 1;
-    if (distCenter > 85) {
+    if (distCenter > 82) {
       ent.vx += (dxCenter / distCenter) * 0.014;
       ent.vy += (dyCenter / distCenter) * 0.014;
     }
@@ -1814,25 +2360,37 @@ function updatePhysics(dt) {
       ent.vx += (pullX / pullD) * 0.30; ent.vy += (pullY / pullD) * 0.30;
     }
 
-    ent.vx *= 0.992; ent.vy *= 0.992;
+    // 場地特性盤效果（草地滑順省耐力 / 深水高阻力減速 / 岩漿高熱耗轉速）
+    let friction = 0.992;
+    let extraRpmDecay = 0;
+    if (state.stadium === 'elemental') {
+      if (state.terrain === 'grass') { friction = 0.996; extraRpmDecay = -14; }
+      else if (state.terrain === 'water') { friction = 0.978; extraRpmDecay = 10; }
+      else if (state.terrain === 'lava') { friction = 0.992; extraRpmDecay = 28; }
+    }
+
+    ent.vx *= friction; ent.vy *= friction;
     ent.x += ent.vx * (stepDt * 60);
     ent.y += ent.vy * (stepDt * 60);
     ent.angle += (ent.rpm / 3200) * 0.45 * (stepDt * 60);
 
-    const decayRate = 76 - (ent.bey.stats.sta / 100) * 24;
+    const decayRate = Math.max(25, 76 - (ent.bey.stats.sta / 100) * 24 + extraRpmDecay);
     ent.rpm = Math.max(0, ent.rpm - decayRate * stepDt);
 
-    if (state.stadium === 'volcano') {
-      if (distCenter < 48) {
-        ent.rpm = Math.max(0, ent.rpm - 18 * stepDt);
-      } else if (distCenter > 152 && distCenter < 184 && ent.xDashTimer <= 0) {
-        ent.xDashTimer = 1.6;
-        const tang = Math.atan2(ent.y - cy, ent.x - cx) + Math.PI / 2;
-        ent.vx = Math.cos(tang) * 8.0; ent.vy = Math.sin(tang) * 8.0;
-        addPopup(ent.x, ent.y - 18, '⚡ X-DASH 加速！', '#38bdf8');
-        playTone(760, 'sawtooth', 0.14, 0.1);
+    // 障礙柱碰撞反彈
+    pillars.forEach(pil => {
+      const pdx = ent.x - pil.x, pdy = ent.y - pil.y, pdist = Math.hypot(pdx, pdy);
+      if (pdist < ent.radius + pil.r) {
+        const nx = pdx / (pdist || 1), ny = pdy / (pdist || 1);
+        ent.x = pil.x + nx * (ent.radius + pil.r + 1);
+        ent.y = pil.y + ny * (ent.radius + pil.r + 1);
+        const dot = ent.vx * nx + ent.vy * ny;
+        ent.vx -= 1.9 * dot * nx;
+        ent.vy -= 1.9 * dot * ny;
+        spawnParticles(ent.x - nx * ent.radius, ent.y - ny * ent.radius, '#facc15', 7);
+        playMetalClash(0.7);
       }
-    }
+    });
 
     for (let i = state.magicOrbs.length - 1; i >= 0; i--) {
       const orb = state.magicOrbs[i];
@@ -1846,31 +2404,50 @@ function updatePhysics(dt) {
       }
     }
 
-    const newDist = Math.hypot(ent.x - cx, ent.y - cy);
-    if (newDist > arenaRadius - ent.radius) {
+    // 邊界判定（四邊摔角盤用方形邊界，雙缺口開放盤左右缺口更容易擊飛出局）
+    let outOfBounds = false;
+    let hitWall = false;
+    let wallNx = 0, wallNy = 0;
+
+    if (state.stadium === 'quad_ring') {
+      const limit = 166 - ent.radius;
+      if (Math.abs(ent.x - cx) > limit || Math.abs(ent.y - cy) > limit) {
+        hitWall = true;
+        if (ent.x - cx > limit) { ent.x = cx + limit; wallNx = 1; }
+        if (ent.x - cx < -limit) { ent.x = cx - limit; wallNx = -1; }
+        if (ent.y - cy > limit) { ent.y = cy + limit; wallNy = 1; }
+        if (ent.y - cy < -limit) { ent.y = cy - limit; wallNy = -1; }
+      }
+    } else {
+      const newDist = Math.hypot(ent.x - cx, ent.y - cy);
+      if (newDist > arenaRadius - ent.radius) {
+        hitWall = true;
+        wallNx = (ent.x - cx) / newDist;
+        wallNy = (ent.y - cy) / newDist;
+      }
+    }
+
+    if (hitWall) {
       const speed = Math.hypot(ent.vx, ent.vy);
       const isCriticallyLow = ent.burstHp < ent.maxBurstHp * 0.25;
-      const canRingOut = state.elapsed > 3.0 && isCriticallyLow && speed > 6.0;
+      // 雙缺口開放盤在左右兩側（|wallNx| > 0.78）只要過了前2秒且速度夠快就會被轟出缺口！
+      const inOpenGap = state.stadium === 'open_rim' && Math.abs(wallNx) > 0.78 && state.elapsed > 2.2 && speed > 5.0;
+      const canRingOut = inOpenGap || (state.elapsed > 3.0 && isCriticallyLow && speed > 6.0);
 
       if (canRingOut) {
-        const isXtreme = state.stadium === 'volcano' && (other.xDashTimer > 0 || speed > 8.2);
         const winnerIsP1 = !ent.isP1;
-        const pts = isXtreme ? 3 : 2;
-        finishRound(
-          winnerIsP1,
-          isXtreme ? '⚡ 極限擊飛 XTREME FINISH' : '🚀 擊飛出場 OVER FINISH',
-          pts,
-          isXtreme ? '#38bdf8' : '#f59e0b'
-        );
+        finishRound(winnerIsP1, inOpenGap ? '⚠️ 缺口擊飛 OUT RING' : '🚀 擊飛出場 OVER FINISH', 2, '#f59e0b');
         return;
       } else {
-        const nx = (ent.x - cx) / newDist, ny = (ent.y - cy) / newDist;
-        ent.x = cx + nx * (arenaRadius - ent.radius - 1);
-        ent.y = cy + ny * (arenaRadius - ent.radius - 1);
-        const dot = ent.vx * nx + ent.vy * ny;
-        ent.vx -= 1.85 * dot * nx;
-        ent.vy -= 1.85 * dot * ny;
-        spawnParticles(ent.x + nx * ent.radius, ent.y + ny * ent.radius, '#38bdf8', 8);
+        if (state.stadium !== 'quad_ring') {
+          ent.x = cx + wallNx * (arenaRadius - ent.radius - 1);
+          ent.y = cy + wallNy * (arenaRadius - ent.radius - 1);
+        }
+        const bounceBoost = state.stadium === 'hex_ufc' ? 2.02 : 1.85;
+        const dot = ent.vx * wallNx + ent.vy * wallNy;
+        ent.vx -= bounceBoost * dot * wallNx;
+        ent.vy -= bounceBoost * dot * wallNy;
+        spawnParticles(ent.x + wallNx * ent.radius, ent.y + wallNy * ent.radius, '#38bdf8', 7);
         playMetalClash(0.6);
         addPopup(ent.x, ent.y - 16, '🛡️ 盤緣彈回', '#38bdf8');
       }
@@ -1941,11 +2518,8 @@ function updatePhysics(dt) {
     }
   }
 
-  if (p2.rpm <= 0) {
-    finishRound(true, '🌀 持久獲勝 SPIN FINISH', 1, '#38bdf8');
-  } else if (p1.rpm <= 0) {
-    finishRound(false, '🌀 轉速耗盡落敗 SPIN FINISH', 1, '#f43f5e');
-  }
+  if (p2.rpm <= 0) finishRound(true, '🌀 持久獲勝 SPIN FINISH', 1, '#38bdf8');
+  else if (p1.rpm <= 0) finishRound(false, '🌀 轉速耗盡落敗 SPIN FINISH', 1, '#f43f5e');
 
   updateHudBars();
 }
@@ -1968,7 +2542,7 @@ function updateHudBars() {
   document.getElementById('p2MpBar').style.width = `${p2.mp}%`;
 }
 
-// ==================== 7. 精簡結算畫面（只保留原因徽章與比數） ====================
+// ==================== 11. 精簡結算與多陀螺接力換人判定 ====================
 function finishRound(p1Won, reasonBadge, pts, badgeColor = '#facc15') {
   stopSpinHum();
   state.phase = 'roundOver';
@@ -1982,20 +2556,37 @@ function finishRound(p1Won, reasonBadge, pts, badgeColor = '#facc15') {
   document.getElementById('scoreP1').textContent = state.p1Score;
   document.getElementById('scoreP2').textContent = state.p2Score;
 
+  // 多陀螺接力賽制（城市盃2顆 / 總統盃3顆 / 國際賽3顆）
+  let teamEliminated = false;
+  if (state.p1Team.length > 1 || state.p2Team.length > 1) {
+    if (p1Won === true && state.p2TeamIdx < state.p2Team.length - 1) {
+      state.p2TeamIdx++;
+      syncActiveTeamMembers();
+    } else if (p1Won === false && state.p1TeamIdx < state.p1Team.length - 1) {
+      state.p1TeamIdx++;
+      syncActiveTeamMembers();
+    } else if (p1Won !== null) {
+      teamEliminated = true;
+    }
+  }
+
+  const targetWinScore = Math.max(4, state.p1Team.length * 2);
+  const isMatchOver = teamEliminated || state.p1Score >= targetWinScore || state.p2Score >= targetWinScore;
+  const p2Label = state.gameMode === '2p' ? '2P' : 'COM';
+
+  let expNote = '';
+  if (isMatchOver && state.gameMode === 'practice') {
+    const gained = state.p1Score > state.p2Score ? 80 : 35;
+    playerData.exp += gained;
+    saveSlotData();
+    expNote = `（+${gained} EXP）`;
+  }
+
   const badgeEl = document.getElementById('modalReasonBadge');
   badgeEl.textContent = reasonBadge;
   badgeEl.style.background = `${badgeColor}25`;
   badgeEl.style.color = badgeColor;
   badgeEl.style.border = `1.5px solid ${badgeColor}`;
-
-  const isMatchOver = state.p1Score >= 4 || state.p2Score >= 4;
-  const p2Label = state.gameMode === '2p' ? '2P' : 'COM';
-  let expNote = '';
-  if (isMatchOver && state.gameMode === 'practice') {
-    const gained = state.p1Score >= 4 ? 75 : 30;
-    playerData.exp += gained;
-    expNote = `（+${gained} EXP）`;
-  }
 
   document.getElementById('modalScoreLine').textContent = `目前比數 1P【${state.p1Score}】 : 【${state.p2Score}】${p2Label} ${expNote}`;
 
@@ -2005,10 +2596,10 @@ function finishRound(p1Won, reasonBadge, pts, badgeColor = '#facc15') {
   if (isMatchOver) {
     if (state.gameMode === 'tourney') {
       leftBtn.style.display = 'none';
-      nextBtn.textContent = '🏆 返回錦標賽賽程表';
+      nextBtn.textContent = '🏆 確認戰果';
       nextBtn.onclick = () => {
         document.getElementById('resultModal').classList.remove('active');
-        advanceTourneyAfterMatch(state.p1Score >= 4);
+        handleTourneyMatchFinished(state.p1Score > state.p2Score);
       };
     } else {
       leftBtn.style.display = 'block';
@@ -2027,15 +2618,30 @@ function finishRound(p1Won, reasonBadge, pts, badgeColor = '#facc15') {
     };
   }
 
-  setTimeout(() => document.getElementById('resultModal').classList.add('active'), 420);
+  setTimeout(() => document.getElementById('resultModal').classList.add('active'), 380);
 }
 
-// ==================== 8. 戰鬥盤渲染 ====================
+// ==================== 12. 戰鬥盤渲染（含錦標賽靜態觀眾貼圖、6款盤型與皮膚特效） ====================
 function getEmblemCanvas(spec) {
   const c = document.createElement('canvas');
   c.width = 64; c.height = 64;
   drawSaintEmblem(c, spec);
   return c;
+}
+
+function drawStaticCrowd(ctx) {
+  // 錦標賽專屬：戰鬥盤四角與外圍繪製靜態像素觀眾人群貼圖（非動畫）
+  const crowdColors = ['#38bdf8', '#facc15', '#f43f5e', '#22c55e', '#a855f7', '#fb923c'];
+  for (let i = 0; i < 48; i++) {
+    const a = (Math.PI * 2 / 48) * i;
+    const dist = 204 + (i % 2) * 10;
+    const x = 220 + Math.cos(a) * dist;
+    const y = 220 + Math.sin(a) * dist;
+    ctx.fillStyle = crowdColors[i % crowdColors.length];
+    ctx.fillRect(x - 4, y - 2, 8, 7);
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(x - 3, y - 6, 6, 4);
+  }
 }
 
 function renderArena() {
@@ -2049,70 +2655,94 @@ function renderArena() {
     state.shake *= 0.88;
   }
 
-  const bgGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 200);
-  if (state.stadium === 'volcano') {
-    bgGrad.addColorStop(0, '#7f1d1d'); bgGrad.addColorStop(0.28, '#1e1b4b');
-    bgGrad.addColorStop(0.85, '#0f172a'); bgGrad.addColorStop(1, '#f97316');
-  } else {
-    bgGrad.addColorStop(0, '#1e293b'); bgGrad.addColorStop(0.75, '#0f172a'); bgGrad.addColorStop(1, '#38bdf8');
+  // 若為錦標賽模式，繪製周圍觀眾人群靜態貼圖
+  if (state.gameMode === 'tourney') {
+    drawStaticCrowd(ctx);
   }
-  ctx.beginPath(); ctx.arc(cx, cy, 192, 0, Math.PI * 2); ctx.fillStyle = bgGrad; ctx.fill();
-  ctx.lineWidth = 6; ctx.strokeStyle = state.stadium === 'volcano' ? '#f97316' : '#38bdf8'; ctx.stroke();
 
-  if (state.stadium === 'volcano') {
-    ctx.beginPath(); ctx.arc(cx, cy, 48, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]);
-    ctx.beginPath(); ctx.arc(cx, cy, 168, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.55)'; ctx.lineWidth = 4; ctx.stroke();
+  // 依據 6 款戰鬥盤繪製盤面造型
+  let c1 = '#1e293b', c2 = '#0f172a', rimCol = '#38bdf8';
+  if (state.stadium === 'elemental') {
+    if (state.terrain === 'grass') { c1 = '#14532d'; c2 = '#052e16'; rimCol = '#22c55e'; }
+    else if (state.terrain === 'water') { c1 = '#1e3a8a'; c2 = '#0c4a6e'; rimCol = '#38bdf8'; }
+    else { c1 = '#7f1d1d'; c2 = '#450a0a'; rimCol = '#f97316'; }
+  } else if (state.stadium === 'hex_ufc') {
+    c1 = '#27272a'; c2 = '#09090b'; rimCol = '#facc15';
+  } else if (state.stadium === 'quad_ring') {
+    c1 = '#1e1b4b'; c2 = '#0f172a'; rimCol = '#ec4899';
+  }
+
+  const bgGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 185);
+  bgGrad.addColorStop(0, c1); bgGrad.addColorStop(0.85, c2); bgGrad.addColorStop(1, rimCol);
+
+  if (state.stadium === 'quad_ring') {
+    ctx.fillStyle = bgGrad; ctx.fillRect(cx - 166, cy - 166, 332, 332);
+    ctx.lineWidth = 6; ctx.strokeStyle = rimCol; ctx.strokeRect(cx - 166, cy - 166, 332, 332);
+  } else if (state.stadium === 'hex_ufc') {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 3) * i;
+      const hx = cx + Math.cos(a) * 182, hy = cy + Math.sin(a) * 182;
+      if (i === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+    }
+    ctx.closePath(); ctx.fillStyle = bgGrad; ctx.fill();
+    ctx.lineWidth = 6; ctx.strokeStyle = rimCol; ctx.stroke();
   } else {
-    [85, 138].forEach(r => {
-      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, 180, 0, Math.PI * 2); ctx.fillStyle = bgGrad; ctx.fill();
+    ctx.lineWidth = 6; ctx.strokeStyle = rimCol; ctx.stroke();
+
+    // 雙缺口開放盤：左右缺口紅光警示標記
+    if (state.stadium === 'open_rim') {
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.arc(cx, cy, 180, -0.45, 0.45); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, 180, Math.PI - 0.45, Math.PI + 0.45); ctx.stroke();
+    }
+  }
+
+  // 障礙物盤的兩根鋼鐵阻礙柱
+  if (state.stadium === 'obstacle') {
+    [cx - 64, cx + 64].forEach(px => {
+      ctx.beginPath(); ctx.arc(px, cy, 16, 0, Math.PI * 2);
+      ctx.fillStyle = '#475569'; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = '#facc15'; ctx.stroke();
     });
   }
 
   if (state.phase === 'launch' && state.p1Spec && state.p2Spec) {
     const p1Img = getEmblemCanvas(state.p1Spec);
     const p2Img = getEmblemCanvas(state.p2Spec);
-    ctx.save();
-    ctx.globalAlpha = 0.26;
-    ctx.drawImage(p1Img, cx - 34, cy + 108, 68, 68);
-    ctx.drawImage(p2Img, cx - 34, cy - 176, 68, 68);
+    ctx.save(); ctx.globalAlpha = 0.26;
+    ctx.drawImage(p1Img, cx - 32, cy + 102, 64, 64);
+    ctx.drawImage(p2Img, cx - 32, cy - 166, 64, 64);
     ctx.restore();
 
     const p1Zones = [
-      { id: 'left', x: cx - 88, y: cy + 56, label: '1P左' },
-      { id: 'center', x: cx, y: cy + 76, label: '1P中' },
-      { id: 'right', x: cx + 88, y: cy + 56, label: '1P右' }
+      { id: 'left', x: cx - 82, y: cy + 54, label: '1P左' },
+      { id: 'center', x: cx, y: cy + 74, label: '1P中' },
+      { id: 'right', x: cx + 82, y: cy + 54, label: '1P右' }
     ];
     p1Zones.forEach(z => {
       const active = state.p1Drop === z.id;
-      ctx.beginPath(); ctx.arc(z.x, z.y, active ? 26 : 20, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(z.x, z.y, active ? 25 : 19, 0, Math.PI * 2);
       ctx.fillStyle = active ? 'rgba(56, 189, 248, 0.35)' : 'rgba(56, 189, 248, 0.12)'; ctx.fill();
       ctx.lineWidth = active ? 3 : 1.5; ctx.strokeStyle = active ? '#facc15' : '#38bdf8'; ctx.stroke();
-      if (active) ctx.drawImage(p1Img, z.x - 16, z.y - 16, 32, 32);
-      else {
-        ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 11px sans-serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y);
-      }
+      if (active) ctx.drawImage(p1Img, z.x - 15, z.y - 15, 30, 30);
+      else { ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y); }
     });
 
     if (state.gameMode === '2p') {
       const p2Zones = [
-        { id: 'left', x: cx - 88, y: cy - 56, label: '2P左' },
-        { id: 'center', x: cx, y: cy - 76, label: '2P中' },
-        { id: 'right', x: cx + 88, y: cy - 56, label: '2P右' }
+        { id: 'left', x: cx - 82, y: cy - 54, label: '2P左' },
+        { id: 'center', x: cx, y: cy - 74, label: '2P中' },
+        { id: 'right', x: cx + 82, y: cy - 54, label: '2P右' }
       ];
       p2Zones.forEach(z => {
         const active = state.p2Drop === z.id;
-        ctx.beginPath(); ctx.arc(z.x, z.y, active ? 26 : 20, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(z.x, z.y, active ? 25 : 19, 0, Math.PI * 2);
         ctx.fillStyle = active ? 'rgba(244, 63, 94, 0.35)' : 'rgba(244, 63, 94, 0.12)'; ctx.fill();
         ctx.lineWidth = active ? 3 : 1.5; ctx.strokeStyle = active ? '#facc15' : '#f43f5e'; ctx.stroke();
-        if (active) ctx.drawImage(p2Img, z.x - 16, z.y - 16, 32, 32);
-        else {
-          ctx.fillStyle = '#fda4af'; ctx.font = 'bold 11px sans-serif';
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y);
-        }
+        if (active) ctx.drawImage(p2Img, z.x - 15, z.y - 15, 30, 30);
+        else { ctx.fillStyle = '#fda4af'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y); }
       });
     }
   }
@@ -2131,13 +2761,25 @@ function renderArena() {
       ctx.save();
       ctx.translate(ent.x, ent.y);
 
+      // 商店特效皮膚外環繪製
+      if (ent.bey.skinId === 'flame') {
+        ctx.beginPath(); ctx.arc(0, 0, ent.radius + 8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(249, 115, 22, 0.75)'; ctx.lineWidth = 3; ctx.stroke();
+      } else if (ent.bey.skinId === 'lightning') {
+        ctx.beginPath(); ctx.arc(0, 0, ent.radius + 9, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)'; ctx.setLineDash([4, 4]); ctx.lineWidth = 2.5; ctx.stroke(); ctx.setLineDash([]);
+      } else if (ent.bey.skinId === 'galaxy') {
+        ctx.beginPath(); ctx.arc(0, 0, ent.radius + 10, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.8)'; ctx.lineWidth = 3; ctx.stroke();
+      }
+
       if (ent.ultTimer > 0) {
         ctx.beginPath(); ctx.arc(0, 0, ent.radius + 14, 0, Math.PI * 2);
         ctx.strokeStyle = ent.bey.secondary; ctx.lineWidth = 3; ctx.stroke();
       }
 
       ctx.rotate(ent.angle);
-      const blades = ent.bey.layerId === 'dragon' ? 4 : ent.bey.layerId === 'demon' ? 6 : ent.bey.layerId === 'mage' ? 5 : 3;
+      const blades = (ent.bey.layerId === 'dragon' || ent.bey.layerId === 'phoenix') ? 4 : ent.bey.layerId === 'demon' ? 6 : 5;
       for (let i = 0; i < blades; i++) {
         ctx.save(); ctx.rotate((Math.PI * 2 / blades) * i);
         ctx.beginPath(); ctx.moveTo(0, -ent.radius - 5); ctx.lineTo(8, -ent.radius + 6); ctx.lineTo(-8, -ent.radius + 6);
@@ -2193,15 +2835,13 @@ function gameLoop(now) {
   const dt = Math.min(0.05, (now - lastTime) / 1000);
   lastTime = now;
   updatePhysics(dt);
-  if (state.phase === 'launch' || state.phase === 'battle' || state.phase === 'roundOver') {
-    renderArena();
-  }
+  if (state.phase === 'launch' || state.phase === 'battle' || state.phase === 'roundOver') renderArena();
   requestAnimationFrame(gameLoop);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   renderTitleArtwork();
-  refreshLobbySummary();
+  loadSlotData(1);
   requestAnimationFrame(gameLoop);
 });
 </script>
