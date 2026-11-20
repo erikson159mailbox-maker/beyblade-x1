@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BEYBLADES X 1：聖獸陀螺對決 v6.0</title>
+<style>
+  :root {
+    --bg-dark: #060913;
+    --panel-bg: #111827;
+    --accent-p1: #38bdf8;
+    --accent-p2: #f43f5e;
+    --gold: #facc15;
+    --success: #22c55e;
+  }
+  * { box-sizing: border-box; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+  body {
+    margin: 0; padding: 0;
+    background: radial-gradient(circle at center, #131c31 0%, #050810 100%);
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+  }
+
+  /* ==================== 復古掌機進場封面 (Title Screen) ==================== */
+  #titleScreen {
+    position: fixed; inset: 0; z-index: 100;
+    background: #000000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 16px;
+    transition: opacity 0.65s ease-out;
+  }
+  #titleScreen.fade-out { opacity: 0; pointer-events: none; }
+  .title-canvas-box {
+    width: 100%; max-width: 440px;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  canvas#titleLogoCanvas {
+    width: 100%; max-width: 420px; height: auto;
+    image-rendering: pixelated;
+  }
+  .start-row {
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    cursor: pointer; padding: 12px 24px; border-radius: 12px;
+  }
+  .start-row:active { transform: scale(0.96); }
+  canvas#titleSpinBey {
+    width: 68px; height: 68px; image-rendering: pixelated;
+  }
+  .retro-start-text {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1.65rem; font-weight: 900; letter-spacing: 3px;
+    background: linear-gradient(180deg, #fff7ed 0%, #facc15 45%, #ea580c 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px 0px #7c2d12);
+    animation: idlePulse 1.2s infinite alternate;
+  }
+  .retro-start-text.fast-blink {
+    animation: fastStartBlink 0.09s infinite alternate !important;
+  }
+  @keyframes idlePulse { from { opacity: 0.78; } to { opacity: 1; } }
+  @keyframes fastStartBlink { from { opacity: 0.1; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
+  .title-hint {
+    font-size: 0.75rem; color: #64748b; letter-spacing: 1.5px; margin-top: 8px;
+  }
+
+  /* ==================== 主容器與頂部導覽 ==================== */
+  .container { width: 100%; max-width: 520px; padding: 8px 12px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 12px; padding: 7px 10px;
+  }
+  .brand-mini {
+    font-weight: 900; font-size: 0.95rem;
+    background: linear-gradient(90deg, #38bdf8, #facc15, #f43f5e);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .exp-pill {
+    background: rgba(250, 204, 21, 0.16); border: 1px solid #facc15;
+    color: #facc15; font-size: 0.78rem; font-weight: 900;
+    padding: 3px 10px; border-radius: 99px;
+  }
+
+  /* 大廳分頁籤 */
+  .hub-tabs {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .hub-tab {
+    background: #1e293b; border: 2px solid #334155; color: #94a3b8;
+    border-radius: 10px; padding: 8px 4px; font-weight: 800; font-size: 0.82rem;
+    cursor: pointer; text-align: center; transition: all 0.15s;
+  }
+  .hub-tab.active {
+    border-color: #38bdf8; background: rgba(56, 189, 248, 0.18); color: #f8fafc;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+
+  .screen { display: none; flex-direction: column; gap: 9px; }
+  .screen.active { display: flex; }
+
+  .card {
+    background: rgba(17, 24, 39, 0.94);
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    border-radius: 14px; padding: 10px 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  }
+  .section-title {
+    font-size: 0.82rem; font-weight: 800; color: #38bdf8;
+    margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* 三大模式卡片 */
+  .mode-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .mode-card {
+    background: #1e293b; border: 2px solid #334155; border-radius: 11px;
+    padding: 9px 6px; text-align: center; cursor: pointer; transition: all 0.15s;
+  }
+  .mode-card.active {
+    border-color: #facc15; background: linear-gradient(180deg, rgba(250,204,21,0.2), #1e293b);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
+  }
+  .mode-card .mc-icon { font-size: 1.35rem; }
+  .mode-card .mc-name { font-size: 0.82rem; font-weight: 900; color: #f8fafc; margin-top: 3px; }
+  .mode-card .mc-sub { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; }
+
+  .flip-toggle {
+    margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 0.78rem; color: #f8fafc; background: rgba(244, 63, 94, 0.14);
+    border: 1px solid rgba(244, 63, 94, 0.4); padding: 6px 10px; border-radius: 8px; cursor: pointer;
+  }
+
+  /* 玩家主力陀螺預覽橫幅 */
+  .my-bey-banner {
+    display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.16), rgba(15,23,42,0.9));
+    border: 1.5px solid #38bdf8; border-radius: 12px; padding: 9px 12px;
+  }
+  .my-bey-meta { flex: 1; }
+  .my-bey-title { font-size: 1rem; font-weight: 900; color: #facc15; }
+  .my-bey-parts { font-size: 0.72rem; color: #cbd5e1; margin-top: 3px; line-height: 1.4; }
+
+  .stadium-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stadium-btn {
+    background: #1e293b; border: 2px solid #334155; color: #e2e8f0;
+    border-radius: 10px; padding: 8px; text-align: left; cursor: pointer;
+  }
+  .stadium-btn.active { border-color: #facc15; background: rgba(250, 204, 21, 0.14); }
+  .stadium-btn .st-name { font-weight: 800; font-size: 0.82rem; color: #facc15; }
+  .stadium-btn .st-desc { font-size: 0.68rem; color: #94a3b8; margin-top: 2px; }
+
+  .primary-btn {
+    width: 100%; padding: 13px; border: none; border-radius: 12px;
+    background: linear-gradient(90deg, #0284c7, #38bdf8); color: #04111d;
+    font-size: 1rem; font-weight: 900; letter-spacing: 1px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+  }
+  .primary-btn:active { transform: scale(0.98); }
+
+  /* ==================== 工具箱 (自組 + 命名) ==================== */
+  .toolbox-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .name-input-row {
+    display: flex; gap: 6px; margin-bottom: 8px;
+  }
+  .name-input {
+    flex: 1; background: #0f172a; border: 2px solid #38bdf8; color: #facc15;
+    border-radius: 9px; padding: 8px 10px; font-size: 0.92rem; font-weight: 800;
+    outline: none;
+  }
+  .save-name-btn {
+    background: #22c55e; color: #04111d; border: none; border-radius: 9px;
+    padding: 0 14px; font-weight: 900; font-size: 0.84rem; cursor: pointer;
+  }
+  .part-selector-group { margin-top: 6px; }
+  .part-label { font-size: 0.74rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px; }
+  .part-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .part-chip {
+    background: #1e293b; border: 1.5px solid #334155; color: #e2e8f0;
+    border-radius: 8px; padding: 6px 9px; font-size: 0.74rem; font-weight: 700; cursor: pointer;
+  }
+  .part-chip.equipped {
+    border-color: #facc15; background: rgba(250, 204, 21, 0.18); color: #facc15;
+  }
+  .color-dots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .color-dot {
+    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #475569; cursor: pointer;
+    position: relative;
+  }
+  .color-dot.equipped { border: 3px solid #ffffff; box-shadow: 0 0 10px #facc15; transform: scale(1.1); }
+
+  /* ==================== 零件商店 ==================== */
+  .shop-list { display: flex; flex-direction: column; gap: 8px; }
+  .shop-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 9px 11px;
+  }
+  .shop-info { flex: 1; }
+  .shop-name { font-size: 0.84rem; font-weight: 800; color: #f8fafc; }
+  .shop-stat { font-size: 0.7rem; color: #38bdf8; margin-top: 2px; }
+  .buy-btn {
+    background: linear-gradient(135deg, #f59e0b, #facc15); color: #090d16;
+    border: none; border-radius: 8px; padding: 7px 11px; font-size: 0.76rem; font-weight: 900;
+    cursor: pointer; white-space: nowrap;
+  }
+  .buy-btn.owned { background: #334155; color: #22c55e; cursor: default; }
+  .buy-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ==================== 8人錦標賽樹狀圖 ==================== */
+  .bracket-wrap {
+    overflow-x: auto; padding: 4px 0;
+  }
+  .bracket-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center;
+    min-width: 340px;
+  }
+  .bracket-col { display: flex; flex-direction: column; gap: 10px; }
+  .bracket-col-title { text-align: center; font-size: 0.72rem; font-weight: 800; color: #facc15; margin-bottom: 2px; }
+  .match-box {
+    background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; padding: 5px 6px;
+    font-size: 0.68rem;
+  }
+  .match-box.player-match { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.28); }
+  .m-slot {
+    padding: 3px 4px; border-radius: 4px; display: flex; justify-content: space-between;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .m-slot.is-me { color: #38bdf8; font-weight: 900; }
+  .m-slot.winner { background: rgba(34, 197, 94, 0.18); color: #4ade80; font-weight: 800; }
+  .m-slot.loser { color: #64748b; text-decoration: line-through; }
+  .m-divider { height: 1px; background: #1e293b; margin: 2px 0; }
+
+  /* ==================== 對戰畫面 ==================== */
+  .rotated-180 { transform: rotate(180deg); }
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 6px 10px;
+  }
+  .score-side { display: flex; align-items: center; gap: 6px; }
+  .score-num { font-size: 1.45rem; font-weight: 900; padding: 0 5px; }
+  .p1-color { color: #38bdf8; }
+  .p2-color { color: #f43f5e; }
+  .center-hud { text-align: center; }
+  .timer-badge {
+    font-size: 0.82rem; font-weight: 800; color: #facc15;
+    background: rgba(250,204,21,0.12); padding: 2px 8px; border-radius: 99px;
+    border: 1px solid rgba(250,204,21,0.35);
+  }
+  .timer-badge.urgent { color: #fff; background: #dc2626; border-color: #f87171; animation: urgentBlink 0.6s infinite alternate; }
+  @keyframes urgentBlink { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .reselect-btn {
+    margin-top: 3px; background: #334155; color: #f8fafc;
+    border: 1px solid #64748b; border-radius: 6px; padding: 2px 8px;
+    font-size: 0.7rem; font-weight: 700; cursor: pointer;
+  }
+  .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .bar-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 6px 8px; }
+  .bar-row { margin-top: 3px; }
+  .bar-label { display: flex; justify-content: space-between; color: #cbd5e1; font-size: 0.67rem; margin-bottom: 2px; font-weight: 700; }
+  .progress-bg { width: 100%; height: 7px; background: #1e293b; border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 0.08s linear; }
+  .arena-wrap {
+    position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 420px; margin: 0 auto;
+    border-radius: 18px; overflow: hidden; border: 2px solid #334155; background: #060a12;
+  }
+  canvas#arenaCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
+  .launch-panel {
+    background: rgba(15, 23, 42, 0.96); border: 1px solid #38bdf8;
+    border-radius: 12px; padding: 8px 10px; text-align: center;
+  }
+  .launch-panel.p2-panel { border-color: #f43f5e; }
+  .meter-track {
+    position: relative; width: 100%; height: 18px; background: #1e293b;
+    border-radius: 99px; overflow: hidden; margin: 6px 0; border: 1px solid #475569;
+  }
+  .meter-sweet { position: absolute; left: 72%; width: 18%; height: 100%; background: linear-gradient(90deg, #22c55e, #facc15); }
+  .meter-over { position: absolute; left: 90%; width: 10%; height: 100%; background: #ef4444; }
+  .meter-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: rgba(255, 255, 255, 0.9); }
+  .hold-launch-btn {
+    width: 100%; padding: 11px; border-radius: 10px; border: 2px solid #facc15;
+    background: linear-gradient(135deg, #0284c7, #38bdf8); color: #04111d;
+    font-size: 0.92rem; font-weight: 900; cursor: pointer; touch-action: none;
+  }
+  .hold-launch-btn.p2-btn { background: linear-gradient(135deg, #be123c, #f43f5e); color: #fff; }
+  .hold-launch-btn.charging { background: linear-gradient(135deg, #d97706, #facc15); color: #04111d; transform: scale(0.98); }
+  .hold-launch-btn.locked { background: #1e293b; border-color: #22c55e; color: #22c55e; cursor: default; }
+  .combat-tip-bar {
+    background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(250, 204, 21, 0.35);
+    border-radius: 10px; padding: 7px 10px; text-align: center;
+    font-size: 0.74rem; font-weight: 700; color: #facc15;
+  }
+
+  /* 精簡結算彈窗（只保留原因徽章與比數） */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85);
+    display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: #111827; border: 2px solid #38bdf8; border-radius: 18px;
+    padding: 22px 18px; max-width: 360px; width: 100%; text-align: center;
+  }
+  .reason-badge {
+    display: inline-block; padding: 7px 16px; border-radius: 99px;
+    font-size: 0.95rem; font-weight: 900; margin-bottom: 12px;
+  }
+  .modal-score-line { font-size: 0.96rem; font-weight: 900; color: #f8fafc; margin-bottom: 16px; }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 900; font-size: 0.92rem; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ==================== 復古掌機進場封面 ==================== -->
+<div id="titleScreen">
+  <div class="title-canvas-box">
+    <canvas id="titleLogoCanvas" width="420" height="220"></canvas>
+    <div class="start-row" onclick="handlePressStart()">
+      <canvas id="titleSpinBey" width="64" height="64"></canvas>
+      <div id="startBtnText" class="retro-start-text">GAME START</div>
+    </div>
+    <div class="title-hint">CLICK GAME START TO ENTER ARENA</div>
+  </div>
+</div>
+
+<!-- ==================== 主遊戲容器 ==================== -->
+<div class="container">
+  <div class="top-nav">
+    <div class="brand-mini">BEYBLADES X 1・聖獸對決</div>
+    <div class="exp-pill">⭐ EXP：<span id="expDisplay">0</span></div>
+  </div>
+
+  <!-- 大廳分頁選單（非對戰時顯示） -->
+  <div id="hubTabs" class="hub-tabs">
+    <button id="tabArena" class="hub-tab active" onclick="switchHubTab('arena')">⚔️ 對戰大廳</button>
+    <button id="tabToolbox" class="hub-tab" onclick="switchHubTab('toolbox')">🧰 工具箱</button>
+    <button id="tabShop" class="hub-tab" onclick="switchHubTab('shop')">🏪 零件商店</button>
+  </div>
+
+  <!-- ==================== 1. 對戰大廳（三大模式） ==================== -->
+  <div id="setupScreen" class="screen active">
+    <div class="card">
+      <div class="section-title">
+        <span>選擇對戰模式</span>
+        <span id="modeBadge" style="color:#facc15;">練習場 (1P vs COM)</span>
+      </div>
+      <div class="mode-cards">
+        <div id="cardModeTourney" class="mode-card" onclick="setGameMode('tourney')">
+          <div class="mc-icon">🏆</div>
+          <div class="mc-name">錦標賽</div>
+          <div class="mc-sub">8人單敗淘汰</div>
+        </div>
+        <div id="cardModePractice" class="mode-card active" onclick="setGameMode('practice')">
+          <div class="mc-icon">🤖</div>
+          <div class="mc-name">練習場</div>
+          <div class="mc-sub">1P vs 隨機COM</div>
+        </div>
+        <div id="cardMode2P" class="mode-card" onclick="setGameMode('2p')">
+          <div class="mc-icon">⚔️</div>
+          <div class="mc-name">雙人對戰</div>
+          <div class="mc-sub">1P vs 2P同機</div>
+        </div>
+      </div>
+      <label id="flipToggleWrap" class="flip-toggle" style="display:none;">
+        <input type="checkbox" id="chkFlip2P" checked onchange="toggleFlip2P()">
+        <span>🔄 2P 介面 180° 倒轉（平板平放面對面對決）</span>
+      </label>
+    </div>
+
+    <!-- 目前出戰主力陀螺摘要 -->
+    <div class="my-bey-banner">
+      <canvas id="lobbyMyBeyCanvas" width="60" height="60"></canvas>
+      <div class="my-bey-meta">
+        <div class="my-bey-title" id="lobbyMyBeyName">蒼龍爆刃・初號機</div>
+        <div class="my-bey-parts" id="lobbyMyBeyParts">上蓋：蒼龍戰輪 ｜ 輪盤：標準平衡盤 ｜ 中軸：標準軸</div>
+      </div>
+      <button class="reselect-btn" style="padding:6px 10px;" onclick="switchHubTab('toolbox')">🧰 改裝</button>
+    </div>
+
+    <!-- 雙人對戰 2P 聖獸快速選擇 -->
+    <div id="p2QuickPickCard" class="card" style="display:none;">
+      <div class="section-title">
+        <span>選擇 2P 對戰聖獸陀螺</span>
+        <span id="p2SelectedName" style="color:#f43f5e;">惡魔鎖鏈</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;" id="p2QuickGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><span>選擇決鬥城市戰鬥盤</span></div>
+      <div class="stadium-grid">
+        <button class="stadium-btn active" data-stadium="standard" onclick="selectStadium('standard')">
+          <div class="st-name">🏟️ 初階・標準競技盤</div>
+          <div class="st-desc">高彈性金屬防護環，適合走位與正面爆裂對決。</div>
+        </button>
+        <button class="stadium-btn" data-stadium="volcano" onclick="selectStadium('volcano')">
+          <div class="st-name">🌋 決鬥城市・火山 X 軌道盤</div>
+          <div class="st-desc">外圈高速 X 加速齒輪，中央熔岩區消耗耐力！</div>
+        </button>
+      </div>
+    </div>
+
+    <button id="btnStartAction" class="primary-btn" onclick="handleMainStart()">⚔️ 開始練習賽（累積 EXP）</button>
+  </div>
+
+  <!-- ==================== 2. 8人錦標賽樹狀圖畫面 ==================== -->
+  <div id="tourneyScreen" class="screen">
+    <div class="card">
+      <div class="section-title">
+        <span>🏆 決鬥城市・8 人單敗淘汰賽</span>
+        <span id="tourneyRoundBadge" style="color:#facc15;">8 強賽</span>
+      </div>
+      <div class="bracket-wrap">
+        <div class="bracket-grid" id="bracketGrid"></div>
+      </div>
+    </div>
+    <button id="btnTourneyNext" class="primary-btn" onclick="startTourneyMatch()">⚔️ 進行本輪 1v1 對決</button>
+    <button class="reselect-btn" style="padding:8px;width:100%;" onclick="switchHubTab('arena')">⬅️ 放棄錦標賽返回大廳</button>
+  </div>
+
+  <!-- ==================== 3. 工具箱（自組零件 + 自訂命名） ==================== -->
+  <div id="toolboxScreen" class="screen">
+    <div class="card">
+      <div class="section-title">
+        <span>🧰 專屬陀螺改裝工坊</span>
+        <span id="tbUltBadge" style="color:#f472b6;">滿星奧義：蒼龍破空斬</span>
+      </div>
+
+      <div class="name-input-row">
+        <input id="customNameInput" class="name-input" type="text" maxlength="12" placeholder="輸入你的專屬陀螺名稱...">
+        <button class="save-name-btn" onclick="saveCustomName()">💾 命名</button>
+      </div>
+
+      <div class="toolbox-top">
+        <canvas id="toolboxBeyCanvas" width="76" height="76"></canvas>
+        <canvas id="radarCanvas" width="230" height="175"></canvas>
+      </div>
+
+      <div class="part-selector-group">
+        <div class="part-label">① 上蓋（決定聖獸奧義與攻爆基礎）</div>
+        <div class="part-chips" id="layerChips"></div>
+      </div>
+
+      <div class="part-selector-group">
+        <div class="part-label">② 固鎖輪盤（決定重量、守備與抗擊飛力）</div>
+        <div class="part-chips" id="discChips"></div>
+      </div>
+
+      <div class="part-selector-group">
+        <div class="part-label">③ 中軸（決定持久轉速、敏捷與操控手感）</div>
+        <div class="part-chips" id="driverChips"></div>
+      </div>
+
+      <div class="part-selector-group">
+        <div class="part-label">④ 專屬塗裝配色</div>
+        <div class="color-dots" id="colorDots"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. 零件商店（EXP 解鎖） ==================== -->
+  <div id="shopScreen" class="screen">
+    <div class="card">
+      <div class="section-title">
+        <span>🏪 聖獸零件改裝商店</span>
+        <span style="color:#facc15;">練習賽與錦標賽可賺取 EXP</span>
+      </div>
+      <div class="shop-list" id="shopList"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. 戰鬥主畫面 ==================== -->
+  <div id="battleScreen" class="screen">
+    <div id="p2LaunchPanel" class="launch-panel p2-panel" style="display:none;">
+      <div style="font-size:0.78rem;font-weight:800;color:#f43f5e;">
+        📍 2P 點擊上半盤面選位（<span id="p2DropLabel" style="color:#facc15;">中央</span>）
+      </div>
+      <div class="meter-track">
+        <div class="meter-sweet"></div>
+        <div class="meter-over"></div>
+        <div id="p2MeterFill" class="meter-fill"></div>
+      </div>
+      <button id="p2HoldLaunchBtn" class="hold-launch-btn p2-btn">
+        🔥 2P 按住蓄力 ➔ 黃金區放開！
+      </button>
+    </div>
+
+    <div class="scoreboard">
+      <div class="score-side">
+        <canvas id="hudEmblemP1" width="38" height="38"></canvas>
+        <div>
+          <div id="hudNameP1" style="font-size:0.76rem;font-weight:800;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">蒼龍爆刃</div>
+          <div style="font-size:0.65rem;color:#38bdf8;">PLAYER 1</div>
+        </div>
+        <div id="scoreP1" class="score-num p1-color">0</div>
+      </div>
+
+      <div class="center-hud">
+        <div id="battleTimer" class="timer-badge">限時 60.0s</div>
+        <button id="btnReselect" class="reselect-btn" onclick="abortBattleToHub()">🚪 離開對戰</button>
+      </div>
+
+      <div class="score-side">
+        <div id="scoreP2" class="score-num p2-color">0</div>
+        <div style="text-align:right;">
+          <div id="hudNameP2" style="font-size:0.76rem;font-weight:800;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">惡魔鎖鏈</div>
+          <div id="hudRoleP2" style="font-size:0.65rem;color:#f43f5e;">RIVAL COM</div>
+        </div>
+        <canvas id="hudEmblemP2" width="38" height="38"></canvas>
+      </div>
+    </div>
+
+    <div class="bars-grid">
+      <div class="bar-box" style="border-color: rgba(56,189,248,0.45);">
+        <div class="bar-row">
+          <div class="bar-label"><span>1P 轉速 RPM</span><span id="p1RpmText">3600</span></div>
+          <div class="progress-bg"><div id="p1RpmBar" class="progress-fill" style="width:100%;background:#38bdf8;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>爆裂耐久</span><span id="p1BurstText">100%</span></div>
+          <div class="progress-bg"><div id="p1BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span style="color:#facc15;">✨ 滿星自動大絕</span><span id="p1MpText" style="color:#facc15;">0%</span></div>
+          <div class="progress-bg"><div id="p1MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#a855f7,#facc15);"></div></div>
+        </div>
+      </div>
+
+      <div class="bar-box" style="border-color: rgba(244,63,94,0.45);">
+        <div class="bar-row">
+          <div class="bar-label"><span id="p2RpmLabel">COM 轉速 RPM</span><span id="p2RpmText">3600</span></div>
+          <div class="progress-bg"><div id="p2RpmBar" class="progress-fill" style="width:100%;background:#f43f5e;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>爆裂耐久</span><span id="p2BurstText">100%</span></div>
+          <div class="progress-bg"><div id="p2BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span style="color:#f472b6;">✨ 對手魔力</span><span id="p2MpText" style="color:#f472b6;">0%</span></div>
+          <div class="progress-bg"><div id="p2MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#ec4899,#f43f5e);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arena-wrap">
+      <canvas id="arenaCanvas" width="440" height="440"></canvas>
+    </div>
+
+    <div id="p1LaunchPanel" class="launch-panel">
+      <div style="font-size:0.78rem;font-weight:800;color:#38bdf8;">
+        📍 1P 點擊下半盤面選位（<span id="p1DropLabel" style="color:#facc15;">中央搶攻區</span>）
+      </div>
+      <div class="meter-track">
+        <div class="meter-sweet"></div>
+        <div class="meter-over"></div>
+        <div id="p1MeterFill" class="meter-fill"></div>
+      </div>
+      <button id="p1HoldLaunchBtn" class="hold-launch-btn">
+        🔥 1P 按住蓄力 ➔ 進入黃金區放開射擊！
+      </button>
+    </div>
+
+    <div id="p1CombatPanel" class="combat-tip-bar" style="display:none;">
+      👆 拖曳牽引陀螺動向・搶吃發光魔法星集滿 100% <b>自動釋放聖獸大絕招！</b>
+    </div>
+  </div>
+</div>
+
+<!-- 精簡結算彈窗（只保留勝敗原因徽章與比數） -->
+<div id="resultModal" class="modal-overlay">
+  <div class="modal-box">
+    <div id="modalReasonBadge" class="reason-badge">💥 爆裂獲勝 BURST FINISH</div>
+    <div id="modalScoreLine" class="modal-score-line">目前比數 2 : 0</div>
+    <div class="modal-btns">
+      <button id="modalLeftBtn" style="background:#334155;color:#fff;" onclick="abortBattleToHub()">🏠 返回大廳</button>
+      <button id="modalNextBtn" style="background:#facc15;color:#090d16;">⚔️ 下一回合</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== 1. 零件庫、配色庫與 12 款 COM 隨機對手庫 ====================
+const LAYERS = {
+  dragon: { id: 'dragon', name: '蒼龍戰輪', ultName: '蒼龍破空斬', stats: { atk: 90, def: 46, agi: 80, ctl: 60, sta: 62, bst: 90 }, cost: 0 },
+  demon:  { id: 'demon',  name: '惡魔戰輪', ultName: '冥界鎖鏈陣', stats: { atk: 60, def: 92, agi: 48, ctl: 74, sta: 84, bst: 66 }, cost: 0 },
+  mage:   { id: 'mage',   name: '魔導戰輪', ultName: '星辰魔力虹吸', stats: { atk: 54, def: 72, agi: 66, ctl: 80, sta: 94, bst: 58 }, cost: 120 },
+  knight: { id: 'knight', name: '騎士戰輪', ultName: '聖光突刺連擊', stats: { atk: 76, def: 62, agi: 92, ctl: 92, sta: 72, bst: 80 }, cost: 150 }
+};
+
+const DISCS = {
+  std_disc:   { id: 'std_disc',   name: '標準平衡盤', mod: { atk: 0, def: 0, agi: 0, ctl: 0, sta: 0, bst: 0 }, cost: 0 },
+  heavy_disc: { id: 'heavy_disc', name: '重裝鋼鐵盤', mod: { atk: 4, def: 12, agi: -4, ctl: 2, sta: 4, bst: 6 }, cost: 100 },
+  wing_disc:  { id: 'wing_disc',  name: '疾風雙翼盤', mod: { atk: 6, def: -2, agi: 10, ctl: 6, sta: 2, bst: 4 }, cost: 130 },
+  crown_disc: { id: 'crown_disc', name: '王者十星盤', mod: { atk: 8, def: 8, agi: 6, ctl: 6, sta: 8, bst: 8 }, cost: 240 }
+};
+
+const DRIVERS = {
+  std_drv:   { id: 'std_drv',   name: '標準塑膠軸', mod: { atk: 0, def: 0, agi: 0, ctl: 0, sta: 0, bst: 0 }, cost: 0 },
+  atk_drv:   { id: 'atk_drv',   name: '橡膠暴走軸', mod: { atk: 10, def: -4, agi: 12, ctl: -4, sta: -6, bst: 10 }, cost: 90 },
+  sta_drv:   { id: 'sta_drv',   name: '永動軸承軸', mod: { atk: -4, def: 4, agi: -2, ctl: 8, sta: 14, bst: -4 }, cost: 110 },
+  ctl_drv:   { id: 'ctl_drv',   name: '磁浮精密軸', mod: { atk: 4, def: 4, agi: 8, ctl: 14, sta: 6, bst: 4 }, cost: 180 }
+};
+
+const PALETTES = {
+  azure:   { id: 'azure',   name: '蒼穹烈焰', primary: '#0284c7', secondary: '#fde047', accent: '#7dd3fc', glow: 'rgba(56, 189, 248, 0.65)', cost: 0 },
+  crimson: { id: 'crimson', name: '深紅冥王', primary: '#be123c', secondary: '#facc15', accent: '#fda4af', glow: 'rgba(244, 63, 94, 0.65)', cost: 0 },
+  emerald: { id: 'emerald', name: '翡翠星辰', primary: '#059669', secondary: '#38bdf8', accent: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.65)', cost: 80 },
+  royal:   { id: 'royal',   name: '暗影紫金', primary: '#6d28d9', secondary: '#f43f5e', accent: '#c4b5fd', glow: 'rgba(139, 92, 246, 0.65)', cost: 100 },
+  gold:    { id: 'gold',    name: '黃金戰神', primary: '#d97706', secondary: '#ffffff', accent: '#fde047', glow: 'rgba(250, 204, 21, 0.7)', cost: 200 }
+};
+
+// 12 款 COM 預設聖獸對手庫（搭配不同個性與零件組合）
+const COM_PRESETS = [
+  { name: '烈焰蒼龍', layer: 'dragon', disc: 'heavy_disc', driver: 'atk_drv', color: 'crimson' },
+  { name: '深海蒼龍', layer: 'dragon', disc: 'wing_disc',  driver: 'ctl_drv', color: 'azure' },
+  { name: '黃金蒼龍', layer: 'dragon', disc: 'crown_disc', driver: 'atk_drv', color: 'gold' },
+  { name: '暗影鎖鏈', layer: 'demon',  disc: 'heavy_disc', driver: 'std_drv', color: 'royal' },
+  { name: '赤紅惡魔', layer: 'demon',  disc: 'heavy_disc', driver: 'sta_drv', color: 'crimson' },
+  { name: '冥王巨盾', layer: 'demon',  disc: 'crown_disc', driver: 'sta_drv', color: 'gold' },
+  { name: '星辰魔導', layer: 'mage',   disc: 'std_disc',   driver: 'sta_drv', color: 'emerald' },
+  { name: '極光魔導', layer: 'mage',   disc: 'wing_disc',  driver: 'ctl_drv', color: 'azure' },
+  { name: '秘法賢者', layer: 'mage',   disc: 'crown_disc', driver: 'sta_drv', color: 'royal' },
+  { name: '聖殿騎士', layer: 'knight', disc: 'wing_disc',  driver: 'ctl_drv', color: 'gold' },
+  { name: '疾風槍兵', layer: 'knight', disc: 'wing_disc',  driver: 'atk_drv', color: 'emerald' },
+  { name: '黑曜騎士', layer: 'knight', disc: 'heavy_disc', driver: 'ctl_drv', color: 'royal' }
+];
+
+const ROUND_TIME_LIMIT = 60.0;
+
+// 玩家存檔進度（EXP、解鎖零件、自組配置與自訂命名）
+let playerData = {
+  exp: 0,
+  customName: '蒼龍爆刃・改',
+  layer: 'dragon',
+  disc: 'std_disc',
+  driver: 'std_drv',
+  color: 'azure',
+  unlockedLayers: ['dragon', 'demon'],
+  unlockedDiscs: ['std_disc'],
+  unlockedDrivers: ['std_drv'],
+  unlockedColors: ['azure', 'crimson']
+};
+
+let state = {
+  gameMode: 'practice', // 'tourney' | 'practice' | '2p'
+  flip2P: true,
+  p2PresetLayer: 'demon',
+  stadium: 'standard',
+  p1Spec: null,
+  p2Spec: null,
+  comMissRate: 0.28, // COM 發射失誤率（練習場 28%，錦標賽隨輪次遞減至 0%）
+  p1Score: 0, p2Score: 0,
+  phase: 'setup',
+  p1Drop: 'center', p2Drop: 'center',
+  p1Charging: false, p1ChargeVal: 0, p1ChargeDir: 1, p1Launched: false, p1Power: 1,
+  p2Charging: false, p2ChargeVal: 0, p2ChargeDir: 1, p2Launched: false, p2Power: 1,
+  timeLeft: ROUND_TIME_LIMIT, elapsed: 0, clashCooldown: 0, shake: 0, slowMo: 1,
+  magicOrbs: [], particles: [], popups: [], p1: null, p2: null,
+  aiState: { mode: 'roam', timer: 0, goalX: 220, goalY: 220 },
+  tourney: null
+};
+
+// ==================== 2. 復古掌機封面繪製與 START 閃爍 Fade Out ====================
+let titleSpinAngle = 0;
+function renderTitleArtwork() {
+  const c = document.getElementById('titleLogoCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 420, 220);
+
+  // 背後紅色幾何三角翼
+  ctx.fillStyle = '#991b1b';
+  ctx.beginPath();
+  ctx.moveTo(24, 92); ctx.lineTo(270, 56); ctx.lineTo(230, 146); ctx.lineTo(68, 134);
+  ctx.closePath(); ctx.fill();
+
+  // 金色巨型 X
+  ctx.save();
+  const xGrad = ctx.createLinearGradient(230, 20, 340, 180);
+  xGrad.addColorStop(0, '#fef08a'); xGrad.addColorStop(0.5, '#eab308'); xGrad.addColorStop(1, '#a16207');
+  ctx.fillStyle = xGrad;
+  ctx.strokeStyle = '#422006'; ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(235, 22); ctx.lineTo(272, 22); ctx.lineTo(295, 76); ctx.lineTo(324, 22);
+  ctx.lineTo(358, 22); ctx.lineTo(312, 102); ctx.lineTo(356, 186); ctx.lineTo(320, 186);
+  ctx.lineTo(293, 126); ctx.lineTo(262, 186); ctx.lineTo(226, 186); ctx.lineTo(274, 102);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+
+  // 藍銀金屬立體字 BEYBLADES
+  ctx.save();
+  ctx.font = 'italic 900 38px Impact, "Arial Black", sans-serif';
+  ctx.textAlign = 'left';
+  const bGrad = ctx.createLinearGradient(0, 62, 0, 118);
+  bGrad.addColorStop(0, '#ffffff'); bGrad.addColorStop(0.45, '#cbd5e1');
+  bGrad.addColorStop(0.52, '#1d4ed8'); bGrad.addColorStop(1, '#60a5fa');
+  ctx.lineWidth = 6; ctx.strokeStyle = '#0f172a';
+  ctx.strokeText('BEYBLADES', 24, 112);
+  ctx.fillStyle = bGrad;
+  ctx.fillText('BEYBLADES', 24, 112);
+  ctx.restore();
+
+  // 右側赤金數字 1
+  ctx.save();
+  const oneGrad = ctx.createLinearGradient(355, 42, 395, 168);
+  oneGrad.addColorStop(0, '#ef4444'); oneGrad.addColorStop(0.5, '#f97316'); oneGrad.addColorStop(1, '#facc15');
+  ctx.fillStyle = oneGrad; ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(354, 62); ctx.lineTo(382, 42); ctx.lineTo(402, 42);
+  ctx.lineTo(392, 166); ctx.lineTo(364, 166); ctx.lineTo(372, 74); ctx.lineTo(352, 82);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+function renderTitleSpinBey() {
+  const c = document.getElementById('titleSpinBey');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 64, 64);
+  ctx.save();
+  ctx.translate(32, 32);
+  ctx.rotate(titleSpinAngle);
+  for (let i = 0; i < 4; i++) {
+    ctx.rotate(Math.PI / 2);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(-5, -28, 10, 10);
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(6, -22, 8, 8);
+  }
+  ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2);
+  ctx.fillStyle = '#1d4ed8'; ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = '#93c5fd'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI * 2);
+  ctx.fillStyle = '#facc15'; ctx.fill();
+  ctx.restore();
+}
+
+let startTriggered = false;
+function handlePressStart() {
+  if (startTriggered) return;
+  startTriggered = true;
+  ensureAudio();
+  playTone(523, 'square', 0.08, 0.16);
+  setTimeout(() => playTone(659, 'square', 0.08, 0.16), 80);
+  setTimeout(() => playTone(784, 'square', 0.08, 0.16), 160);
+  setTimeout(() => playTone(1046, 'square', 0.25, 0.2), 240);
+
+  document.getElementById('startBtnText').classList.add('fast-blink');
+  setTimeout(() => {
+    document.getElementById('titleScreen').classList.add('fade-out');
+    setTimeout(() => {
+      document.getElementById('titleScreen').style.display = 'none';
+    }, 650);
+  }, 550);
+}
+
+// ==================== 3. Web Audio 擬真發射拉繩 + 動態旋轉嗡鳴 + 金屬碰撞 ====================
+let audioCtx = null;
+let spinHumOsc1 = null, spinHumOsc2 = null, spinHumGain = null;
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, type = 'sine', dur = 0.12, vol = 0.12) {
+  try {
+    ensureAudio();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, freq * 0.45), audioCtx.currentTime + dur);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  } catch (e) {}
+}
+
+function playLaunchRipcordSound() {
+  try {
+    ensureAudio();
+    const now = audioCtx.currentTime;
+    for (let i = 0; i < 14; i++) {
+      const t = now + i * 0.018;
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      const baseFreq = 260 + i * 55;
+      osc.frequency.setValueAtTime(baseFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.4, t + 0.014);
+      gain.gain.setValueAtTime(0.14, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.016);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(t); osc.stop(t + 0.017);
+    }
+    const whoosh = audioCtx.createOscillator(), wGain = audioCtx.createGain();
+    whoosh.type = 'triangle';
+    whoosh.frequency.setValueAtTime(420, now + 0.22);
+    whoosh.frequency.exponentialRampToValueAtTime(1180, now + 0.34);
+    whoosh.frequency.exponentialRampToValueAtTime(340, now + 0.56);
+    wGain.gain.setValueAtTime(0.18, now + 0.22);
+    wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+    whoosh.connect(wGain); wGain.connect(audioCtx.destination);
+    whoosh.start(now + 0.22); whoosh.stop(now + 0.6);
+  } catch (e) {}
+}
+
+function startSpinHum() {
+  try {
+    stopSpinHum(); ensureAudio();
+    spinHumOsc1 = audioCtx.createOscillator();
+    spinHumOsc2 = audioCtx.createOscillator();
+    const filter = audioCtx.createBiquadFilter();
+    spinHumGain = audioCtx.createGain();
+    spinHumOsc1.type = 'sawtooth'; spinHumOsc2.type = 'triangle';
+    spinHumOsc1.frequency.value = 165; spinHumOsc2.frequency.value = 332;
+    filter.type = 'bandpass'; filter.frequency.value = 420; filter.Q.value = 2.4;
+    spinHumGain.gain.value = 0.06;
+    spinHumOsc1.connect(filter); spinHumOsc2.connect(filter);
+    filter.connect(spinHumGain); spinHumGain.connect(audioCtx.destination);
+    spinHumOsc1.start(); spinHumOsc2.start();
+  } catch (e) {}
+}
+
+function updateSpinHum(maxRpm, maxCapRpm) {
+  if (!spinHumOsc1 || !spinHumOsc2 || !spinHumGain || !audioCtx) return;
+  try {
+    const ratio = Math.max(0, Math.min(1.2, maxRpm / (maxCapRpm || 3600)));
+    const targetFreq = 75 + ratio * 145;
+    spinHumOsc1.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.08);
+    spinHumOsc2.frequency.setTargetAtTime(targetFreq * 2.02, audioCtx.currentTime, 0.08);
+    spinHumGain.gain.setTargetAtTime(ratio > 0.02 ? (0.015 + ratio * 0.055) : 0, audioCtx.currentTime, 0.08);
+  } catch (e) {}
+}
+
+function stopSpinHum() {
+  try {
+    if (spinHumOsc1) { spinHumOsc1.stop(); spinHumOsc1.disconnect(); spinHumOsc1 = null; }
+    if (spinHumOsc2) { spinHumOsc2.stop(); spinHumOsc2.disconnect(); spinHumOsc2 = null; }
+    if (spinHumGain) { spinHumGain.disconnect(); spinHumGain = null; }
+  } catch (e) {}
+}
+
+function playMetalClash(intensity = 1) {
+  try {
+    ensureAudio();
+    const now = audioCtx.currentTime;
+    const vol = Math.min(0.28, 0.11 + intensity * 0.08);
+    [1180, 1745, 2630, 3490].forEach((f, idx) => {
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+      const pitchShift = 0.94 + Math.random() * 0.12;
+      osc.frequency.setValueAtTime(f * pitchShift, now);
+      osc.frequency.exponentialRampToValueAtTime(f * pitchShift * 0.82, now + 0.18 + idx * 0.03);
+      gain.gain.setValueAtTime(vol / (idx + 1.1), now);
+      gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.19 + idx * 0.035);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 0.25 + idx * 0.035);
+    });
+  } catch (e) {}
+}
+
+// ==================== 4. 動態組合陀螺規格與聖獸徽章繪製 ====================
+function buildBeySpec(name, layerId, discId, driverId, colorId) {
+  const L = LAYERS[layerId] || LAYERS.dragon;
+  const D = DISCS[discId] || DISCS.std_disc;
+  const R = DRIVERS[driverId] || DRIVERS.std_drv;
+  const C = PALETTES[colorId] || PALETTES.azure;
+  const clamp = (v) => Math.max(25, Math.min(99, v));
+
+  return {
+    name,
+    layerId, discId, driverId, colorId,
+    layerName: L.name, discName: D.name, driverName: R.name,
+    ultName: L.ultName,
+    primary: C.primary, secondary: C.secondary, accent: C.accent, glow: C.glow,
+    stats: {
+      atk: clamp(L.stats.atk + D.mod.atk + R.mod.atk),
+      def: clamp(L.stats.def + D.mod.def + R.mod.def),
+      agi: clamp(L.stats.agi + D.mod.agi + R.mod.agi),
+      ctl: clamp(L.stats.ctl + D.mod.ctl + R.mod.ctl),
+      sta: clamp(L.stats.sta + D.mod.sta + R.mod.sta),
+      bst: clamp(L.stats.bst + D.mod.bst + R.mod.bst)
+    }
+  };
+}
+
+function getPlayerSpec() {
+  return buildBeySpec(playerData.customName, playerData.layer, playerData.disc, playerData.driver, playerData.color);
+}
+
+function generateRandomComSpec(tier = 1) {
+  // 50% 抽主題聖獸角色，50% 動態零件隨機拼裝
+  if (Math.random() < 0.55) {
+    const p = COM_PRESETS[Math.floor(Math.random() * COM_PRESETS.length)];
+    return buildBeySpec(p.name, p.layer, p.disc, p.driver, p.color);
+  }
+  const lKeys = Object.keys(LAYERS);
+  const dKeys = tier === 1 ? ['std_disc', 'heavy_disc'] : Object.keys(DISCS);
+  const rKeys = tier === 1 ? ['std_drv', 'atk_drv', 'sta_drv'] : Object.keys(DRIVERS);
+  const cKeys = Object.keys(PALETTES);
+
+  const lId = lKeys[Math.floor(Math.random() * lKeys.length)];
+  const dId = dKeys[Math.floor(Math.random() * dKeys.length)];
+  const rId = rKeys[Math.floor(Math.random() * rKeys.length)];
+  const cId = cKeys[Math.floor(Math.random() * cKeys.length)];
+  const prefixes = ['疾風', '鋼鐵', '烈焰', '暗夜', '極光', '雷霆', '霸王', '蒼穹'];
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const shortName = LAYERS[lId].name.replace('戰輪', '');
+  return buildBeySpec(`${prefix}${shortName}`, lId, dId, rId, cId);
+}
+
+function drawSaintEmblem(canvas, specOrLayerId, overrideColorId = null) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2, r = w * 0.45;
+  let layerId = typeof specOrLayerId === 'string' ? specOrLayerId : specOrLayerId.layerId;
+  let pal = typeof specOrLayerId === 'object'
+    ? specOrLayerId
+    : (PALETTES[overrideColorId] || (layerId === 'demon' ? PALETTES.royal : layerId === 'mage' ? PALETTES.emerald : layerId === 'knight' ? PALETTES.gold : PALETTES.azure));
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.save();
+
+  const outerGrad = ctx.createLinearGradient(0, 0, w, h);
+  outerGrad.addColorStop(0, '#ffffff'); outerGrad.addColorStop(0.35, pal.secondary);
+  outerGrad.addColorStop(0.7, pal.primary); outerGrad.addColorStop(1, '#090d16');
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = outerGrad; ctx.fill();
+
+  const innerR = r * 0.84;
+  const bgGrad = ctx.createRadialGradient(cx - r * 0.2, cy - r * 0.2, innerR * 0.05, cx, cy, innerR);
+  bgGrad.addColorStop(0, pal.primary); bgGrad.addColorStop(0.65, '#0f172a'); bgGrad.addColorStop(1, '#050811');
+  ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.fillStyle = bgGrad; ctx.fill();
+
+  ctx.strokeStyle = pal.accent || '#fff'; ctx.lineWidth = Math.max(1, w * 0.025);
+  ctx.setLineDash([w * 0.06, w * 0.04]);
+  ctx.beginPath(); ctx.arc(cx, cy, innerR * 0.86, 0, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.shadowColor = pal.secondary; ctx.shadowBlur = w * 0.14;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  if (layerId === 'dragon') {
+    const dGrad = ctx.createLinearGradient(cx - r * 0.5, cy - r * 0.5, cx + r * 0.5, cy + r * 0.5);
+    dGrad.addColorStop(0, '#ffffff'); dGrad.addColorStop(0.5, pal.accent || '#38bdf8'); dGrad.addColorStop(1, pal.secondary);
+    ctx.fillStyle = dGrad;
+    ctx.beginPath();
+    ctx.moveTo(cx - r * 0.55, cy - r * 0.52); ctx.lineTo(cx - r * 0.1, cy - r * 0.22);
+    ctx.lineTo(cx + r * 0.42, cy - r * 0.52); ctx.lineTo(cx + r * 0.25, cy + r * 0.05);
+    ctx.lineTo(cx + r * 0.52, cy + r * 0.35); ctx.lineTo(cx, cy + r * 0.55);
+    ctx.lineTo(cx - r * 0.52, cy + r * 0.35); ctx.lineTo(cx - r * 0.25, cy + r * 0.05);
+    ctx.closePath(); ctx.fill();
+  } else if (layerId === 'demon') {
+    ctx.strokeStyle = pal.secondary; ctx.lineWidth = Math.max(2, w * 0.06);
+    ctx.beginPath();
+    ctx.moveTo(cx - r * 0.52, cy - r * 0.52); ctx.lineTo(cx + r * 0.52, cy + r * 0.52);
+    ctx.moveTo(cx + r * 0.52, cy - r * 0.52); ctx.lineTo(cx - r * 0.52, cy + r * 0.52);
+    ctx.stroke();
+    ctx.fillStyle = pal.primary; ctx.strokeStyle = '#fde047'; ctx.lineWidth = Math.max(1.5, w * 0.035);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r * 0.52); ctx.lineTo(cx + r * 0.44, cy - r * 0.22);
+    ctx.lineTo(cx + r * 0.3, cy + r * 0.36); ctx.lineTo(cx, cy + r * 0.56);
+    ctx.lineTo(cx - r * 0.3, cy + r * 0.36); ctx.lineTo(cx - r * 0.44, cy - r * 0.22);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (layerId === 'mage') {
+    ctx.strokeStyle = pal.accent || '#34d399'; ctx.lineWidth = Math.max(1.5, w * 0.04);
+    for (let t = 0; t < 2; t++) {
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++) {
+        const a = (Math.PI * 2 / 3) * i + (t === 0 ? -Math.PI / 2 : Math.PI / 2);
+        const px = cx + Math.cos(a) * r * 0.62, py = cy + Math.sin(a) * r * 0.62;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+    ctx.fillStyle = pal.secondary; ctx.beginPath(); ctx.arc(cx, cy, r * 0.22, 0, Math.PI * 2); ctx.fill();
+  } else if (layerId === 'knight') {
+    const kGrad = ctx.createLinearGradient(cx, cy - r * 0.68, cx, cy + r * 0.65);
+    kGrad.addColorStop(0, '#ffffff'); kGrad.addColorStop(0.5, pal.secondary); kGrad.addColorStop(1, pal.primary);
+    ctx.fillStyle = kGrad;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r * 0.68); ctx.lineTo(cx + r * 0.16, cy - r * 0.12);
+    ctx.lineTo(cx + r * 0.56, cy - r * 0.28); ctx.lineTo(cx + r * 0.22, cy + r * 0.12);
+    ctx.lineTo(cx + r * 0.1, cy + r * 0.62); ctx.lineTo(cx - r * 0.1, cy + r * 0.62);
+    ctx.lineTo(cx - r * 0.22, cy + r * 0.12); ctx.lineTo(cx - r * 0.56, cy - r * 0.28);
+    ctx.lineTo(cx - r * 0.16, cy - r * 0.12);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawHexRadar(spec) {
+  const canvas = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2, maxR = 52;
+  const keys = ['atk', 'def', 'agi', 'ctl', 'sta', 'bst'];
+  const labels = ['攻擊', '守備', '敏捷', '控制', '持久', '爆發'];
+  ctx.clearRect(0, 0, w, h);
+
+  for (let level = 1; level <= 3; level++) {
+    const r = (maxR / 3) * level;
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i - Math.PI / 2;
+      const x = cx + Math.cos(angle) * r, y = cy + Math.sin(angle) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath(); ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  ctx.beginPath();
+  keys.forEach((k, i) => {
+    const ratio = spec.stats[k] / 100;
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    const x = cx + Math.cos(angle) * maxR * ratio, y = cy + Math.sin(angle) * maxR * ratio;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.closePath(); ctx.fillStyle = spec.glow; ctx.fill(); ctx.strokeStyle = spec.secondary; ctx.lineWidth = 2.2; ctx.stroke();
+
+  keys.forEach((k, i) => {
+    const val = spec.stats[k];
+    const ratio = val / 100;
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    const vx = cx + Math.cos(angle) * maxR * ratio, vy = cy + Math.sin(angle) * maxR * ratio;
+
+    ctx.beginPath(); ctx.arc(vx, vy, 3.2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+
+    const lx = cx + Math.cos(angle) * (maxR + 22);
+    const ly = cy + Math.sin(angle) * (maxR + 17);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = 'bold 10px sans-serif'; ctx.fillStyle = '#e2e8f0';
+    ctx.fillText(labels[i], lx - 10, ly);
+    ctx.font = '900 11px sans-serif'; ctx.fillStyle = '#facc15';
+    ctx.fillText(val, lx + 13, ly);
+  });
+}
+
+// ==================== 5. 大廳、工具箱、商店與 8 人錦標賽 UI 邏輯 ====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function switchHubTab(tab) {
+  document.getElementById('hubTabs').style.display = 'grid';
+  document.querySelectorAll('.hub-tab').forEach(b => b.classList.remove('active'));
+  if (tab === 'arena') {
+    document.getElementById('tabArena').classList.add('active');
+    showScreen('setupScreen');
+    refreshLobbySummary();
+  } else if (tab === 'toolbox') {
+    document.getElementById('tabToolbox').classList.add('active');
+    showScreen('toolboxScreen');
+    renderToolbox();
+  } else if (tab === 'shop') {
+    document.getElementById('tabShop').classList.add('active');
+    showScreen('shopScreen');
+    renderShop();
+  }
+  playTone(540, 'sine', 0.07);
+}
+
+function refreshLobbySummary() {
+  document.getElementById('expDisplay').textContent = playerData.exp;
+  const spec = getPlayerSpec();
+  document.getElementById('lobbyMyBeyName').textContent = spec.name;
+  document.getElementById('lobbyMyBeyParts').textContent = `上蓋：${spec.layerName} ｜ 輪盤：${spec.discName} ｜ 中軸：${spec.driverName}`;
+  drawSaintEmblem(document.getElementById('lobbyMyBeyCanvas'), spec);
+}
+
+function setGameMode(mode) {
+  state.gameMode = mode;
+  document.getElementById('cardModeTourney').classList.toggle('active', mode === 'tourney');
+  document.getElementById('cardModePractice').classList.toggle('active', mode === 'practice');
+  document.getElementById('cardMode2P').classList.toggle('active', mode === '2p');
+
+  document.getElementById('flipToggleWrap').style.display = mode === '2p' ? 'flex' : 'none';
+  document.getElementById('p2QuickPickCard').style.display = mode === '2p' ? 'block' : 'none';
+
+  const badge = document.getElementById('modeBadge');
+  const btn = document.getElementById('btnStartAction');
+  if (mode === 'tourney') {
+    badge.textContent = '8人單敗淘汰錦標賽';
+    btn.textContent = '🏆 進入 8 人錦標賽（生成對戰表）';
+  } else if (mode === 'practice') {
+    badge.textContent = '練習場 (1P vs COM)';
+    btn.textContent = '⚔️ 開始練習賽（累積 EXP）';
+  } else {
+    badge.textContent = '雙人對戰 (1P vs 2P)';
+    btn.textContent = '⚔️ 開始雙人同機對決';
+    renderP2QuickGrid();
+  }
+  playTone(580, 'sine', 0.07);
+}
+
+function toggleFlip2P() {
+  state.flip2P = document.getElementById('chkFlip2P').checked;
+}
+
+function renderP2QuickGrid() {
+  const grid = document.getElementById('p2QuickGrid');
+  grid.innerHTML = '';
+  Object.values(LAYERS).forEach(L => {
+    const div = document.createElement('div');
+    div.style.cssText = `background:#1e293b;border:2px solid ${state.p2PresetLayer === L.id ? '#f43f5e' : '#334155'};border-radius:10px;padding:6px;text-align:center;cursor:pointer;`;
+    div.innerHTML = `<canvas id="p2q_${L.id}" width="42" height="42"></canvas><div style="font-size:0.7rem;font-weight:800;margin-top:2px;">${L.name.replace('戰輪','')}</div>`;
+    div.onclick = () => {
+      state.p2PresetLayer = L.id;
+      document.getElementById('p2SelectedName').textContent = L.name;
+      renderP2QuickGrid();
+      playTone(460, 'triangle', 0.07);
+    };
+    grid.appendChild(div);
+    drawSaintEmblem(document.getElementById(`p2q_${L.id}`), L.id);
+  });
+}
+
+function selectStadium(type) {
+  state.stadium = type;
+  document.querySelectorAll('.stadium-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.stadium === type));
+  playTone(600, 'sine', 0.07);
+}
+
+// ==================== 工具箱渲染與自訂命名 ====================
+function renderToolbox() {
+  const spec = getPlayerSpec();
+  document.getElementById('customNameInput').value = playerData.customName;
+  document.getElementById('tbUltBadge').textContent = `滿星奧義：${spec.ultName}`;
+  drawSaintEmblem(document.getElementById('toolboxBeyCanvas'), spec);
+  drawHexRadar(spec);
+
+  const lWrap = document.getElementById('layerChips');
+  lWrap.innerHTML = playerData.unlockedLayers.map(id => `
+    <div class="part-chip ${playerData.layer === id ? 'equipped' : ''}" onclick="equipPart('layer','${id}')">${LAYERS[id].name}</div>
+  `).join('');
+
+  const dWrap = document.getElementById('discChips');
+  dWrap.innerHTML = playerData.unlockedDiscs.map(id => `
+    <div class="part-chip ${playerData.disc === id ? 'equipped' : ''}" onclick="equipPart('disc','${id}')">${DISCS[id].name}</div>
+  `).join('');
+
+  const rWrap = document.getElementById('driverChips');
+  rWrap.innerHTML = playerData.unlockedDrivers.map(id => `
+    <div class="part-chip ${playerData.driver === id ? 'equipped' : ''}" onclick="equipPart('driver','${id}')">${DRIVERS[id].name}</div>
+  `).join('');
+
+  const cWrap = document.getElementById('colorDots');
+  cWrap.innerHTML = playerData.unlockedColors.map(id => {
+    const pal = PALETTES[id];
+    return `<div class="color-dot ${playerData.color === id ? 'equipped' : ''}" style="background:linear-gradient(135deg,${pal.primary},${pal.secondary});" title="${pal.name}" onclick="equipPart('color','${id}')"></div>`;
+  }).join('');
+}
+
+function equipPart(type, id) {
+  playerData[type] = id;
+  playTone(640, 'triangle', 0.08);
+  renderToolbox();
+}
+
+function saveCustomName() {
+  const val = document.getElementById('customNameInput').value.trim();
+  if (val) {
+    playerData.customName = val;
+    playTone(780, 'sine', 0.12);
+    renderToolbox();
+  }
+}
+
+// ==================== 零件商店渲染與解鎖 ====================
+function renderShop() {
+  document.getElementById('expDisplay').textContent = playerData.exp;
+  const list = document.getElementById('shopList');
+  const catalog = [];
+
+  Object.values(LAYERS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'layer', label: '上蓋', ...x, desc: `滿星奧義【${x.ultName}】` }); });
+  Object.values(DISCS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'disc', label: '固鎖輪盤', ...x, desc: `攻${x.mod.atk>=0?'+':''}${x.mod.atk} 守${x.mod.def>=0?'+':''}${x.mod.def} 爆${x.mod.bst>=0?'+':''}${x.mod.bst}` }); });
+  Object.values(DRIVERS).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'driver', label: '中軸', ...x, desc: `敏${x.mod.agi>=0?'+':''}${x.mod.agi} 控${x.mod.ctl>=0?'+':''}${x.mod.ctl} 持${x.mod.sta>=0?'+':''}${x.mod.sta}` }); });
+  Object.values(PALETTES).forEach(x => { if (x.cost > 0) catalog.push({ cat: 'color', label: '涂裝配色', ...x, desc: '解鎖專屬雙色金屬塗裝' }); });
+
+  list.innerHTML = catalog.map(item => {
+    const ownedList = item.cat === 'layer' ? playerData.unlockedLayers
+      : item.cat === 'disc' ? playerData.unlockedDiscs
+      : item.cat === 'driver' ? playerData.unlockedDrivers
+      : playerData.unlockedColors;
+    const isOwned = ownedList.includes(item.id);
+    const canAfford = playerData.exp >= item.cost;
+
+    return `
+      <div class="shop-item">
+        <div class="shop-info">
+          <div class="shop-name">[${item.label}] ${item.name}</div>
+          <div class="shop-stat">${item.desc}</div>
+        </div>
+        ${isOwned
+          ? `<button class="buy-btn owned">✅ 已擁有</button>`
+          : `<button class="buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyShopItem('${item.cat}','${item.id}',${item.cost})">⭐ ${item.cost} EXP</button>`
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function buyShopItem(cat, id, cost) {
+  if (playerData.exp < cost) return;
+  playerData.exp -= cost;
+  if (cat === 'layer') playerData.unlockedLayers.push(id);
+  else if (cat === 'disc') playerData.unlockedDiscs.push(id);
+  else if (cat === 'driver') playerData.unlockedDrivers.push(id);
+  else if (cat === 'color') playerData.unlockedColors.push(id);
+
+  playTone(880, 'triangle', 0.18);
+  renderShop();
+}
+
+// ==================== 8 人單敗淘汰錦標賽系統 ====================
+function initTournament() {
+  const playerSpec = getPlayerSpec();
+  const participants = [{ isPlayer: true, spec: playerSpec }];
+  const usedNames = new Set([playerSpec.name]);
+
+  while (participants.length < 8) {
+    const tier = participants.length >= 6 ? 2 : 1;
+    const cSpec = generateRandomComSpec(tier);
+    if (!usedNames.has(cSpec.name)) {
+      usedNames.add(cSpec.name);
+      participants.push({ isPlayer: false, spec: cSpec });
+    }
+  }
+
+  // 打亂順序，將玩家放在第 0 號籤位
+  const others = participants.slice(1).sort(() => Math.random() - 0.5);
+  const seeded = [participants[0], ...others];
+
+  state.tourney = {
+    round: 1, // 1=8強, 2=4強, 3=決賽, 4=結束
+    qf: [
+      { a: seeded[0], b: seeded[1], winner: null },
+      { a: seeded[2], b: seeded[3], winner: null },
+      { a: seeded[4], b: seeded[5], winner: null },
+      { a: seeded[6], b: seeded[7], winner: null }
+    ],
+    sf: [
+      { a: null, b: null, winner: null },
+      { a: null, b: null, winner: null }
+    ],
+    final: { a: null, b: null, winner: null }
+  };
+
+  document.getElementById('hubTabs').style.display = 'none';
+  showScreen('tourneyScreen');
+  renderBracket();
+}
+
+function renderBracket() {
+  const t = state.tourney;
+  const grid = document.getElementById('bracketGrid');
+  const renderSlot = (p, winner) => {
+    if (!p) return `<div class="m-slot" style="color:#475569;">待定</div>`;
+    const isW = winner && winner.spec.name === p.spec.name;
+    const isL = winner && winner.spec.name !== p.spec.name;
+    return `<div class="m-slot ${p.isPlayer ? 'is-me' : ''} ${isW ? 'winner' : ''} ${isL ? 'loser' : ''}">
+      <span>${p.isPlayer ? '★' : ''}${p.spec.name}</span>
+    </div>`;
+  };
+
+  const qfHtml = t.qf.map((m, idx) => `
+    <div class="match-box ${idx === 0 && t.round === 1 ? 'player-match' : ''}">
+      ${renderSlot(m.a, m.winner)}
+      <div class="m-divider"></div>
+      ${renderSlot(m.b, m.winner)}
+    </div>
+  `).join('');
+
+  const sfHtml = t.sf.map((m, idx) => `
+    <div class="match-box ${idx === 0 && t.round === 2 ? 'player-match' : ''}" style="margin:18px 0;">
+      ${renderSlot(m.a, m.winner)}
+      <div class="m-divider"></div>
+      ${renderSlot(m.b, m.winner)}
+    </div>
+  `).join('');
+
+  const fHtml = `
+    <div class="match-box ${t.round === 3 ? 'player-match' : ''}" style="margin-top:52px;">
+      ${renderSlot(t.final.a, t.final.winner)}
+      <div class="m-divider"></div>
+      ${renderSlot(t.final.b, t.final.winner)}
+    </div>
+    ${t.final.winner ? `<div style="text-align:center;margin-top:10px;color:#facc15;font-weight:900;font-size:0.82rem;">👑 總冠軍<br>${t.final.winner.spec.name}</div>` : ''}
+  `;
+
+  grid.innerHTML = `
+    <div class="bracket-col"><div class="bracket-col-title">8 強賽</div>${qfHtml}</div>
+    <div class="bracket-col"><div class="bracket-col-title">4 強準決賽</div>${sfHtml}</div>
+    <div class="bracket-col"><div class="bracket-col-title">總冠軍決賽</div>${fHtml}</div>
+  `;
+
+  const badge = document.getElementById('tourneyRoundBadge');
+  const nextBtn = document.getElementById('btnTourneyNext');
+  if (t.round === 1) {
+    badge.textContent = '第 1 輪・8 強賽';
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = `⚔️ 迎戰 8 強對手【${t.qf[0].b.spec.name}】`;
+  } else if (t.round === 2) {
+    badge.textContent = '第 2 輪・4 強準決賽';
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = `⚔️ 迎戰 4 強對手【${t.sf[0].b.spec.name}】`;
+  } else if (t.round === 3) {
+    badge.textContent = '最終戰・總冠軍決賽';
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = `🔥 決戰總冠軍魔王【${t.final.b.spec.name}】`;
+  } else {
+    badge.textContent = '錦標賽結束';
+    nextBtn.style.display = 'none';
+  }
+}
+
+function startTourneyMatch() {
+  const t = state.tourney;
+  let opp = null;
+  if (t.round === 1) {
+    opp = t.qf[0].b.spec;
+    state.comMissRate = 0.25; // 8強失誤率 25%
+  } else if (t.round === 2) {
+    opp = t.sf[0].b.spec;
+    state.comMissRate = 0.12; // 4強失誤率降至 12%
+  } else if (t.round === 3) {
+    opp = t.final.b.spec;
+    state.comMissRate = 0.0;  // 總決賽魔王 0% 失誤！
+  }
+  launchBattleSession(getPlayerSpec(), opp);
+}
+
+function advanceTourneyAfterMatch(playerWon) {
+  const t = state.tourney;
+  if (!playerWon) {
+    playerData.exp += 40;
+    alert(`止步於第 ${t.round} 輪！獲得參與獎 +40 EXP`);
+    switchHubTab('arena');
+    return;
+  }
+
+  if (t.round === 1) {
+    t.qf[0].winner = t.qf[0].a;
+    for (let i = 1; i < 4; i++) {
+      t.qf[i].winner = Math.random() < 0.5 ? t.qf[i].a : t.qf[i].b;
+    }
+    t.sf[0].a = t.qf[0].winner; t.sf[0].b = t.qf[1].winner;
+    t.sf[1].a = t.qf[2].winner; t.sf[1].b = t.qf[3].winner;
+    t.round = 2;
+    playerData.exp += 60;
+  } else if (t.round === 2) {
+    t.sf[0].winner = t.sf[0].a;
+    t.sf[1].winner = Math.random() < 0.5 ? t.sf[1].a : t.sf[1].b;
+    t.final.a = t.sf[0].winner;
+    t.final.b = t.sf[1].winner;
+    t.round = 3;
+    playerData.exp += 90;
+  } else if (t.round === 3) {
+    t.final.winner = t.final.a;
+    t.round = 4;
+    playerData.exp += 220;
+    playTone(1046, 'triangle', 0.4, 0.25);
+  }
+
+  document.getElementById('expDisplay').textContent = playerData.exp;
+  document.getElementById('hubTabs').style.display = 'none';
+  showScreen('tourneyScreen');
+  renderBracket();
+}
+
+// ==================== 6. 啟動對戰與戰鬥物理核心 ====================
+function handleMainStart() {
+  if (state.gameMode === 'tourney') {
+    initTournament();
+  } else if (state.gameMode === 'practice') {
+    state.comMissRate = 0.30; // 練習場 COM 有 30% 發射失誤機率
+    launchBattleSession(getPlayerSpec(), generateRandomComSpec(1));
+  } else {
+    const p2L = LAYERS[state.p2PresetLayer];
+    const p2Color = p2L.id === 'demon' ? 'royal' : p2L.id === 'mage' ? 'emerald' : p2L.id === 'knight' ? 'gold' : 'crimson';
+    const p2Spec = buildBeySpec(p2L.name, p2L.id, 'std_disc', 'std_drv', p2Color);
+    launchBattleSession(getPlayerSpec(), p2Spec);
+  }
+}
+
+function launchBattleSession(p1Spec, p2Spec) {
+  state.p1Spec = p1Spec;
+  state.p2Spec = p2Spec;
+  state.p1Score = 0; state.p2Score = 0;
+
+  document.getElementById('scoreP1').textContent = '0';
+  document.getElementById('scoreP2').textContent = '0';
+  document.getElementById('hudNameP1').textContent = p1Spec.name;
+  document.getElementById('hudNameP2').textContent = p2Spec.name;
+  document.getElementById('hudRoleP2').textContent = state.gameMode === '2p' ? 'PLAYER 2' : 'RIVAL COM';
+  document.getElementById('p2RpmLabel').textContent = state.gameMode === '2p' ? '2P 轉速 RPM' : 'COM 轉速 RPM';
+
+  drawSaintEmblem(document.getElementById('hudEmblemP1'), p1Spec);
+  drawSaintEmblem(document.getElementById('hudEmblemP2'), p2Spec);
+
+  const shouldFlip = state.gameMode === '2p' && state.flip2P;
+  document.getElementById('p2LaunchPanel').classList.toggle('rotated-180', shouldFlip);
+
+  document.getElementById('hubTabs').style.display = 'none';
+  showScreen('battleScreen');
+  prepareLaunchPhase();
+  playTone(660, 'triangle', 0.16);
+}
+
+function abortBattleToHub() {
+  stopSpinHum();
+  state.phase = 'setup';
+  state.p1 = null; state.p2 = null;
+  document.getElementById('resultModal').classList.remove('active');
+  switchHubTab('arena');
+}
+
+function prepareLaunchPhase() {
+  stopSpinHum();
+  activePointers.clear();
+  state.phase = 'launch';
+  state.p1 = null; state.p2 = null;
+  state.p1Charging = false; state.p1ChargeVal = 0; state.p1ChargeDir = 1; state.p1Launched = false;
+  state.p2Charging = false; state.p2ChargeVal = 0; state.p2ChargeDir = 1; state.p2Launched = false;
+  state.timeLeft = ROUND_TIME_LIMIT; state.elapsed = 0; state.clashCooldown = 0;
+  state.magicOrbs = []; state.particles = []; state.popups = []; state.slowMo = 1;
+  state.aiState = { mode: 'roam', timer: 0.4, goalX: 220, goalY: 220 };
+
+  const timerEl = document.getElementById('battleTimer');
+  timerEl.classList.remove('urgent');
+  timerEl.textContent = '限時 60.0s';
+
+  document.getElementById('p1MeterFill').style.width = '0%';
+  document.getElementById('p1LaunchPanel').style.display = 'block';
+  document.getElementById('p1CombatPanel').style.display = 'none';
+
+  const p1Btn = document.getElementById('p1HoldLaunchBtn');
+  p1Btn.classList.remove('charging', 'locked');
+  p1Btn.textContent = '🔥 1P 按住蓄力 ➔ 進入黃金區放開射擊！';
+
+  if (state.gameMode === '2p') {
+    document.getElementById('p2MeterFill').style.width = '0%';
+    document.getElementById('p2LaunchPanel').style.display = 'block';
+    const p2Btn = document.getElementById('p2HoldLaunchBtn');
+    p2Btn.classList.remove('charging', 'locked');
+    p2Btn.textContent = '🔥 2P 按住蓄力 ➔ 黃金區放開！';
+  } else {
+    document.getElementById('p2LaunchPanel').style.display = 'none';
+    const zones = ['left', 'center', 'right'];
+    state.p2Drop = zones[Math.floor(Math.random() * 3)];
+
+    // COM 依照當前模式失誤率產生發射力道（會出現過早軟弱發射或過載失誤）
+    if (Math.random() < state.comMissRate) {
+      state.p2Power = 0.72 + Math.random() * 0.12; // 發射失誤（力道偏弱）
+      state.comLaunchStatus = '⚠️ COM 發射失誤！';
+    } else {
+      state.p2Power = state.comMissRate === 0 ? 1.15 : (0.92 + Math.random() * 0.16);
+      state.comLaunchStatus = state.comMissRate === 0 ? '🌟 COM 完美爆發！' : '';
+    }
+    state.p2Launched = true;
+  }
+}
+
+function evaluateChargePower(val) {
+  if (val >= 72 && val <= 90) return { power: 1.18, label: '🌟 PERFECT 完美爆發！' };
+  if (val > 90) return { power: 0.85, label: '⚠️ OVER 過載失穩！' };
+  return { power: 0.84 + (val / 72) * 0.25, label: '⚡ 順利發射！' };
+}
+
+function finalizePlayerLaunch(isP1) {
+  if (state.phase !== 'launch') return;
+  if (isP1 && !state.p1Launched) {
+    state.p1Charging = false; state.p1Launched = true;
+    const res = evaluateChargePower(state.p1ChargeVal);
+    state.p1Power = res.power;
+    const btn = document.getElementById('p1HoldLaunchBtn');
+    btn.classList.remove('charging'); btn.classList.add('locked');
+    btn.textContent = `✅ 1P 已鎖定發射 (${res.label})`;
+    playLaunchRipcordSound();
+  } else if (!isP1 && !state.p2Launched) {
+    state.p2Charging = false; state.p2Launched = true;
+    const res = evaluateChargePower(state.p2ChargeVal);
+    state.p2Power = res.power;
+    const btn = document.getElementById('p2HoldLaunchBtn');
+    btn.classList.remove('charging'); btn.classList.add('locked');
+    btn.textContent = `✅ 2P 已鎖定發射 (${res.label})`;
+    playLaunchRipcordSound();
+  }
+
+  if (state.p1Launched && state.p2Launched) {
+    beginBattleRound();
+  }
+}
+
+function createBeyEntity(spec, isP1, dropZone, launchPower) {
+  const cx = 220, cy = 220;
+  let x = cx, y = isP1 ? cy + 75 : cy - 75;
+
+  if (isP1) {
+    if (dropZone === 'left') { x = cx - 88; y = cy + 56; }
+    else if (dropZone === 'right') { x = cx + 88; y = cy + 56; }
+    else { x = cx; y = cy + 76; }
+  } else {
+    if (dropZone === 'left') { x = cx - 88; y = cy - 56; }
+    else if (dropZone === 'right') { x = cx + 88; y = cy - 56; }
+    else { x = cx; y = cy - 76; }
+  }
+
+  const angleToCenter = Math.atan2(cy - y, cx - x);
+  const tangentAngle = angleToCenter + Math.PI / 2;
+  const initSpeed = (2.8 + (spec.stats.agi / 100) * 1.6) * launchPower;
+  const startRpm = Math.round((3200 + spec.stats.sta * 7.0) * launchPower);
+
+  return {
+    bey: spec, isP1, x, y,
+    vx: Math.cos(tangentAngle) * initSpeed,
+    vy: Math.sin(tangentAngle) * initSpeed,
+    radius: 22, angle: 0,
+    rpm: startRpm,
+    maxRpm: Math.round((3200 + spec.stats.sta * 7.0) * 1.18),
+    burstHp: 240 + spec.stats.def * 0.85,
+    maxBurstHp: 240 + spec.stats.def * 0.85,
+    mp: 0, ultTimer: 0, xDashTimer: 0
+  };
+}
+
+function beginBattleRound() {
+  state.p1 = createBeyEntity(state.p1Spec, true, state.p1Drop, state.p1Power);
+  state.p2 = createBeyEntity(state.p2Spec, false, state.p2Drop, state.p2Power);
+  state.phase = 'battle';
+  state.timeLeft = ROUND_TIME_LIMIT;
+  state.elapsed = 0;
+  state.clashCooldown = 0;
+
+  document.getElementById('p1LaunchPanel').style.display = 'none';
+  document.getElementById('p1CombatPanel').style.display = 'block';
+  if (state.gameMode === '2p') document.getElementById('p2LaunchPanel').style.display = 'none';
+
+  updateHudBars();
+  if (state.gameMode !== '2p') {
+    playLaunchRipcordSound();
+    if (state.comLaunchStatus) {
+      addPopup(220, 145, state.comLaunchStatus, state.comLaunchStatus.includes('失誤') ? '#38bdf8' : '#f43f5e');
+    }
+  }
+  startSpinHum();
+  addPopup(220, 220, '🔥 3、2、1、GO SHOOT！', '#facc15');
+  spawnMagicOrb();
+  spawnMagicOrb();
+}
+
+function bindHoldButton(btnId, isP1) {
+  const btn = document.getElementById(btnId);
+  const onDown = (e) => {
+    e.preventDefault();
+    if (state.phase !== 'launch') return;
+    ensureAudio();
+    if (isP1 && !state.p1Launched) {
+      state.p1Charging = true; state.p1ChargeVal = 4; state.p1ChargeDir = 1;
+      btn.classList.add('charging'); btn.textContent = '⚡ 1P 蓄力中... 抓準黃金區放開！';
+    } else if (!isP1 && !state.p2Launched) {
+      state.p2Charging = true; state.p2ChargeVal = 4; state.p2ChargeDir = 1;
+      btn.classList.add('charging'); btn.textContent = '⚡ 2P 蓄力中... 抓準黃金區放開！';
+    }
+  };
+  const onUp = (e) => {
+    if (isP1 && state.p1Charging) { e.preventDefault(); finalizePlayerLaunch(true); }
+    else if (!isP1 && state.p2Charging) { e.preventDefault(); finalizePlayerLaunch(false); }
+  };
+  btn.addEventListener('pointerdown', onDown);
+  btn.addEventListener('pointerup', onUp);
+  btn.addEventListener('pointercancel', onUp);
+}
+bindHoldButton('p1HoldLaunchBtn', true);
+bindHoldButton('p2HoldLaunchBtn', false);
+
+const arenaCanvas = document.getElementById('arenaCanvas');
+const activePointers = new Map();
+
+function getCanvasPt(clientX, clientY) {
+  const rect = arenaCanvas.getBoundingClientRect();
+  return {
+    x: ((clientX - rect.left) / rect.width) * 440,
+    y: ((clientY - rect.top) / rect.height) * 440
+  };
+}
+
+arenaCanvas.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  const pt = getCanvasPt(e.clientX, e.clientY);
+
+  if (state.phase === 'launch') {
+    if (state.gameMode === '2p' && pt.y < 220) {
+      if (pt.x < 165) { state.p2Drop = 'left'; document.getElementById('p2DropLabel').textContent = '2P 左翼區'; }
+      else if (pt.x > 275) { state.p2Drop = 'right'; document.getElementById('p2DropLabel').textContent = '2P 右翼區'; }
+      else { state.p2Drop = 'center'; document.getElementById('p2DropLabel').textContent = '2P 中央區'; }
+      playTone(640, 'sine', 0.07);
+    } else {
+      if (pt.x < 165) { state.p1Drop = 'left'; document.getElementById('p1DropLabel').textContent = '左翼突擊區'; }
+      else if (pt.x > 275) { state.p1Drop = 'right'; document.getElementById('p1DropLabel').textContent = '右翼包抄區'; }
+      else { state.p1Drop = 'center'; document.getElementById('p1DropLabel').textContent = '中央搶攻區'; }
+      playTone(640, 'sine', 0.07);
+    }
+    return;
+  }
+
+  if (state.phase === 'battle' && state.p1 && state.p2) {
+    let owner = 'p1';
+    if (state.gameMode === '2p') {
+      const d1 = Math.hypot(pt.x - state.p1.x, pt.y - state.p1.y);
+      const d2 = Math.hypot(pt.x - state.p2.x, pt.y - state.p2.y);
+      const p1Taken = Array.from(activePointers.values()).some(v => v.owner === 'p1');
+      const p2Taken = Array.from(activePointers.values()).some(v => v.owner === 'p2');
+      if (!p1Taken && !p2Taken) owner = d1 <= d2 ? 'p1' : 'p2';
+      else if (p1Taken && !p2Taken) owner = 'p2';
+      else if (!p1Taken && p2Taken) owner = 'p1';
+      else owner = d1 <= d2 ? 'p1' : 'p2';
+    }
+    activePointers.set(e.pointerId, { owner, x: pt.x, y: pt.y });
+    arenaCanvas.setPointerCapture(e.pointerId);
+  }
+});
+
+arenaCanvas.addEventListener('pointermove', (e) => {
+  if (state.phase === 'battle' && activePointers.has(e.pointerId)) {
+    const pt = getCanvasPt(e.clientX, e.clientY);
+    const entry = activePointers.get(e.pointerId);
+    entry.x = pt.x; entry.y = pt.y;
+  }
+});
+
+const removePointer = (e) => activePointers.delete(e.pointerId);
+arenaCanvas.addEventListener('pointerup', removePointer);
+arenaCanvas.addEventListener('pointercancel', removePointer);
+
+function spawnMagicOrb() {
+  if (state.magicOrbs.length >= 3) return;
+  const angle = Math.random() * Math.PI * 2;
+  const dist = 42 + Math.random() * 118;
+  state.magicOrbs.push({ x: 220 + Math.cos(angle) * dist, y: 220 + Math.sin(angle) * dist, r: 11, pulse: Math.random() * Math.PI * 2, age: 0 });
+}
+
+function executeUltimate(caster, target) {
+  caster.mp = 0; state.shake = 14;
+  playMetalClash(1.8);
+  spawnParticles(caster.x, caster.y, caster.bey.secondary, 26);
+  const tag = caster.isP1 ? '1P' : (state.gameMode === '2p' ? '2P' : 'COM');
+  addPopup(caster.x, caster.y - 30, `🔥 ${tag} 滿星覺醒【${caster.bey.ultName}】！`, '#facc15');
+
+  const id = caster.bey.layerId;
+  if (id === 'dragon') {
+    const dx = target.x - caster.x, dy = target.y - caster.y, d = Math.hypot(dx, dy) || 1;
+    caster.vx = (dx / d) * 10.5; caster.vy = (dy / d) * 10.5; caster.ultTimer = 1.6;
+  } else if (id === 'demon') {
+    caster.ultTimer = 3.0;
+    target.rpm = Math.max(0, target.rpm - 260);
+    target.burstHp = Math.max(0, target.burstHp - 40);
+    addPopup(target.x, target.y - 20, '⛓️ 鎖鏈束縛 -40耐久', '#c084fc');
+  } else if (id === 'mage') {
+    const stealRpm = Math.min(target.rpm, 380);
+    target.rpm -= stealRpm;
+    caster.rpm = Math.min(caster.maxRpm, caster.rpm + stealRpm);
+    target.burstHp = Math.max(0, target.burstHp - 36);
+    caster.burstHp = Math.min(caster.maxBurstHp, caster.burstHp + 42);
+    addPopup(caster.x, caster.y - 15, '🪄 魔力虹吸 +380 RPM', '#34d399');
+  } else if (id === 'knight') {
+    caster.ultTimer = 2.8;
+    const dx = target.x - caster.x, dy = target.y - caster.y, d = Math.hypot(dx, dy) || 1;
+    caster.vx = (dx / d) * 9.5; caster.vy = (dy / d) * 9.5;
+  }
+}
+
+function updateComBrain(ent, other, stepDt) {
+  const cx = 220, cy = 220;
+  state.aiState.timer -= stepDt;
+
+  if (state.aiState.timer <= 0) {
+    state.aiState.timer = 0.75 + Math.random() * 0.6;
+    const hpRatio = ent.burstHp / ent.maxBurstHp;
+    const distToPlayer = Math.hypot(other.x - ent.x, other.y - ent.y);
+    const visibleOrbs = state.magicOrbs.filter(o => o.age > 0.6 && Math.hypot(o.x - ent.x, o.y - ent.y) < 165);
+
+    if (other.ultTimer > 0 || (hpRatio < 0.42 && distToPlayer < 135)) {
+      state.aiState.mode = 'evade';
+      const awayAngle = Math.atan2(ent.y - other.y, ent.x - other.x) + (Math.random() - 0.5) * 0.8;
+      state.aiState.goalX = cx + Math.cos(awayAngle) * 115;
+      state.aiState.goalY = cy + Math.sin(awayAngle) * 115;
+    } else if (visibleOrbs.length > 0 && Math.random() < 0.7) {
+      state.aiState.mode = 'orb';
+      state.aiState.goalX = visibleOrbs[0].x;
+      state.aiState.goalY = visibleOrbs[0].y;
+    } else if (Math.random() < 0.65) {
+      state.aiState.mode = 'attack';
+      state.aiState.goalX = other.x + other.vx * 6;
+      state.aiState.goalY = other.y + other.vy * 6;
+    } else {
+      state.aiState.mode = 'roam';
+      const randA = Math.random() * Math.PI * 2, randR = 45 + Math.random() * 95;
+      state.aiState.goalX = cx + Math.cos(randA) * randR;
+      state.aiState.goalY = cy + Math.sin(randA) * randR;
+    }
+  }
+
+  if (state.aiState.mode === 'attack') {
+    state.aiState.goalX = other.x;
+    state.aiState.goalY = other.y;
+  }
+
+  const dx = state.aiState.goalX - ent.x, dy = state.aiState.goalY - ent.y, dist = Math.hypot(dx, dy) || 1;
+  const aiResp = (0.055 + (ent.bey.stats.ctl / 100) * 0.075) * 0.9;
+  const aiSpd = (4.0 + (ent.bey.stats.agi / 100) * 2.4) * 0.9;
+  ent.vx += ((dx / dist) * aiSpd - ent.vx) * aiResp;
+  ent.vy += ((dy / dist) * aiSpd - ent.vy) * aiResp;
+}
+
+function spawnParticles(x, y, color, count = 14) {
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2, spd = 1.5 + Math.random() * 5.5;
+    state.particles.push({ x, y, vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, life: 1, color });
+  }
+}
+
+function addPopup(x, y, text, color = '#fff') {
+  state.popups.push({ x, y, text, color, life: 1.1 });
+}
+
+function updatePhysics(dt) {
+  titleSpinAngle += dt * 7.5;
+  if (document.getElementById('titleScreen').style.display !== 'none') {
+    renderTitleSpinBey();
+  }
+
+  if (state.phase === 'launch') {
+    if (state.p1Charging) {
+      state.p1ChargeVal += state.p1ChargeDir * dt * 115;
+      if (state.p1ChargeVal >= 100) { state.p1ChargeVal = 100; state.p1ChargeDir = -1; }
+      if (state.p1ChargeVal <= 0) { state.p1ChargeVal = 0; state.p1ChargeDir = 1; }
+      document.getElementById('p1MeterFill').style.width = `${state.p1ChargeVal}%`;
+    }
+    if (state.p2Charging) {
+      state.p2ChargeVal += state.p2ChargeDir * dt * 115;
+      if (state.p2ChargeVal >= 100) { state.p2ChargeVal = 100; state.p2ChargeDir = -1; }
+      if (state.p2ChargeVal <= 0) { state.p2ChargeVal = 0; state.p2ChargeDir = 1; }
+      document.getElementById('p2MeterFill').style.width = `${state.p2ChargeVal}%`;
+    }
+    return;
+  }
+
+  if (state.phase !== 'battle' || !state.p1 || !state.p2) return;
+
+  const stepDt = dt * state.slowMo;
+  state.elapsed += stepDt;
+  if (state.clashCooldown > 0) state.clashCooldown -= stepDt;
+  state.timeLeft = Math.max(0, state.timeLeft - stepDt);
+  state.magicOrbs.forEach(o => { o.age += stepDt; });
+
+  const timerEl = document.getElementById('battleTimer');
+  timerEl.textContent = `⏳ ${state.timeLeft.toFixed(1)}s`;
+  timerEl.classList.toggle('urgent', state.timeLeft <= 15.0);
+
+  updateSpinHum(Math.max(state.p1.rpm, state.p2.rpm), Math.max(state.p1.maxRpm, state.p2.maxRpm));
+
+  if (state.timeLeft <= 0) {
+    const p1Ratio = (state.p1.burstHp / state.p1.maxBurstHp) + (state.p1.rpm / state.p1.maxRpm);
+    const p2Ratio = (state.p2.burstHp / state.p2.maxBurstHp) + (state.p2.rpm / state.p2.maxRpm);
+    if (Math.abs(p1Ratio - p2Ratio) < 0.03) {
+      finishRound(null, '⚖️ 60秒時間到・平手 DRAW', 0, '#94a3b8');
+    } else if (p1Ratio > p2Ratio) {
+      finishRound(true, '⏳ 60秒時間到・判定獲勝', 1, '#22c55e');
+    } else {
+      finishRound(false, '⏳ 60秒時間到・判定落敗', 1, '#f43f5e');
+    }
+    return;
+  }
+
+  if (Math.random() < stepDt * 0.55) spawnMagicOrb();
+
+  const cx = 220, cy = 220, arenaRadius = 188;
+  const entities = [state.p1, state.p2];
+
+  let p1Target = null, p2Target = null;
+  activePointers.forEach(v => {
+    if (v.owner === 'p1') p1Target = v;
+    if (v.owner === 'p2') p2Target = v;
+  });
+
+  entities.forEach(ent => {
+    const other = ent.isP1 ? state.p2 : state.p1;
+    if (ent.ultTimer > 0) ent.ultTimer -= stepDt;
+    if (ent.xDashTimer > 0) ent.xDashTimer -= stepDt;
+
+    const dxCenter = cx - ent.x, dyCenter = cy - ent.y;
+    const distCenter = Math.hypot(dxCenter, dyCenter) || 1;
+    if (distCenter > 85) {
+      ent.vx += (dxCenter / distCenter) * 0.014;
+      ent.vy += (dyCenter / distCenter) * 0.014;
+    }
+
+    const dragPt = ent.isP1 ? p1Target : p2Target;
+    if (dragPt) {
+      const dx = dragPt.x - ent.x, dy = dragPt.y - ent.y, dist = Math.hypot(dx, dy) || 1;
+      const responsiveness = ent.ultTimer > 0 && ent.bey.layerId === 'knight' ? 0.36 : 0.075 + (ent.bey.stats.ctl / 100) * 0.11;
+      const maxSpd = 4.6 + (ent.bey.stats.agi / 100) * 2.8;
+      ent.vx += ((dx / dist) * maxSpd - ent.vx) * responsiveness;
+      ent.vy += ((dy / dist) * maxSpd - ent.vy) * responsiveness;
+    } else if (!ent.isP1 && state.gameMode !== '2p') {
+      updateComBrain(ent, other, stepDt);
+    }
+
+    if (other.ultTimer > 0 && other.bey.layerId === 'demon') {
+      const pullX = other.x - ent.x, pullY = other.y - ent.y, pullD = Math.hypot(pullX, pullY) || 1;
+      ent.vx += (pullX / pullD) * 0.30; ent.vy += (pullY / pullD) * 0.30;
+    }
+
+    ent.vx *= 0.992; ent.vy *= 0.992;
+    ent.x += ent.vx * (stepDt * 60);
+    ent.y += ent.vy * (stepDt * 60);
+    ent.angle += (ent.rpm / 3200) * 0.45 * (stepDt * 60);
+
+    const decayRate = 76 - (ent.bey.stats.sta / 100) * 24;
+    ent.rpm = Math.max(0, ent.rpm - decayRate * stepDt);
+
+    if (state.stadium === 'volcano') {
+      if (distCenter < 48) {
+        ent.rpm = Math.max(0, ent.rpm - 18 * stepDt);
+      } else if (distCenter > 152 && distCenter < 184 && ent.xDashTimer <= 0) {
+        ent.xDashTimer = 1.6;
+        const tang = Math.atan2(ent.y - cy, ent.x - cx) + Math.PI / 2;
+        ent.vx = Math.cos(tang) * 8.0; ent.vy = Math.sin(tang) * 8.0;
+        addPopup(ent.x, ent.y - 18, '⚡ X-DASH 加速！', '#38bdf8');
+        playTone(760, 'sawtooth', 0.14, 0.1);
+      }
+    }
+
+    for (let i = state.magicOrbs.length - 1; i >= 0; i--) {
+      const orb = state.magicOrbs[i];
+      if (Math.hypot(ent.x - orb.x, ent.y - orb.y) < ent.radius + orb.r + 5) {
+        state.magicOrbs.splice(i, 1);
+        ent.mp = Math.min(100, ent.mp + 35);
+        spawnParticles(orb.x, orb.y, '#facc15', 12);
+        playTone(780, 'sine', 0.12, 0.12);
+        if (ent.mp >= 100) executeUltimate(ent, other);
+        else addPopup(ent.x, ent.y - 18, `✨ 魔力 ${Math.floor(ent.mp)}%`, '#facc15');
+      }
+    }
+
+    const newDist = Math.hypot(ent.x - cx, ent.y - cy);
+    if (newDist > arenaRadius - ent.radius) {
+      const speed = Math.hypot(ent.vx, ent.vy);
+      const isCriticallyLow = ent.burstHp < ent.maxBurstHp * 0.25;
+      const canRingOut = state.elapsed > 3.0 && isCriticallyLow && speed > 6.0;
+
+      if (canRingOut) {
+        const isXtreme = state.stadium === 'volcano' && (other.xDashTimer > 0 || speed > 8.2);
+        const winnerIsP1 = !ent.isP1;
+        const pts = isXtreme ? 3 : 2;
+        finishRound(
+          winnerIsP1,
+          isXtreme ? '⚡ 極限擊飛 XTREME FINISH' : '🚀 擊飛出場 OVER FINISH',
+          pts,
+          isXtreme ? '#38bdf8' : '#f59e0b'
+        );
+        return;
+      } else {
+        const nx = (ent.x - cx) / newDist, ny = (ent.y - cy) / newDist;
+        ent.x = cx + nx * (arenaRadius - ent.radius - 1);
+        ent.y = cy + ny * (arenaRadius - ent.radius - 1);
+        const dot = ent.vx * nx + ent.vy * ny;
+        ent.vx -= 1.85 * dot * nx;
+        ent.vy -= 1.85 * dot * ny;
+        spawnParticles(ent.x + nx * ent.radius, ent.y + ny * ent.radius, '#38bdf8', 8);
+        playMetalClash(0.6);
+        addPopup(ent.x, ent.y - 16, '🛡️ 盤緣彈回', '#38bdf8');
+      }
+    }
+  });
+
+  if (state.phase !== 'battle') return;
+
+  const p1 = state.p1, p2 = state.p2;
+  const dx = p2.x - p1.x, dy = p2.y - p1.y, dist = Math.hypot(dx, dy);
+
+  if (dist < p1.radius + p2.radius) {
+    const nx = dx / (dist || 1), ny = dy / (dist || 1);
+    const overlap = (p1.radius + p2.radius) - dist;
+    p1.x -= nx * overlap * 0.55; p1.y -= ny * overlap * 0.55;
+    p2.x += nx * overlap * 0.55; p2.y += ny * overlap * 0.55;
+
+    const rvx = p2.vx - p1.vx, rvy = p2.vy - p1.vy;
+    const velAlongNormal = rvx * nx + rvy * ny;
+
+    if (velAlongNormal < 0) {
+      const impactSpeed = Math.abs(velAlongNormal);
+      const restitution = 1.38;
+      const p1Mass = 0.8 + (p1.bey.stats.def / 100) * 0.7;
+      const p2Mass = 0.8 + (p2.bey.stats.def / 100) * 0.7;
+      const impulse = -(1 + restitution) * velAlongNormal / (1 / p1Mass + 1 / p2Mass);
+
+      p1.vx -= (impulse / p1Mass) * nx; p1.vy -= (impulse / p1Mass) * ny;
+      p2.vx += (impulse / p2Mass) * nx; p2.vy += (impulse / p2Mass) * ny;
+
+      if (state.clashCooldown <= 0) {
+        state.clashCooldown = 0.22;
+        const p1UltBonus = p1.ultTimer > 0 ? 1.85 : 1.0;
+        const p2UltBonus = p2.ultTimer > 0 ? 1.85 : 1.0;
+
+        const dmgToP2 = Math.max(8, (impactSpeed * 2.3 + p1.bey.stats.atk * 0.14 + p1.bey.stats.bst * 0.11) * p1UltBonus * (1 - p2.bey.stats.def / 230) * 0.9);
+        const dmgToP1 = Math.max(8, (impactSpeed * 2.3 + p2.bey.stats.atk * 0.14 + p2.bey.stats.bst * 0.11) * p2UltBonus * (1 - p1.bey.stats.def / 230) * 0.9);
+
+        p2.burstHp = Math.max(0, p2.burstHp - dmgToP2);
+        p1.burstHp = Math.max(0, p1.burstHp - dmgToP1);
+
+        p1.mp = Math.min(100, p1.mp + 15);
+        p2.mp = Math.min(100, p2.mp + 15);
+        p1.rpm = Math.max(0, p1.rpm - dmgToP1 * 0.35);
+        p2.rpm = Math.max(0, p2.rpm - dmgToP2 * 0.35);
+
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        spawnParticles(midX, midY, '#fde047', 18);
+        addPopup(p2.x, p2.y - 16, `-${Math.round(dmgToP2)}`, '#f43f5e');
+        addPopup(p1.x, p1.y - 16, `-${Math.round(dmgToP1)}`, '#38bdf8');
+        state.shake = Math.min(12, impactSpeed * 1.5);
+        playMetalClash(impactSpeed / 5);
+
+        if (p1.mp >= 100 && p2.burstHp > 0) executeUltimate(p1, p2);
+        if (p2.mp >= 100 && p1.burstHp > 0) executeUltimate(p2, p1);
+
+        if (p2.burstHp <= 0) {
+          state.slowMo = 0.25; spawnParticles(p2.x, p2.y, '#f43f5e', 42);
+          finishRound(true, '💥 爆裂獲勝 BURST FINISH', 2, '#facc15');
+          return;
+        }
+        if (p1.burstHp <= 0) {
+          state.slowMo = 0.25; spawnParticles(p1.x, p1.y, '#38bdf8', 42);
+          finishRound(false, '💥 遭到爆裂擊敗 BURST FINISH', 2, '#f43f5e');
+          return;
+        }
+      }
+    }
+  }
+
+  if (p2.rpm <= 0) {
+    finishRound(true, '🌀 持久獲勝 SPIN FINISH', 1, '#38bdf8');
+  } else if (p1.rpm <= 0) {
+    finishRound(false, '🌀 轉速耗盡落敗 SPIN FINISH', 1, '#f43f5e');
+  }
+
+  updateHudBars();
+}
+
+function updateHudBars() {
+  if (!state.p1 || !state.p2) return;
+  const p1 = state.p1, p2 = state.p2;
+  document.getElementById('p1RpmText').textContent = Math.round(p1.rpm);
+  document.getElementById('p1RpmBar').style.width = `${(p1.rpm / p1.maxRpm) * 100}%`;
+  document.getElementById('p1BurstText').textContent = `${Math.ceil((p1.burstHp / p1.maxBurstHp) * 100)}%`;
+  document.getElementById('p1BurstBar').style.width = `${(p1.burstHp / p1.maxBurstHp) * 100}%`;
+  document.getElementById('p1MpText').textContent = `${Math.floor(p1.mp)}%`;
+  document.getElementById('p1MpBar').style.width = `${p1.mp}%`;
+
+  document.getElementById('p2RpmText').textContent = Math.round(p2.rpm);
+  document.getElementById('p2RpmBar').style.width = `${(p2.rpm / p2.maxRpm) * 100}%`;
+  document.getElementById('p2BurstText').textContent = `${Math.ceil((p2.burstHp / p2.maxBurstHp) * 100)}%`;
+  document.getElementById('p2BurstBar').style.width = `${(p2.burstHp / p2.maxBurstHp) * 100}%`;
+  document.getElementById('p2MpText').textContent = `${Math.floor(p2.mp)}%`;
+  document.getElementById('p2MpBar').style.width = `${p2.mp}%`;
+}
+
+// ==================== 7. 精簡結算畫面（只保留原因徽章與比數） ====================
+function finishRound(p1Won, reasonBadge, pts, badgeColor = '#facc15') {
+  stopSpinHum();
+  state.phase = 'roundOver';
+  activePointers.clear();
+  document.getElementById('battleTimer').classList.remove('urgent');
+
+  if (p1Won === true) { state.p1Score += pts; playTone(780, 'triangle', 0.35, 0.2); }
+  else if (p1Won === false) { state.p2Score += pts; playTone(190, 'sawtooth', 0.35, 0.2); }
+  else { playTone(440, 'sine', 0.25, 0.15); }
+
+  document.getElementById('scoreP1').textContent = state.p1Score;
+  document.getElementById('scoreP2').textContent = state.p2Score;
+
+  const badgeEl = document.getElementById('modalReasonBadge');
+  badgeEl.textContent = reasonBadge;
+  badgeEl.style.background = `${badgeColor}25`;
+  badgeEl.style.color = badgeColor;
+  badgeEl.style.border = `1.5px solid ${badgeColor}`;
+
+  const isMatchOver = state.p1Score >= 4 || state.p2Score >= 4;
+  const p2Label = state.gameMode === '2p' ? '2P' : 'COM';
+  let expNote = '';
+  if (isMatchOver && state.gameMode === 'practice') {
+    const gained = state.p1Score >= 4 ? 75 : 30;
+    playerData.exp += gained;
+    expNote = `（+${gained} EXP）`;
+  }
+
+  document.getElementById('modalScoreLine').textContent = `目前比數 1P【${state.p1Score}】 : 【${state.p2Score}】${p2Label} ${expNote}`;
+
+  const leftBtn = document.getElementById('modalLeftBtn');
+  const nextBtn = document.getElementById('modalNextBtn');
+
+  if (isMatchOver) {
+    if (state.gameMode === 'tourney') {
+      leftBtn.style.display = 'none';
+      nextBtn.textContent = '🏆 返回錦標賽賽程表';
+      nextBtn.onclick = () => {
+        document.getElementById('resultModal').classList.remove('active');
+        advanceTourneyAfterMatch(state.p1Score >= 4);
+      };
+    } else {
+      leftBtn.style.display = 'block';
+      nextBtn.textContent = '🔥 再戰一局';
+      nextBtn.onclick = () => {
+        document.getElementById('resultModal').classList.remove('active');
+        handleMainStart();
+      };
+    }
+  } else {
+    leftBtn.style.display = 'block';
+    nextBtn.textContent = '⚔️ 下一回合';
+    nextBtn.onclick = () => {
+      document.getElementById('resultModal').classList.remove('active');
+      prepareLaunchPhase();
+    };
+  }
+
+  setTimeout(() => document.getElementById('resultModal').classList.add('active'), 420);
+}
+
+// ==================== 8. 戰鬥盤渲染 ====================
+function getEmblemCanvas(spec) {
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  drawSaintEmblem(c, spec);
+  return c;
+}
+
+function renderArena() {
+  const ctx = arenaCanvas.getContext('2d');
+  const cx = 220, cy = 220;
+  ctx.save();
+  ctx.clearRect(0, 0, 440, 440);
+
+  if (state.shake > 0.2) {
+    ctx.translate((Math.random() - 0.5) * state.shake, (Math.random() - 0.5) * state.shake);
+    state.shake *= 0.88;
+  }
+
+  const bgGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 200);
+  if (state.stadium === 'volcano') {
+    bgGrad.addColorStop(0, '#7f1d1d'); bgGrad.addColorStop(0.28, '#1e1b4b');
+    bgGrad.addColorStop(0.85, '#0f172a'); bgGrad.addColorStop(1, '#f97316');
+  } else {
+    bgGrad.addColorStop(0, '#1e293b'); bgGrad.addColorStop(0.75, '#0f172a'); bgGrad.addColorStop(1, '#38bdf8');
+  }
+  ctx.beginPath(); ctx.arc(cx, cy, 192, 0, Math.PI * 2); ctx.fillStyle = bgGrad; ctx.fill();
+  ctx.lineWidth = 6; ctx.strokeStyle = state.stadium === 'volcano' ? '#f97316' : '#38bdf8'; ctx.stroke();
+
+  if (state.stadium === 'volcano') {
+    ctx.beginPath(); ctx.arc(cx, cy, 48, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(cx, cy, 168, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.55)'; ctx.lineWidth = 4; ctx.stroke();
+  } else {
+    [85, 138].forEach(r => {
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)'; ctx.lineWidth = 1.5; ctx.stroke();
+    });
+  }
+
+  if (state.phase === 'launch' && state.p1Spec && state.p2Spec) {
+    const p1Img = getEmblemCanvas(state.p1Spec);
+    const p2Img = getEmblemCanvas(state.p2Spec);
+    ctx.save();
+    ctx.globalAlpha = 0.26;
+    ctx.drawImage(p1Img, cx - 34, cy + 108, 68, 68);
+    ctx.drawImage(p2Img, cx - 34, cy - 176, 68, 68);
+    ctx.restore();
+
+    const p1Zones = [
+      { id: 'left', x: cx - 88, y: cy + 56, label: '1P左' },
+      { id: 'center', x: cx, y: cy + 76, label: '1P中' },
+      { id: 'right', x: cx + 88, y: cy + 56, label: '1P右' }
+    ];
+    p1Zones.forEach(z => {
+      const active = state.p1Drop === z.id;
+      ctx.beginPath(); ctx.arc(z.x, z.y, active ? 26 : 20, 0, Math.PI * 2);
+      ctx.fillStyle = active ? 'rgba(56, 189, 248, 0.35)' : 'rgba(56, 189, 248, 0.12)'; ctx.fill();
+      ctx.lineWidth = active ? 3 : 1.5; ctx.strokeStyle = active ? '#facc15' : '#38bdf8'; ctx.stroke();
+      if (active) ctx.drawImage(p1Img, z.x - 16, z.y - 16, 32, 32);
+      else {
+        ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y);
+      }
+    });
+
+    if (state.gameMode === '2p') {
+      const p2Zones = [
+        { id: 'left', x: cx - 88, y: cy - 56, label: '2P左' },
+        { id: 'center', x: cx, y: cy - 76, label: '2P中' },
+        { id: 'right', x: cx + 88, y: cy - 56, label: '2P右' }
+      ];
+      p2Zones.forEach(z => {
+        const active = state.p2Drop === z.id;
+        ctx.beginPath(); ctx.arc(z.x, z.y, active ? 26 : 20, 0, Math.PI * 2);
+        ctx.fillStyle = active ? 'rgba(244, 63, 94, 0.35)' : 'rgba(244, 63, 94, 0.12)'; ctx.fill();
+        ctx.lineWidth = active ? 3 : 1.5; ctx.strokeStyle = active ? '#facc15' : '#f43f5e'; ctx.stroke();
+        if (active) ctx.drawImage(p2Img, z.x - 16, z.y - 16, 32, 32);
+        else {
+          ctx.fillStyle = '#fda4af'; ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(z.label, z.x, z.y);
+        }
+      });
+    }
+  }
+
+  state.magicOrbs.forEach(orb => {
+    orb.pulse += 0.12;
+    const glowR = orb.r + Math.sin(orb.pulse) * 3;
+    const g = ctx.createRadialGradient(orb.x, orb.y, 2, orb.x, orb.y, glowR + 6);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(0.5, '#facc15'); g.addColorStop(1, 'rgba(250, 204, 21, 0)');
+    ctx.beginPath(); ctx.arc(orb.x, orb.y, glowR + 6, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+  });
+
+  if (state.phase === 'battle' || state.phase === 'roundOver') {
+    [state.p2, state.p1].forEach(ent => {
+      if (!ent) return;
+      ctx.save();
+      ctx.translate(ent.x, ent.y);
+
+      if (ent.ultTimer > 0) {
+        ctx.beginPath(); ctx.arc(0, 0, ent.radius + 14, 0, Math.PI * 2);
+        ctx.strokeStyle = ent.bey.secondary; ctx.lineWidth = 3; ctx.stroke();
+      }
+
+      ctx.rotate(ent.angle);
+      const blades = ent.bey.layerId === 'dragon' ? 4 : ent.bey.layerId === 'demon' ? 6 : ent.bey.layerId === 'mage' ? 5 : 3;
+      for (let i = 0; i < blades; i++) {
+        ctx.save(); ctx.rotate((Math.PI * 2 / blades) * i);
+        ctx.beginPath(); ctx.moveTo(0, -ent.radius - 5); ctx.lineTo(8, -ent.radius + 6); ctx.lineTo(-8, -ent.radius + 6);
+        ctx.closePath(); ctx.fillStyle = ent.bey.secondary; ctx.fill(); ctx.restore();
+      }
+
+      ctx.beginPath(); ctx.arc(0, 0, ent.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ent.bey.primary; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+      ctx.drawImage(getEmblemCanvas(ent.bey), -ent.radius * 0.72, -ent.radius * 0.72, ent.radius * 1.44, ent.radius * 1.44);
+      ctx.restore();
+
+      ctx.fillStyle = ent.isP1 ? '#38bdf8' : '#f43f5e';
+      ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+      const tag = ent.isP1 ? '1P' : (state.gameMode === '2p' ? '2P' : 'COM');
+      ctx.fillText(tag, ent.x, ent.y - ent.radius - 8);
+    });
+  }
+
+  if (state.phase === 'battle') {
+    activePointers.forEach(v => {
+      const targetBey = v.owner === 'p1' ? state.p1 : state.p2;
+      if (!targetBey) return;
+      ctx.beginPath(); ctx.moveTo(targetBey.x, targetBey.y); ctx.lineTo(v.x, v.y);
+      ctx.strokeStyle = v.owner === 'p1' ? 'rgba(56, 189, 248, 0.7)' : 'rgba(244, 63, 94, 0.7)';
+      ctx.lineWidth = 2.5; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
+    });
+  }
+
+  for (let i = state.particles.length - 1; i >= 0; i--) {
+    const p = state.particles[i];
+    p.x += p.vx; p.y += p.vy; p.life -= 0.04;
+    if (p.life <= 0) { state.particles.splice(i, 1); continue; }
+    ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  for (let i = state.popups.length - 1; i >= 0; i--) {
+    const pop = state.popups[i];
+    pop.y -= 0.7; pop.life -= 0.022;
+    if (pop.life <= 0) { state.popups.splice(i, 1); continue; }
+    ctx.globalAlpha = Math.min(1, pop.life); ctx.fillStyle = pop.color;
+    ctx.font = '900 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(pop.text, pop.x, pop.y);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+let lastTime = performance.now();
+function gameLoop(now) {
+  const dt = Math.min(0.05, (now - lastTime) / 1000);
+  lastTime = now;
+  updatePhysics(dt);
+  if (state.phase === 'launch' || state.phase === 'battle' || state.phase === 'roundOver') {
+    renderArena();
+  }
+  requestAnimationFrame(gameLoop);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderTitleArtwork();
+  refreshLobbySummary();
+  requestAnimationFrame(gameLoop);
+});
+</script>
+</body>
+</html>
