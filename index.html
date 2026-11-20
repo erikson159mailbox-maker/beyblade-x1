@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BEYBLADES X 1：聖獸陀螺對決 v7.0</title>
+<title>BEYBLADES X 1：聖獸陀螺對決 v7.1</title>
 <style>
   :root {
     --bg-dark: #060913;
@@ -283,29 +283,25 @@
     font-size: 0.68rem; font-weight: 700; cursor: pointer;
   }
 
-  /* 戰鬥盤與左右側邊資訊欄佈局 */
-  .battle-stage-layout {
-    display: flex; align-items: stretch; justify-content: center; gap: 6px;
+  /* 緊湊水平狀態條（手機版放大戰鬥盤視野） */
+  .compact-hud-strip {
+    background: rgba(15, 23, 42, 0.94); border: 1px solid #334155; border-radius: 10px;
+    padding: 5px 8px; display: grid; grid-template-columns: auto 1fr 1fr 1fr; align-items: center; gap: 6px;
   }
-  .side-hud-col {
-    width: 82px; flex-shrink: 0;
-    background: #0f172a; border: 1px solid #1e293b; border-radius: 10px;
-    padding: 6px 5px; display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .side-hud-col.p1-side { border-color: rgba(56,189,248,0.45); }
-  .side-hud-col.p2-side { border-color: rgba(244,63,94,0.45); }
-  .side-tag { font-size: 0.72rem; font-weight: 900; text-align: center; }
-  .side-stat-block { margin: 4px 0; }
-  .side-stat-lbl { font-size: 0.6rem; color: #94a3b8; font-weight: 700; display: flex; justify-content: space-between; }
-  .side-stat-val { font-size: 0.72rem; font-weight: 900; color: #f8fafc; }
+  .compact-hud-strip.p1-strip { border-color: rgba(56,189,248,0.5); }
+  .compact-hud-strip.p2-strip { border-color: rgba(244,63,94,0.5); }
+  .strip-tag { font-size: 0.74rem; font-weight: 900; padding-right: 2px; white-space: nowrap; }
+  .strip-stat { display: flex; flex-direction: column; }
+  .strip-lbl { font-size: 0.62rem; color: #cbd5e1; font-weight: 700; display: flex; justify-content: space-between; }
+  .strip-lbl span:last-child { font-weight: 900; color: #f8fafc; }
   .progress-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 2px; }
   .progress-fill { height: 100%; border-radius: 99px; transition: width 0.08s linear; }
-  .team-dots { display: flex; justify-content: center; gap: 4px; margin-top: 4px; }
+  .team-dots { display: flex; justify-content: center; gap: 4px; margin-top: 3px; }
   .t-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
   .t-dot.dead { background: #334155; }
 
   .arena-wrap {
-    position: relative; flex: 1; aspect-ratio: 1 / 1; max-width: 380px;
+    position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 440px; margin: 0 auto;
     border-radius: 16px; overflow: hidden; border: 2px solid #334155; background: #060a12;
   }
   canvas#arenaCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
@@ -603,47 +599,42 @@
       </div>
     </div>
 
-    <!-- 左右側邊資訊欄 + 中央戰鬥盤 -->
-    <div class="battle-stage-layout">
-      <!-- 1P 側邊狀態欄 -->
-      <div class="side-hud-col p1-side">
-        <div class="side-tag p1-color">1P 狀態</div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span>轉速</span></div>
-          <div class="side-stat-val" id="p1RpmText">3600</div>
-          <div class="progress-bg"><div id="p1RpmBar" class="progress-fill" style="width:100%;background:#38bdf8;"></div></div>
-        </div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span>耐久</span><span id="p1BurstText">100%</span></div>
-          <div class="progress-bg"><div id="p1BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
-        </div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span style="color:#facc15;">魔力</span><span id="p1MpText" style="color:#facc15;">0%</span></div>
-          <div class="progress-bg"><div id="p1MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#a855f7,#facc15);"></div></div>
-        </div>
+    <!-- 2P / COM 狀態欄（位於對戰組合資訊下方，2P 模式下跟著 180° 倒轉） -->
+    <div id="p2SideHud" class="compact-hud-strip p2-strip">
+      <div class="strip-tag p2-color" id="p2SideTag">COM</div>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span>轉速</span><span id="p2RpmText">3600</span></div>
+        <div class="progress-bg"><div id="p2RpmBar" class="progress-fill" style="width:100%;background:#f43f5e;"></div></div>
       </div>
-
-      <!-- 中央戰鬥盤 -->
-      <div class="arena-wrap">
-        <canvas id="arenaCanvas" width="440" height="440"></canvas>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span>耐久</span><span id="p2BurstText">100%</span></div>
+        <div class="progress-bg"><div id="p2BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
       </div>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span style="color:#f472b6;">魔力</span><span id="p2MpText" style="color:#f472b6;">0%</span></div>
+        <div class="progress-bg"><div id="p2MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#ec4899,#f43f5e);"></div></div>
+      </div>
+    </div>
 
-      <!-- 2P / COM 側邊狀態欄 -->
-      <div id="p2SideHud" class="side-hud-col p2-side">
-        <div class="side-tag p2-color" id="p2SideTag">COM</div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span>轉速</span></div>
-          <div class="side-stat-val" id="p2RpmText">3600</div>
-          <div class="progress-bg"><div id="p2RpmBar" class="progress-fill" style="width:100%;background:#f43f5e;"></div></div>
-        </div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span>耐久</span><span id="p2BurstText">100%</span></div>
-          <div class="progress-bg"><div id="p2BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
-        </div>
-        <div class="side-stat-block">
-          <div class="side-stat-lbl"><span style="color:#f472b6;">魔力</span><span id="p2MpText" style="color:#f472b6;">0%</span></div>
-          <div class="progress-bg"><div id="p2MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#ec4899,#f43f5e);"></div></div>
-        </div>
+    <!-- 手機版放大滿寬戰鬥盤 -->
+    <div class="arena-wrap">
+      <canvas id="arenaCanvas" width="440" height="440"></canvas>
+    </div>
+
+    <!-- 1P 狀態欄（位於手機下方、1P 蓄力條正上方） -->
+    <div id="p1SideHud" class="compact-hud-strip p1-strip">
+      <div class="strip-tag p1-color">1P 狀態</div>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span>轉速</span><span id="p1RpmText">3600</span></div>
+        <div class="progress-bg"><div id="p1RpmBar" class="progress-fill" style="width:100%;background:#38bdf8;"></div></div>
+      </div>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span>耐久</span><span id="p1BurstText">100%</span></div>
+        <div class="progress-bg"><div id="p1BurstBar" class="progress-fill" style="width:100%;background:#22c55e;"></div></div>
+      </div>
+      <div class="strip-stat">
+        <div class="strip-lbl"><span style="color:#facc15;">魔力</span><span id="p1MpText" style="color:#facc15;">0%</span></div>
+        <div class="progress-bg"><div id="p1MpBar" class="progress-fill" style="width:0%;background:linear-gradient(90deg,#a855f7,#facc15);"></div></div>
       </div>
     </div>
 
@@ -1934,7 +1925,8 @@ function launchTeamBattleSession(p1Team, p2Team) {
 
   const shouldFlip = state.gameMode === '2p' && state.flip2P;
   document.getElementById('p2LaunchPanel').classList.toggle('rotated-180', shouldFlip);
-  document.getElementById('p2SideTag').textContent = state.gameMode === '2p' ? '2P 狀態' : 'COM 狀態';
+  document.getElementById('p2SideHud').classList.toggle('rotated-180', shouldFlip);
+  document.getElementById('p2SideTag').textContent = state.gameMode === '2p' ? '2P' : 'COM';
 
   document.getElementById('hubTabs').style.display = 'none';
   showScreen('battleScreen');
